@@ -17,7 +17,7 @@ pipeline{
         stage('Docker Build'){
             steps{
                 script{
-                    sh 'docker compose down --v'
+                    sh 'docker compose down -v'
                     sh 'docker compose build --no-cache'
                 }
             }
