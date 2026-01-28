@@ -1,13 +1,13 @@
 services:
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: Docker/Dockerfile
     env_file:
-      - .env
+      - ../.env
     volumes:
-      - ./backend/app:/code/app
-      - ./backend/seed.py:/code/seed.py
+      - ../backend/app:/code/app
+      - ../backend/seed.py:/code/seed.py
       - static_files:/code/static # Aligned path
     networks:
       - frontend
@@ -28,7 +28,7 @@ services:
       - "80:80"
     volumes:
       - static_files:/code/static:ro # Aligned path
-      - ./menusync/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - frontend
     depends_on:
@@ -38,7 +38,7 @@ services:
   mongodb:
     image: mongo:latest
     env_file:
-      - .env
+      - ../.env
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
@@ -55,7 +55,7 @@ services:
 
   tester:
     build: 
-      context: ./backend
+      context: ../backend
       dockerfile: tests.Dockerfile
     environment:
       - BACKEND_URL=http://app:8000

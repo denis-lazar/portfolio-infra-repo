@@ -1,9 +1,9 @@
 # --- Stage 1: Build React Frontend ---
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app-frontend
-COPY menusync/package*.json ./
+COPY frontend/package*.json ./
 RUN npm install
-COPY menusync/ ./
+COPY frontend/ ./
 ARG VITE_CDN_URL=/
 ENV VITE_CDN_URL=$VITE_CDN_URL
 RUN npm run build
