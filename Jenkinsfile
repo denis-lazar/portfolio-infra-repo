@@ -9,6 +9,7 @@ pipeline{
     }
 
     environment{
+
         COMPOSE_PROJECT_NAME = "menusync-${env.BUILD_ID}"
 
         SLACK_CH = 'C0A1WAPDNVD'           
@@ -35,8 +36,13 @@ pipeline{
                 
                     script{
                         sh 'rm -rf .env'
-                        sh 'rm -rf backend/seed.py backend/app'
+                        
                         sh 'cp ${SECRET_FILE} .env'
+
+                        sh 'docker compose up -d'
+
+                        sh 'docker compose exec app python seed.py'
+
                         sh "docker compose --profile test up --abort-on-container-exit --exit-code-from tester"
                     }
                 }
