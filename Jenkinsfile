@@ -17,17 +17,19 @@ pipeline{
         stage('Docker Build'){
             steps{
                 script{
+                    sh 'docker compose down --v'
                     sh 'docker compose build --no-cache'
                 }
             }
         }
         stage('integration tests'){
-            
+
             steps{
 
                 withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]){
                 
                     script{
+                        sh 'rm -rf backend/seed.py backend/app'
                         sh "cp ${SECRET_FILE} .env"
                         sh "docker compose --profile test up --abort-on-container-exit --exit-code-from tester"
                     }

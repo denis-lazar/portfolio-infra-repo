@@ -4,13 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - "8000:8000"
     env_file:
       - .env
     volumes:
-      - ./backend/app:/code/app
-      - ./backend/seed.py:/code/seed.py
       - static_files:/code/static # Aligned path
     networks:
       - frontend
@@ -27,6 +23,7 @@ services:
 
   nginx:
     image: nginx:stable-alpine
+    restart: always
     ports:
       - "80:80"
     volumes:
