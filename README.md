@@ -11,10 +11,10 @@
 - **Observability:** Integrated Prometheus metrics and structured JSON logging.
 - **High Performance:** Nginx-backed static asset serving via shared Docker volumes.
 
-├── Docker/                 # Docker configuration
-│   ├── docker-compose.yml  # Container orchestration
-│   ├── Dockerfile          # Unified build file for the application
-│   └── nginx.conf          # Nginx production configuration
+## 📁 Project Structure
+
+```text
+.
 ├── backend/                # FastAPI Monolith
 │   ├── app/                # Application logic (Models, Schemas, API, Core)
 │   ├── tests/              # Integration and E2E tests
@@ -28,10 +28,14 @@
 │   ├── public/             # Static assets (High-res images, logos)
 │   ├── App.tsx             # Main React Application component
 │   ├── index.tsx           # React entry point
+│   ├── nginx.conf          # Nginx production configuration
 │   ├── package.json        # Node.js dependencies and scripts
 │   ├── vite.config.ts      # Vite build configuration
 │   └── vitest.config.ts    # Vitest testing configuration
-└── docker-compose.yml      # (Removed - now in Docker/)
+├── docker-compose.yml      # Container orchestration
+├── Dockerfile              # Unified build file for the application
+└── .env                    # Environment variables (Internal use)
+```
 
 ## 🛠️ Workflow
 
@@ -46,25 +50,21 @@
 - Docker and Docker Compose installed.
 
 ### Steps
-1.  **Navigate to Docker directory:**
-    ```bash
-    cd Docker
-    ```
-2.  **Clean Start:**
+1.  **Clean Start:**
     ```bash
     docker compose down -v
     ```
-3.  **Build & Start:**
+2.  **Build & Start:**
     ```bash
     docker compose up --build -d
     ```
-4.  **Seed Data:**
+3.  **Seed Data:**
     ```bash
     docker compose exec app python seed.py
     ```
-5.  **Access the App:**
+4.  **Access the App:**
     - **Frontend:** [http://localhost](http://localhost)
-    - **API Docs:** [http://localhost/docs](http://localhost/docs)
+    - **API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs) (Direct) or [http://localhost/docs](http://localhost/docs) (via Nginx)
     - **Metrics:** [http://localhost/metrics](http://localhost/metrics)
 
 ---
