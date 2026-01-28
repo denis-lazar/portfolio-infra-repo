@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+gemini.md
+prd.md
+product-brief-Portfolio-2026-01-26.md
+
+
 # Distribution / packaging
 .Python
 build/
