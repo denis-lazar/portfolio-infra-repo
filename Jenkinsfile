@@ -5,6 +5,8 @@ pipeline{
     options{
         timeout(time: 10, unit: 'MINUTES')
         disableConcurrentBuilds()
+        COMPOSE_PROJECT_NAME = "menusync-${env.BUILD_ID}"
+
     }
 
     environment{
@@ -49,7 +51,7 @@ pipeline{
     post{
         always{
             script{
-                sh 'docker compose down --v'
+                sh '   docker compose down -v --remove-orphans'
             }
         }
         success { sendSlack('SUCCESS', '#1E90FF') }
