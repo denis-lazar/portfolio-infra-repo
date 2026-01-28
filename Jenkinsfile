@@ -67,7 +67,7 @@ pipeline{
         stage('Unit tests'){
             steps{
                 script{
-                    sh 'docker run --rm $APP_IMAGE_NAME:$APP_IMAGE_TAG pytest app/tests_unit'
+                    sh 'docker run --rm $APP_IMAGE_NAME:$APP_IMAGE_TAG python -m pytest app/tests_unit'
                 }
             }
         }
