@@ -19,12 +19,13 @@ pipeline{
 
     stages{
 
-
+        //stage('Git version fetch'){}
         stage('Docker Build'){
             steps{
                 script{
-                    sh 'docker compose down -v'
-                    sh 'docker compose build --no-cache'
+                    def env.APP_IMAGE_NAME = 'menusync-app'
+                    def env.APP_IMAGE_TAG = '1.0'
+                    sh 'docker build -t ${env.APP_IMAGE_NAME}:${env.APP_IMAGE_TAG} . '
                 }
             }
         }
@@ -35,13 +36,12 @@ pipeline{
                 withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]){
                 
                     script{
-                        sh 'rm -rf .env'
                         
                         sh 'cp ${SECRET_FILE} .env'
 
                         sh 'docker compose up -d'
 
-                        sh 'docker compose exec app python seed.py'
+                        sh 'docker compose exec -T app python seed.py'
 
                         sh "docker compose --profile test up --abort-on-container-exit --exit-code-from tester"
                     }
@@ -51,14 +51,17 @@ pipeline{
 
         //stage('Docker Tag'){}
         //stage('Docker Push'){}
-        //
+        //stage('Git Tag'){}
+        //stage('Update ArgoCD repo'){}
 
     }
 
     post{
         always{
             script{
-                sh '   docker compose down -v --remove-orphans'
+
+                sh 'docker compose down -v --remove-orphans'
+                sh 'rm -f .env'
             }
         }
         success { sendSlack('SUCCESS', '#1E90FF') }
@@ -66,6 +69,15 @@ pipeline{
     }
 
 }
+
+
+
+
+
+
+
+
+
 
 // Send Slack Notification
 def sendSlack(status, color) {

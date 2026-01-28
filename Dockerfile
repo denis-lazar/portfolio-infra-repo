@@ -12,7 +12,10 @@ ENV VITE_CDN_URL=$VITE_CDN_URL
 
 RUN npm run build
 
-FROM python:3.11-slim
+
+
+
+FROM python:3.11-slim AS backend-runner
 WORKDIR /code
 
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
