@@ -14,6 +14,8 @@ pipeline{
 
 
     stages{
+
+
         stage('Docker Build'){
             steps{
                 script{
@@ -37,6 +39,11 @@ pipeline{
                 }
             }
         }
+
+        //stage('Docker Tag'){}
+        //stage('Docker Push'){}
+        //
+
     }
 
     post{

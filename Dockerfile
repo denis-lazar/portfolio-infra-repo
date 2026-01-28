@@ -26,6 +26,7 @@ COPY backend/pytest.ini .
 
 COPY --from=frontend-builder /app-frontend/dist ./static
 
+
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/code
 
