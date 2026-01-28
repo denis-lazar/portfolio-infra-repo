@@ -26,8 +26,8 @@ pipeline{
                 withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]){
                 }
                 script{
-                    sh 'cp ${SECRET_FILE} .env'
-                    sh 'docker compose --profile test up --abort-on-container-exit --exit-code-from tester'
+                    sh "cp ${SECRET_FILE} .env"
+                    sh "docker compose --profile test up --abort-on-container-exit --exit-code-from tester"
                 }
             }
         }
