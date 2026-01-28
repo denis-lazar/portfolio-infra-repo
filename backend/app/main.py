@@ -5,11 +5,25 @@ from app.api.v1.endpoints import restaurants, auth
 from app.core.database import connect_to_mongo, close_mongo_connection
 from contextlib import asynccontextmanager
 from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_client import Gauge
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import structlog
 import time
 import os
+
+# Create the info metric for observability
+APP_INFO = Gauge(
+    'menusync_app_info', 
+    'Static metric with build metadata',
+    ['version', 'commit_sha']
+)
+
+# Set the labels once at startup
+APP_INFO.labels(
+    version=os.getenv('APP_VERSION', '0.0.0'),
+    commit_sha=os.getenv('GIT_SHA', 'unknown')
+).set(1)
 
 # Configure Structlog
 structlog.configure(

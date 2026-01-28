@@ -18,6 +18,12 @@ RUN npm run build
 FROM python:3.11-slim AS backend-runner
 WORKDIR /code
 
+ARG GIT_SHA
+ARG VERSION
+
+LABEL org.opencontainers.image.revision=$GIT_SHA
+LABEL org.opencontainers.image.version=$VERSION
+
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 COPY backend/requirements.txt .
@@ -32,7 +38,13 @@ COPY --from=frontend-builder /app-frontend/dist ./static
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/code
+ENV APP_VERSION=$VERSION
+ENV GIT_SHA=$GIT_SHA
 
 EXPOSE 8000
+
+
+
+
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
