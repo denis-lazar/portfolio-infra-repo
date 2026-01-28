@@ -5,11 +5,12 @@ pipeline{
     options{
         timeout(time: 10, unit: 'MINUTES')
         disableConcurrentBuilds()
-        COMPOSE_PROJECT_NAME = "menusync-${env.BUILD_ID}"
 
     }
 
     environment{
+        COMPOSE_PROJECT_NAME = "menusync-${env.BUILD_ID}"
+
         SLACK_CH = 'C0A1WAPDNVD'           
     }
 
