@@ -160,7 +160,7 @@ pipeline{
         
             sendSlack('FAILURE', 'danger') 
         
-            updateGitlabCommitStatus name: 'build', state: 'failure'
+            updateGitlabCommitStatus name: 'build', state: 'failed'
         }
     }
 
