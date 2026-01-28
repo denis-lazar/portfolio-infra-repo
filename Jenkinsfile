@@ -27,8 +27,10 @@ pipeline{
         stage('Git version fetch'){
 
             steps{
-                script{
-                    sh 'git fetch --tags'
+                sshagent([GIT_SSH]){
+                    script{
+                        sh 'git fetch --tags'
+                    }
                 }
             }
         }
