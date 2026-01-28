@@ -17,7 +17,7 @@ pipeline{
 
         ECR_REPO = '685092162784.dkr.ecr.ap-south-1.amazonaws.com/menusync' 
 
-        GIT_SSH = 'jenkins-ssh-gitlab'       
+        GIT_CREDS_ID = 'jenkins-ssh-gitlab'
     }
 
 
@@ -27,7 +27,7 @@ pipeline{
         stage('Git version fetch'){
 
             steps{
-                sshagent([GIT_SSH]){
+                sshagent([env.GIT_CREDS_ID]) {
                     script{
                         sh 'git fetch --tags'
                     }
@@ -126,19 +126,18 @@ pipeline{
             }
         }
         stage('Git Tag') {
-            when{ branch 'main' }
-            steps {
-                script {
-
-
-                    sshagent([GIT_SSH]){
-                        sh """
-                            git tag v${env.APP_IMAGE_TAG}
-                            git push origin v${env.APP_IMAGE_TAG}
-                        """
-                    }   
+            when { branch 'main' }
+                steps {
+                    script {
+                        // Use the new variable name here
+                        sshagent([env.GIT_CREDS_ID]) {
+                            sh """
+                                git tag v${env.APP_IMAGE_TAG}
+                                git push origin v${env.APP_IMAGE_TAG}
+                            """
+                        }   
+                    }
                 }
-            }
         }
         //stage('Update ArgoCD repo'){}
 
