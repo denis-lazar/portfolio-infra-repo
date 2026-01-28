@@ -23,37 +23,27 @@ pipeline{
 
 
     stages{
-
-        stage('Git version fetch'){
-
-            steps{
-                sshagent([env.GIT_CREDS_ID]) {
-                    script{
-                        sh 'git fetch --tags'
-                    }
-                }
-            }
-        }
-
         stage('Version Calculation') {
             steps {
-                script {
-                    sh 'git fetch --tags'
-                    
-                    def latestTag = sh(script: 'git describe --tags --abbrev=0 || echo v1.0.0', returnStdout: true).trim()
-                    
-                    def commitCount = sh(script: "git rev-list --count ${latestTag}..HEAD || echo 0", returnStdout: true).trim()
-                    
-                    def baseVersion = latestTag.replace('v', '')
-                    def parts = baseVersion.tokenize('.')
-                    def major = parts[0]
-                    def minor = parts[1]
+                sshagent([env.GIT_CREDS_ID]){
+                    script {
+                        sh 'git fetch --tags'
+                        
+                        def latestTag = sh(script: 'git describe --tags --abbrev=0 || echo v1.0.0', returnStdout: true).trim()
+                        
+                        def commitCount = sh(script: "git rev-list --count ${latestTag}..HEAD || echo 0", returnStdout: true).trim()
+                        
+                        def baseVersion = latestTag.replace('v', '')
+                        def parts = baseVersion.tokenize('.')
+                        def major = parts[0]
+                        def minor = parts[1]
 
-                    env.APP_IMAGE_TAG = "${major}.${minor}.${commitCount}"
-                    
-                    env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-                    
-                    echo "Calculated SemVer: ${env.APP_IMAGE_TAG} (Commits since ${latestTag}: ${commitCount})"
+                        env.APP_IMAGE_TAG = "${major}.${minor}.${commitCount}"
+                        
+                        env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                        
+                        echo "Calculated SemVer: ${env.APP_IMAGE_TAG} (Commits since ${latestTag}: ${commitCount})"
+                    }
                 }
             }
         }
