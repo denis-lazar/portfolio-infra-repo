@@ -4,7 +4,7 @@ import os
 
 # We want to test through the NGINX port (which is port 80 in the frontend container)
 # In Docker Compose, the 'frontend' service handles port 80
-NGINX_URL = "http://frontend:80"
+NGINX_URL = os.getenv("NGINX_URL", "http://localhost:80")
 
 @pytest.mark.asyncio
 async def test_nginx_proxy_api():

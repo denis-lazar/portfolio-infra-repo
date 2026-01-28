@@ -91,6 +91,12 @@ if os.path.exists(static_path):
     @app.get("/{catchall:path}", include_in_schema=False)
     async def serve_react_app(catchall: str):
         """Catch-all route to support React Router (SPA)"""
-        # If not an API call, return the index.html for React to handle routing
-        if not catchall.startswith("api/v1"):
+        # If not an API call and doesn't look like a file request, return index.html
+        if not catchall.startswith("api/v1") and "." not in catchall:
             return FileResponse(os.path.join(static_path, "index.html"))
+        
+        # Otherwise, let FastAPI raise a 404 naturally
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Not Found")
+
+    

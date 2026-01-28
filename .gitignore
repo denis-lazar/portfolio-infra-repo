@@ -9,7 +9,8 @@ __pycache__/
 gemini.md
 prd.md
 product-brief-Portfolio-2026-01-26.md
-
+*.pem
+*.zip
 
 # Distribution / packaging
 .Python

@@ -5,7 +5,7 @@ const API_BASE_URL = '/api/v1';
 class RealBackend {
   private AUTH_KEY = 'menusync_session_v4'; // Incremented to v4 to ensure a fresh start for everyone
   private SESSION_INIT_KEY = 'menusync_startup_id';
-  private CURRENT_STARTUP_ID = '2026-01-28-v2';
+  private CURRENT_STARTUP_ID = '2026-01-28-v3-reset';
 
   constructor() {
     this.checkSessionValidity();
