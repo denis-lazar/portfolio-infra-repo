@@ -29,8 +29,9 @@ pipeline{
                 withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]){
                 
                     script{
+                        sh 'rm -rf .env'
                         sh 'rm -rf backend/seed.py backend/app'
-                        sh "cp ${SECRET_FILE} .env"
+                        sh 'cp ${SECRET_FILE} .env'
                         sh "docker compose --profile test up --abort-on-container-exit --exit-code-from tester"
                     }
                 }
