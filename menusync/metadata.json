@@ -1,0 +1,8 @@
+
+{
+  "name": "MenuSync",
+  "description": "A real-time restaurant menu availability platform for customers and managers to sync ingredient stock and kitchen status instantly.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
