@@ -80,6 +80,8 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]) {
                     script {
+
+                        sh 'rm -f docker-compose.override.yml'
                         // 1. Prepare Environment
                         sh 'rm -f .env'
                         sh 'cp $SECRET_FILE .env'
