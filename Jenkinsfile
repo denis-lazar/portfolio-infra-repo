@@ -10,8 +10,7 @@ pipeline {
     environment {
         COMPOSE_PROJECT_NAME = "menusync-${env.BUILD_ID}"
         SLACK_CH = 'C0A1WAPDNVD'   
-        // Updated to us-east-1 because ap-south-1 was blocked by your student policy
-        AWS_REGION = 'us-east-1'
+        AWS_REGION = 'ap-south-1' // Switched back to Mumbai
         ECR_REPO = "685092162784.dkr.ecr.${env.AWS_REGION}.amazonaws.com/menusync"
         GIT_CREDS_ID = 'jenkins-ssh-gitlab'
     }
@@ -81,7 +80,8 @@ pipeline {
             when { branch 'main' }
             steps {
                 script {
-                    // Added --network host to reach AWS Metadata Service (IMDS) for IAM Role credentials
+                    // Using --network host to reach IMDS. 
+                    // If this still fails with "Unable to locate credentials", we'll need to fix the IMDS Hop Limit on the EC2 instance.
                     def ecrPassword = sh(script: "docker run --rm --network host amazon/aws-cli ecr get-login-password --region ${env.AWS_REGION}", returnStdout: true).trim()
                     
                     sh "echo ${ecrPassword} | docker login --username AWS --password-stdin 685092162784.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
@@ -123,6 +123,7 @@ pipeline {
                 sh 'docker compose down -v --remove-orphans'
                 sh 'rm -f .env'
                 
+                // Collect results from the 'reports' folder we created
                 junit 'reports/unit-report.xml'
                 
                 publishHTML([
