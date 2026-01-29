@@ -105,25 +105,29 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]) {
                     script {
-                        def composeCmd = "ENV_FILE=${SECRET_FILE} docker compose --env-file ${SECRET_FILE}"
                         sh "mkdir -p reports"
                         
+                        // Use shell variables to avoid Groovy interpolation security warnings
+                        // Pass APP_IMAGE_NAME and APP_IMAGE_TAG explicitly to ensure Docker Compose finds them
                         try {
-                            sh "${composeCmd} up -d"
-                            sh "${composeCmd} exec -T app python seed.py"
-                            
-                            sh """
-                                ${composeCmd} --profile test run \
-                                --name integration-runner-${env.BUILD_ID} \
-                                -e PYTEST_ADDOPTS=\"-v -o junit_logging=all --junitxml=/reports/integration-report.xml\" \
+                            sh '''
+                                export ENV_FILE=$SECRET_FILE
+                                docker compose --env-file $SECRET_FILE up -d
+                                docker compose --env-file $SECRET_FILE exec -T app python seed.py
+                                
+                                docker compose --env-file $SECRET_FILE --profile test run \
+                                --name integration-runner-${BUILD_ID} \
+                                -e PYTEST_ADDOPTS="-v -o junit_logging=all --junitxml=/reports/integration-report.xml" \
                                 tester
-                            """
+                            '''
                         } catch (Exception e) {
                             echo "Integration tests failed: ${e.message}"
                         } finally {
-                            sh "docker cp integration-runner-${env.BUILD_ID}:/reports/integration-report.xml ./reports/integration-report.xml || true"
-                            sh "docker rm integration-runner-${env.BUILD_ID} || true"
-                            sh "${composeCmd} down -v --remove-orphans"
+                            sh '''
+                                docker cp integration-runner-${BUILD_ID}:/reports/integration-report.xml ./reports/integration-report.xml || true
+                                docker rm -f integration-runner-${BUILD_ID} || true
+                                docker compose --env-file $SECRET_FILE down -v --remove-orphans
+                            '''
                         }
                     }
                 }

@@ -1,5 +1,8 @@
 services:
   app:
+
+    image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}                                                                                            │
+    restart: always 
     env_file:
       - ${ENV_FILE:-.env}
 
@@ -36,7 +39,7 @@ services:
   mongodb:
     image: mongo:latest
     restart: always
-    env_file:
+    env_file: 
       - .env
     volumes:
       - mongo_data:/data/db
