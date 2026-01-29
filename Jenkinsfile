@@ -128,13 +128,15 @@ pipeline {
                 }
                 stage('Vulnerability Scan') {
                     steps {
-                        docker.image('amazon/aws-cli').inside('--entrypoint=""') {
-                            sh """
-                                echo "Waiting for ECR scan results..."
-                                aws ecr wait image-scan-complete --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION}
-                                aws ecr describe-image-scan-findings --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} \
-                                --query 'imageScanFindings.findingSeverityCounts' --output table
-                            """
+                        scripts{
+                            docker.image('amazon/aws-cli').inside('--entrypoint=""') {
+                                sh """
+                                    echo "Waiting for ECR scan results..."
+                                    aws ecr wait image-scan-complete --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION}
+                                    aws ecr describe-image-scan-findings --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} \
+                                    --query 'imageScanFindings.findingSeverityCounts' --output table
+                                """
+                            }
                         }
                     }
                 }
