@@ -128,7 +128,7 @@ pipeline {
                 }
                 stage('Vulnerability Scan') {
                     steps {
-                        scripts{
+                        script{
                             docker.image('amazon/aws-cli').inside('--entrypoint=""') {
                                 sh """
                                     echo "Waiting for ECR scan results..."
