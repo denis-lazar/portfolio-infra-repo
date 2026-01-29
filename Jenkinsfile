@@ -1,8 +1,7 @@
-pipeline{
-
+pipeline {
     agent any
     
-    options{
+    options {
         timeout(time: 10, unit: 'MINUTES')
         disableConcurrentBuilds()
         gitLabConnection('GitLab-Public')
@@ -29,20 +28,20 @@ pipeline{
                     script {
                         sh 'git fetch --tags'
                         
-                        def latestTag = sh(script: 'git describe --tags --abbrev=0 || echo v1.0.0', returnStdout: true).trim()
+def latestTag = sh(script: 'git describe --tags --abbrev=0 || echo v1.0.0', returnStdout: true).trim()
                         
-                        def commitCount = sh(script: "git rev-list --count ${latestTag}..HEAD || echo 0", returnStdout: true).trim()
+def commitCount = sh(script: "git rev-list --count ${latestTag}..HEAD || echo 0", returnStdout: true).trim()
                         
-                        def baseVersion = latestTag.replace('v', '')
-                        def parts = baseVersion.tokenize('.')
-                        def major = parts[0]
-                        def minor = parts[1]
+def baseVersion = latestTag.replace('v', '')
+def parts = baseVersion.tokenize('.')
+def major = parts[0]
+def minor = parts[1]
 
-                        env.APP_IMAGE_TAG = "${major}.${minor}.${commitCount}"
+env.APP_IMAGE_TAG = "${major}.${minor}.${commitCount}"
                         
-                        env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                         
-                        echo "Calculated SemVer: ${env.APP_IMAGE_TAG} (Commits since ${latestTag}: ${commitCount})"
+echo "Calculated SemVer: ${env.APP_IMAGE_TAG} (Commits since ${latestTag}: ${commitCount})"
                     }
                 }
             }
@@ -95,12 +94,14 @@ pipeline{
             when{ branch 'main' }
 
             steps{
-                script{
-                    sh '''
-                        aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 685092162784.dkr.ecr.ap-south-1.amazonaws.com
-                        docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_REPO:$APP_IMAGE_TAG
-                        docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_REPO:sha-$GIT_SHA
-                    '''
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: env.AWS_CREDS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    script{
+                        sh '''
+                            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 685092162784.dkr.ecr.ap-south-1.amazonaws.com
+                            docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_REPO:$APP_IMAGE_TAG
+                            docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_REPO:sha-$GIT_SHA
+                        '''
+                    }
                 }
             }
 
@@ -150,17 +151,12 @@ pipeline{
         failure { 
         
             sendSlack('FAILURE', 'danger') 
-        
+
             updateGitlabCommitStatus name: 'build', state: 'failed'
         }
     }
 
 }
-
-
-
-
-
 
 
 
