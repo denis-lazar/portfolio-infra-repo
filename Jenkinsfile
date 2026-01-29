@@ -86,7 +86,23 @@ pipeline {
                         sh 'cp $SECRET_FILE .env'
                         sh 'docker compose up -d'
                         sh 'docker compose exec -T app python seed.py'
-                        sh 'docker compose --profile test up --abort-on-container-exit --exit-code-from tester'
+
+                        writeFile file: 'docker-compose.override.yml', text: '''
+                            services:
+                            tester:
+                                environment:
+                                - PYTEST_ADDOPTS=-v --junitxml=/integration-report.xml
+                            '''
+                        
+                        try {
+                            // 2. Run the tests (Compose automatically merges the override file)
+                            sh 'docker compose --profile test up --abort-on-container-exit --exit-code-from tester'
+                        } finally {
+                            // 3. COPY the report out of the container (even if tests failed)
+                            // Note: The container name is typically "projectname-service-1"
+                            // We use || true to prevent pipeline crash if file is missing
+                            sh "docker cp ${env.COMPOSE_PROJECT_NAME}-tester-1:/integration-report.xml ./reports/integration-report.xml || true"
+                        }
                     }
                 }
             }
@@ -145,9 +161,13 @@ pipeline {
                 sh 'docker system prune -f'
                 sh 'rm -f .env'
                 
-                if (fileExists('reports/unit-report.xml')) {
-                    // Collect results from the 'reports' folder we created
-                    junit 'reports/unit-report.xml'
+                // CHECK: Look for ANY xml files (Unit or Integration)
+                // The pattern 'reports/*.xml' will grab both unit-report.xml and integration-report.xml
+                def testFiles = findFiles(glob: 'reports/*.xml')
+
+                if (findFiles(glob: 'reports/*.xml')) {
+                    // This combines all XMLs into one big graph in Jenkins
+                    junit 'reports/*.xml'
                     
                     publishHTML([
                         allowMissing: true,
@@ -156,9 +176,8 @@ pipeline {
                         reportFiles: 'index.html',
                         reportName: 'Unit Test Coverage'
                     ])
-                }else {
+                } else {
                     echo "WARNING: No test reports found. Marking build as UNSTABLE."
-                    // This turns the pipeline YELLOW instead of RED, preventing a hard failure
                     currentBuild.result = 'UNSTABLE'
                 }
             }
