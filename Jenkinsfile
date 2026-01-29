@@ -89,10 +89,10 @@ pipeline {
 
                         writeFile file: 'docker-compose.override.yml', text: '''
                             services:
-                            tester:
-                                environment:
-                                - PYTEST_ADDOPTS=-v --junitxml=/integration-report.xml
-                            '''
+                                tester:
+                                    environment:
+                                        - PYTEST_ADDOPTS=-v --junitxml=/integration-report.xml
+                                '''
                         
                         try {
                             // 2. Run the tests (Compose automatically merges the override file)
