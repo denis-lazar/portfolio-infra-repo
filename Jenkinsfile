@@ -132,36 +132,35 @@ pipeline {
             }
         }
 
-        stage('Push & Scan') {
+        stage('Push to ECR') {
             when { branch 'main' }
-            stages {
-                stage('Push to ECR') {
-                    steps {
-                        script {
-                            
-                            docker.withRegistry("https://${env.ECR_REGISTRY}", "ecr:${env.AWS_REGION}:ecr-aws-creds") {                                def img = docker.image("${APP_IMAGE_NAME}:${APP_IMAGE_TAG}")
-                                img.push()
-                                img.push("sha-${env.GIT_SHA}")
-                            }
-                        }
-                    }
-                }
-                stage('Vulnerability Scan') {
-                    steps {
-                        script{
-                            docker.image('amazon/aws-cli').inside('--entrypoint=""') {
-                                sh """
-                                    echo "Waiting for ECR scan results..."
-                                    aws ecr wait image-scan-complete --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION}
-                                    aws ecr describe-image-scan-findings --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} \
-                                    --query 'imageScanFindings.findingSeverityCounts' --output table
-                                """
-                            }
-                        }
+            steps {
+                script {
+                    
+                    docker.withRegistry("https://${env.ECR_REGISTRY}", "ecr:${env.AWS_REGION}:ecr-aws-creds") {                                def img = docker.image("${APP_IMAGE_NAME}:${APP_IMAGE_TAG}")
+                        img.push()
+                        img.push("sha-${env.GIT_SHA}")
                     }
                 }
             }
         }
+        stage('ECR Scan') {
+            when { branch 'main' }
+            steps { 
+                script{
+                    docker.image('amazon/aws-cli').inside('--entrypoint=""') {
+                        sh """
+                            echo "Waiting for ECR scan results..."
+                            aws ecr wait image-scan-complete --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION}
+                            aws ecr describe-image-scan-findings --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} \
+                            --query 'imageScanFindings.findingSeverityCounts' --output table
+                        """
+                    }
+                }
+            }
+        }
+            
+        
 
         stage('Git Tag') {
             when { branch 'main' }
