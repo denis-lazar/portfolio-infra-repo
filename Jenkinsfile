@@ -110,7 +110,7 @@ pipeline {
                         try {
                             sh '''
                                 export ENV_FILE=$SECRET_FILE
-                                docker compose --env-file '${SECRET_FILE}' up -d
+                                docker compose --env-file $SECRET_FILE up -d
                                 docker compose --env-file $SECRET_FILE exec -T app python seed.py
                                 
                                 docker compose --env-file $SECRET_FILE --profile test run \
@@ -198,7 +198,7 @@ pipeline {
                 }
             }
             // Cleanup local image to save disk space
-            sh "docker rmi ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} || true"
+            sh "docker image prune -f || true"
         }
         success { sendSlack('SUCCESS', '#1E90FF') }
         unstable { sendSlack('WARNING: Check Tests', 'warning') }
