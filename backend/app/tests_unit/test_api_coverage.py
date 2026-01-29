@@ -56,8 +56,10 @@ async def test_update_ingredient_unit():
     mock_result.matched_count = 1
     mock_db.restaurants.update_one = AsyncMock(return_value=mock_result)
 
-    # We need to mock the authentication dependency
+    # We need to mock the authentication dependency correctly for FastAPI
     from app.schemas.user import User, UserRole
+    from app.api.v1.endpoints.restaurants import get_manager_user
+    
     mock_user = User(
         id="user1", 
         email="manager@test.com", 
@@ -66,16 +68,22 @@ async def test_update_ingredient_unit():
         restaurantId="rest1"
     )
 
-    with patch("app.api.v1.endpoints.restaurants.get_database", return_value=mock_db), \
-         patch("app.api.v1.endpoints.restaurants.manager.broadcast_to_restaurant", new_callable=AsyncMock) as mock_broadcast, \
-         patch("app.api.v1.endpoints.restaurants.get_manager_user", return_value=mock_user):
-        
-        transport = ASGITransport(app=app)
-        async with AsyncClient(transport=transport, base_url="http://test") as ac:
-            response = await ac.patch(
-                "/api/v1/restaurants/rest1/ingredients/ing1",
-                json={"inStock": False}
-            )
-            assert response.status_code == 200
-            assert response.json() == {"status": "success"}
-            mock_broadcast.assert_called_once()
+    # Override the dependency globally for this app instance
+    app.dependency_overrides[get_manager_user] = lambda: mock_user
+
+    try:
+        with patch("app.api.v1.endpoints.restaurants.get_database", return_value=mock_db), \
+             patch("app.api.v1.endpoints.restaurants.manager.broadcast_to_restaurant", new_callable=AsyncMock) as mock_broadcast:
+            
+            transport = ASGITransport(app=app)
+            async with AsyncClient(transport=transport, base_url="http://test") as ac:
+                response = await ac.patch(
+                    "/api/v1/restaurants/rest1/ingredients/ing1",
+                    json={"inStock": False}
+                )
+                assert response.status_code == 200
+                assert response.json() == {"status": "success"}
+                mock_broadcast.assert_called_once()
+    finally:
+        # Clear overrides so they don't leak into other tests
+        app.dependency_overrides = {}
