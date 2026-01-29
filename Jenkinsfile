@@ -38,13 +38,31 @@ pipeline {
                         }
 
                         // 3. Increment logic: Parse and compare
-                        def gParts = latestGitTag.tokenize('.').collect { it.toInteger() }
-                        def eParts = latestEcrTag.tokenize('.').collect { it.toInteger() }
+                        def g = latestGitTag.tokenize('.').collect { it.toInteger() }
+                        def e = latestEcrTag.tokenize('.').collect { it.toInteger() }
                         
-                        // Compare version lists [Major, Minor, Patch]
-                        def maxVer = (gParts > eParts) ? gParts : eParts
+                        // Compare Major.Minor.Patch manually (Sandbox friendly)
+                        def major = Math.max(g[0], e[0])
+                        def minor = Math.max(g[1], e[1])
+                        def patch
                         
-                        env.APP_IMAGE_TAG = "${maxVer[0]}.${maxVer[1]}.${maxVer[2] + 1}"
+                        if (g[0] > e[0]) {
+                            patch = g[2]
+                        } else if (e[0] > g[0]) {
+                            patch = e[2]
+                        } else {
+                            // Majors are equal, check Minors
+                            if (g[1] > e[1]) {
+                                patch = g[2]
+                            } else if (e[1] > g[1]) {
+                                patch = e[2]
+                            } else {
+                                // Majors and Minors are equal, check Patches
+                                patch = Math.max(g[2], e[2])
+                            }
+                        }
+                        
+                        env.APP_IMAGE_TAG = "${major}.${minor}.${patch + 1}"
                         env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                         
                         echo "Double-Truth Versioning: Git(${latestGitTag}) vs ECR(${latestEcrTag}) -> Next: ${env.APP_IMAGE_TAG}"
