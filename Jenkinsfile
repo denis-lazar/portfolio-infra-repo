@@ -138,8 +138,8 @@ pipeline {
                 stage('Push to ECR') {
                     steps {
                         script {
-                            docker.withRegistry("https://${env.ECR_REGISTRY}", "ecr:${env.AWS_REGION}:jenkins-aws-creds") {
-                                def img = docker.image("${APP_IMAGE_NAME}:${APP_IMAGE_TAG}")
+                            
+                            docker.withRegistry("https://${env.ECR_REGISTRY}", "ecr:${env.AWS_REGION}:ecr-aws-creds") {                                def img = docker.image("${APP_IMAGE_NAME}:${APP_IMAGE_TAG}")
                                 img.push()
                                 img.push("sha-${env.GIT_SHA}")
                             }
