@@ -9,10 +9,10 @@ pipeline {
 
     environment {
         COMPOSE_PROJECT_NAME = "menusync-${env.BUILD_ID}"
-        SLACK_CH = 'C0A1WAPDNVD'   
+        SLACK_CH     = 'C0A1WAPDNVD'   
         AWS_REGION   = 'ap-south-1'
         ECR_REGISTRY = '685092162784.dkr.ecr.ap-south-1.amazonaws.com'
-        ECR_REPO = "menusync"
+        ECR_REPO     = "menusync"
         ECR_IMAGE    = "${ECR_REGISTRY}/${ECR_REPO}"
         GIT_CREDS_ID = 'jenkins-ssh-gitlab'
     }
@@ -105,6 +105,7 @@ pipeline {
                     sh "docker push $ECR_IMAGE:$APP_IMAGE_TAG"
                     sh "docker push $ECR_IMAGE:sha-$GIT_SHA"
                 }
+                
             }
         }
 
