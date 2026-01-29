@@ -10,8 +10,10 @@ pipeline {
     environment {
         COMPOSE_PROJECT_NAME = "menusync-${env.BUILD_ID}"
         SLACK_CH = 'C0A1WAPDNVD'   
-        AWS_REGION = 'ap-south-1' // Switched back to Mumbai
-        ECR_REPO = "685092162784.dkr.ecr.${env.AWS_REGION}.amazonaws.com/menusync"
+        AWS_REGION   = 'ap-south-1'
+        ECR_REGISTRY = '685092162784.dkr.ecr.ap-south-1.amazonaws.com'
+        ECR_REPO = "menusync"
+        ECR_IMAGE    = "${ECR_REGISTRY}/${ECR_REPO}"
         GIT_CREDS_ID = 'jenkins-ssh-gitlab'
     }
 
@@ -80,14 +82,9 @@ pipeline {
             when { branch 'main' }
             steps {
                 script {
-                    // Using --network host to reach IMDS. 
-                    // If this still fails with "Unable to locate credentials", we'll need to fix the IMDS Hop Limit on the EC2 instance.
-                    def ecrPassword = sh(script: "docker run --rm --network host amazon/aws-cli ecr get-login-password --region ${env.AWS_REGION}", returnStdout: true).trim()
-                    
-                    sh "echo ${ecrPassword} | docker login --username AWS --password-stdin 685092162784.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
-                    
-                    sh "docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_REPO:$APP_IMAGE_TAG"
-                    sh "docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_REPO:sha-$GIT_SHA"
+                    // FIX: Use ECR_IMAGE (Full URL) instead of ECR_REPO (Short name)
+                    sh "docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_IMAGE:$APP_IMAGE_TAG"
+                    sh "docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_IMAGE:sha-$GIT_SHA"
                 }
             }
         }
@@ -96,8 +93,17 @@ pipeline {
             when { branch 'main' }
             steps {
                 script {
-                    sh "docker push $ECR_REPO:$APP_IMAGE_TAG"
-                    sh "docker push $ECR_REPO:sha-$GIT_SHA"
+                    docker.image('amazon/aws-cli').inside('--entrypoint=""') {
+                        ecrLoginPassword = sh(script: "aws ecr get-login-password --region ${env.AWS_REGION}", returnStdout: true).trim()
+                    }
+                    sh """
+                        set +x
+                        echo '${ecrLoginPassword}' | docker login --username AWS --password-stdin https://${env.ECR_REGISTRY}
+                        set -x
+                    """
+                    // FIX: Use ECR_IMAGE to push to the correct registry
+                    sh "docker push $ECR_IMAGE:$APP_IMAGE_TAG"
+                    sh "docker push $ECR_IMAGE:sha-$GIT_SHA"
                 }
             }
         }
