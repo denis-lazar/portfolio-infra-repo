@@ -96,7 +96,7 @@ pipeline {
                             sh """
                                 docker compose --profile test run \\
                                 --name integration-runner-${env.BUILD_ID} \\
-                                -e PYTEST_ADDOPTS="-v --junitxml=/integration-report.xml" \\
+                                -e PYTEST_ADDOPTS="-v -o junit_logging=all --junitxml=/integration-report.xml" \\
                                 tester
                             """
                         } catch (Exception e) {
