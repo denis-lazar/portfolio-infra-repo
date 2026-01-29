@@ -136,8 +136,12 @@ pipeline {
             when { branch 'main' }
             steps {
                 script {
-                    
-                    docker.withRegistry("https://${env.ECR_REGISTRY}", "ecr:${env.AWS_REGION}:ecr-aws-creds") {                                def img = docker.image("${APP_IMAGE_NAME}:${APP_IMAGE_TAG}")
+
+                    sh "docker tag ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} ${ECR_IMAGE}:${APP_IMAGE_TAG}"
+
+                    docker.withRegistry("https://${env.ECR_REGISTRY}", "ecr:${env.AWS_REGION}:ecr-aws-creds") {  
+
+                        def img = docker.image("${ECR_IMAGE}:${APP_IMAGE_TAG}")
                         img.push()
                         img.push("sha-${env.GIT_SHA}")
                     }
@@ -150,8 +154,13 @@ pipeline {
                 script{
                     docker.image('amazon/aws-cli').inside('--entrypoint=""') {
                         sh """
-                            echo "Waiting for ECR scan results..."
+                            echo "Starting ECR vulnerability scan..."
+                            aws ecr start-image-scan --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} || echo "Scan already in progress or failed to start"
+
+                            echo "Waiting for results..."
                             aws ecr wait image-scan-complete --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION}
+                            
+                            echo "Scan Findings Summary:"
                             aws ecr describe-image-scan-findings --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} \
                             --query 'imageScanFindings.findingSeverityCounts' --output table
                         """
