@@ -107,12 +107,10 @@ pipeline {
                     script {
                         sh "mkdir -p reports"
                         
-                        // Use shell variables to avoid Groovy interpolation security warnings
-                        // Pass APP_IMAGE_NAME and APP_IMAGE_TAG explicitly to ensure Docker Compose finds them
                         try {
                             sh '''
                                 export ENV_FILE=$SECRET_FILE
-                                docker compose --env-file $SECRET_FILE up -d
+                                docker compose --env-file '${SECRET_FILE}' up -d
                                 docker compose --env-file $SECRET_FILE exec -T app python seed.py
                                 
                                 docker compose --env-file $SECRET_FILE --profile test run \
