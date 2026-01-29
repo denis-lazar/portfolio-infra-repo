@@ -1,4 +1,4 @@
-import pytest
+import pytest , os
 from httpx import AsyncClient, ASGITransport
 from app.main import app
 from unittest.mock import AsyncMock, patch, MagicMock
@@ -9,7 +9,8 @@ async def test_health_endpoint_unit():
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.get("/api/v1/health")
         assert response.status_code == 200
-        assert response.json() == {"status": "healthy", "version": "1.0.0"}
+        expected_version = os.getenv("APP_VERSION", "1.0.0")
+        assert response.json() == {"status": "healthy", "version": expected_version}
 
 @pytest.mark.asyncio
 async def test_get_restaurants_unit():

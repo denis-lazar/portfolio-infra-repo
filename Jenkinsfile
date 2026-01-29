@@ -97,7 +97,7 @@ pipeline {
                     --cov=app \
                     --cov-report=xml:reports/coverage.xml \
                     --cov-report=html:reports/htmlcov \
-                    backend/app/tests_unit || true
+                    backend/app/tests_unit
                 """
             }
         }
