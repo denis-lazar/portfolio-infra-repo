@@ -38,7 +38,7 @@ COPY --from=frontend-builder /app-frontend/dist ./static
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/code
 ENV APP_VERSION=$VERSION
-ENV GIT_SHA=$GIT_SHA
+ENV GIT_SHA=$GIT_SHA        
 
 EXPOSE 8000
 

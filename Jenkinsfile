@@ -91,12 +91,13 @@ pipeline {
                 // Workspace is mounted into the container automatically
                 sh """
                     mkdir -p reports
-                    python -m pytest \
+
+                    PYTHONPATH=backend python -m pytest \
                     --junitxml=reports/unit-report.xml \
                     --cov=app \
                     --cov-report=xml:reports/coverage.xml \
                     --cov-report=html:reports/htmlcov \
-                    app/tests_unit || true
+                    backend/app/tests_unit || true
                 """
             }
         }
