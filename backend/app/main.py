@@ -84,7 +84,7 @@ async def health_check():
     """
     Health check endpoint for Kubernetes Liveness/Readiness probes.
     """
-    return {"status": "healthy", "version": "1.0.0"}
+    return {"status": "healthy", "version": os.getenv('APP_VERSION', '0.0.0')}
 
 # Include API Routers
 app.include_router(restaurants.router, prefix="/api/v1/restaurants", tags=["Restaurants"])
