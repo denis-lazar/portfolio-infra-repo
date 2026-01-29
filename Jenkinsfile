@@ -151,18 +151,38 @@ pipeline {
         stage('ECR Scan') {
             when { branch 'main' }
             steps { 
-                script{
+                script {
                     docker.image('amazon/aws-cli').inside('--entrypoint=""') {
                         sh """
-                            echo "Starting ECR vulnerability scan..."
-                            aws ecr start-image-scan --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} || echo "Scan already in progress or failed to start"
+                            echo "1. Starting ECR vulnerability scan..."
+                            aws ecr start-image-scan --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} || echo "Scan in progress"
 
-                            echo "Waiting for results..."
+                            echo "2. Waiting for results..."
                             aws ecr wait image-scan-complete --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION}
                             
-                            echo "Scan Findings Summary:"
+                            echo "3. SCAN REPORT (High/Critical only):"
+                            # This command lists the actual package names and CVE IDs causing the High alerts
                             aws ecr describe-image-scan-findings --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} \
-                            --query 'imageScanFindings.findingSeverityCounts' --output table
+                            --query "imageScanFindings.findings[?severity=='HIGH' || severity=='CRITICAL'].[name, attributes[?key=='package_version']|[0].value, uri]" --output text
+
+                            echo "4. Checking Quality Gate..."
+                            # Get the count of High/Critical vulnerabilities
+                            CRITICAL_COUNT=\$(aws ecr describe-image-scan-findings --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} --query "imageScanFindings.findingSeverityCounts.CRITICAL" --output text)
+                            HIGH_COUNT=\$(aws ecr describe-image-scan-findings --repository-name ${ECR_REPO} --image-id imageTag=${env.APP_IMAGE_TAG} --region ${env.AWS_REGION} --query "imageScanFindings.findingSeverityCounts.HIGH" --output text)
+
+                            # Convert 'None' to 0 (AWS returns 'None' if count is 0)
+                            if [ "\$CRITICAL_COUNT" = "None" ]; then CRITICAL_COUNT=0; fi
+                            if [ "\$HIGH_COUNT" = "None" ]; then HIGH_COUNT=0; fi
+
+                            echo "Found \$CRITICAL_COUNT Critical and \$HIGH_COUNT High vulnerabilities."
+
+                            # FAIL the pipeline if there are any severe issues
+                            if [ "\$CRITICAL_COUNT" -gt 0 ] || [ "\$HIGH_COUNT" -gt 0 ]; then
+                                echo " FAILURE: Security Quality Gate Failed. Critical/High vulnerabilities detected."
+                                exit 1
+                            else
+                                echo " SUCCESS: Image passed security scan."
+                            fi
                         """
                     }
                 }
