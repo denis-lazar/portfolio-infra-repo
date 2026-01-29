@@ -31,7 +31,7 @@ pipeline {
                         def latestEcrTag = "1.0.0"
                         docker.image('amazon/aws-cli').inside('--entrypoint=""') {
                             latestEcrTag = sh(script: """
-                                aws ecr describe-images --repository-name ${ECR_REPO} \
+                                aws ecr describe-images --repository-name $ECR_REPO \
                                 --query 'sort_by(imageDetails, &imagePushedAt)[-1].imageTags' \
                                 --output text | tr '\t' '\n' | grep -E '^[0-9]+\\.[0-9]+\\.[0-9]+$' | sort -V | tail -n 1 || echo 1.0.0
                             """, returnStdout: true).trim()
