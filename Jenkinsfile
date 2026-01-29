@@ -10,7 +10,9 @@ pipeline {
     environment {
         COMPOSE_PROJECT_NAME = "menusync-${env.BUILD_ID}"
         SLACK_CH = 'C0A1WAPDNVD'   
-        ECR_REPO = '685092162784.dkr.ecr.ap-south-1.amazonaws.com/menusync' 
+        // Updated to us-east-1 because ap-south-1 was blocked by your student policy
+        AWS_REGION = 'us-east-1'
+        ECR_REPO = "685092162784.dkr.ecr.${env.AWS_REGION}.amazonaws.com/menusync"
         GIT_CREDS_ID = 'jenkins-ssh-gitlab'
     }
 
@@ -48,10 +50,7 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    // Create reports directory with open permissions so container can write to it
                     sh 'mkdir -p reports htmlcov && chmod 777 reports htmlcov'
-                    
-                    // Run tests inside container, mounting workspace to /reports to extract results
                     sh """
                         docker run --rm -v ${WORKSPACE}:/reports $APP_IMAGE_NAME:$APP_IMAGE_TAG \
                         python -m pytest \
@@ -82,10 +81,10 @@ pipeline {
             when { branch 'main' }
             steps {
                 script {
-                    // Fix: Use amazon/aws-cli container to get ECR password (uses IAM Role)
-                    def ecrPassword = sh(script: "docker run --rm amazon/aws-cli ecr get-login-password --region ap-south-1", returnStdout: true).trim()
+                    // Added --network host to reach AWS Metadata Service (IMDS) for IAM Role credentials
+                    def ecrPassword = sh(script: "docker run --rm --network host amazon/aws-cli ecr get-login-password --region ${env.AWS_REGION}", returnStdout: true).trim()
                     
-                    sh "echo ${ecrPassword} | docker login --username AWS --password-stdin 685092162784.dkr.ecr.ap-south-1.amazonaws.com"
+                    sh "echo ${ecrPassword} | docker login --username AWS --password-stdin 685092162784.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
                     
                     sh "docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_REPO:$APP_IMAGE_TAG"
                     sh "docker tag $APP_IMAGE_NAME:$APP_IMAGE_TAG $ECR_REPO:sha-$GIT_SHA"
@@ -124,10 +123,8 @@ pipeline {
                 sh 'docker compose down -v --remove-orphans'
                 sh 'rm -f .env'
                 
-                // Publish Test Results to Jenkins UI
                 junit 'reports/unit-report.xml'
                 
-                // Publish HTML Coverage Report to Jenkins UI
                 publishHTML([
                     allowMissing: true,
                     alwaysLinkToLastBuild: true,
