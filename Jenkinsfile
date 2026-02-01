@@ -80,10 +80,13 @@ pipeline {
             }
         }
 
-        stage('Unit Tests') {
+        stage('Setup Reports') {
             steps {
                 sh "mkdir -p reports"
             }
+        }
+
+        stage('Unit Tests') {
             parallel {
                 stage('Backend Unit Tests') {
                     agent {
