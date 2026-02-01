@@ -173,30 +173,39 @@ const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
             )}
           </div>
 
-          {isRegistering && (
             <div className="animate-fadeIn">
               <label className={labelClasses}>Account Type</label>
               <div className="relative flex p-1 bg-slate-100 rounded-2xl">
                 <div 
-                  className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-xl shadow-sm transition-transform duration-300 ease-out ${role === 'MANAGER' ? 'translate-x-[calc(100%+4px)]' : 'translate-x-0'}`}
+                  className={`absolute top-1 bottom-1 w-[calc(33.33%-4px)] bg-white rounded-xl shadow-sm transition-transform duration-300 ease-out ${
+                    role === 'MANAGER' ? 'translate-x-[calc(100%+4px)]' : 
+                    role === 'ADMIN' ? 'translate-x-[calc(200%+8px)]' : 
+                    'translate-x-0'
+                  }`}
                 />
                 <button
                   type="button"
                   onClick={() => setRole('CUSTOMER')}
-                  className={`relative flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors duration-200 z-10 ${role === 'CUSTOMER' ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                  className={`relative flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors duration-200 z-10 ${role === 'CUSTOMER' ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Customer
                 </button>
                 <button
                   type="button"
                   onClick={() => setRole('MANAGER')}
-                  className={`relative flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors duration-200 z-10 ${role === 'MANAGER' ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                  className={`relative flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors duration-200 z-10 ${role === 'MANAGER' ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Manager
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('ADMIN')}
+                  className={`relative flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors duration-200 z-10 ${role === 'ADMIN' ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  Admin
+                </button>
               </div>
             </div>
-          )}
 
           <div className="pt-2">
             <button

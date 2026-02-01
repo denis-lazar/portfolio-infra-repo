@@ -7,6 +7,7 @@ from app.core.websocket import manager
 from app.api.v1.endpoints.auth import get_current_user
 from bson import ObjectId
 import datetime
+import uuid
 
 router = APIRouter()
 
@@ -15,6 +16,14 @@ async def get_manager_user(current_user: User = Depends(get_current_user)):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only managers can perform this action"
+        )
+    return current_user
+
+async def get_admin_user(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admins can perform this action"
         )
     return current_user
 
@@ -37,6 +46,40 @@ async def get_restaurants():
         document["id"] = str(document["_id"])
         restaurants.append(document)
     return restaurants
+
+@router.post("/", response_model=Restaurant)
+async def create_restaurant(
+    restaurant: Restaurant, 
+    current_user: User = Depends(get_admin_user)
+):
+    db = get_database()
+    rest_dict = restaurant.model_dump()
+    if not rest_dict.get("id"):
+        rest_dict["_id"] = str(uuid.uuid4())
+    else:
+        rest_dict["_id"] = rest_dict["id"]
+    
+    await db.restaurants.insert_one(rest_dict)
+    rest_dict["id"] = rest_dict["_id"]
+    return rest_dict
+
+@router.post("/{restaurant_id}/menu", response_model=Restaurant)
+async def add_menu_item(
+    restaurant_id: str, 
+    item: MenuItem, 
+    current_user: User = Depends(get_admin_user)
+):
+    db = get_database()
+    result = await db.restaurants.update_one(
+        {"_id": restaurant_id},
+        {"$push": {"menu": item.model_dump()}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    
+    updated = await db.restaurants.find_one({"_id": restaurant_id})
+    updated["id"] = str(updated["_id"])
+    return updated
 
 @router.patch("/{restaurant_id}/ingredients/{ingredient_id}")
 async def update_ingredient(

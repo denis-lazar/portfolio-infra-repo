@@ -6,6 +6,7 @@ import re
 class UserRole(str, Enum):
     CUSTOMER = "CUSTOMER"
     MANAGER = "MANAGER"
+    ADMIN = "ADMIN"
 
 class Visit(BaseModel):
     restaurantId: str
