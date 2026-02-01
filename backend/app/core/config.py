@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     
     @property
     def MONGODB_URL(self) -> str:
-        return f"mongodb://{self.MONGODB_USER}:{self.MONGODB_PASSWORD}@{self.MONGODB_HOST}:{self.MONGODB_PORT}/{self.MONGODB_DB}?authSource=admin"
+        return f"mongodb://{self.MONGODB_USER}:{self.MONGODB_PASSWORD}@{self.MONGODB_HOST}:{self.MONGODB_PORT}/{self.MONGODB_DB}?authSource={self.MONGODB_DB}"
 
     SECRET_KEY: str = "YOUR_SUPER_SECRET_KEY"
     ALGORITHM: str = "HS256"
