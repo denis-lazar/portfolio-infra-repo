@@ -203,6 +203,18 @@ pipeline {
                 }
             }
         }
+
+
+        stage('Gitops Update'){
+            when{branch 'main'}
+            steps{
+                sshagent([env.GIT_CREDS_ID]){
+
+
+                    GitopsImageUpdate()
+                }
+            }
+        }
     }
 
     post {
@@ -237,4 +249,30 @@ pipeline {
 
 def sendSlack(status, color) {
     slackSend(color: color, message: "${status}: ${env.JOB_NAME} #${env.BUILD_NUMBER} | ${env.BUILD_URL}", channel: env.SLACK_CH)
+}
+
+
+def GitopsImageUpdate(){
+    sh """
+
+           # 1. Identity
+           git config user.email 'jenkins@yourdomain.com'
+           git config user.name 'Jenkins CD Bot'
+
+           # 2. Workspace Cleanup (Ensures no old files exist)
+           rm -rf menusync-gitops-repo
+
+           # 3. Action
+           git clone git@gitlab.com:dencool/menusync-gitops-repo.git
+           cd menusync-gitops-repo
+           
+           # 4. Search and replace version
+           sed -i 's/tag: .*/tag: "${env.APP_IMAGE_TAG}"/g' apps-config/menusync/values.yaml
+           
+           # 5. Commit and Push
+           git add apps-config/menusync/values.yaml
+           git commit -m "chore: automatic version bump to ${env.APP_IMAGE_TAG}"
+           git push origin main
+       """
+
 }
