@@ -103,6 +103,9 @@ pipeline {
                             --cov-report=xml:reports/coverage.xml \
                             --cov-report=html:reports/htmlcov \
                             backend/app/tests_unit
+                            
+                            echo "--- BACKEND UNIT TEST RESULTS ---"
+                            cat reports/unit-report.xml || true
                         """
                     }
                 }
@@ -118,12 +121,16 @@ pipeline {
                             try {
                                 sh """
                                     cd frontend
-                                    mkdir -p reports
                                     npm install
                                     npm test
                                 """
                             } finally {
-                                sh "cp frontend/reports/frontend-report.xml reports/ || true"
+                                sh """
+                                    mkdir -p reports
+                                    cp frontend/reports/frontend-report.xml reports/ || true
+                                    echo "--- FRONTEND TEST RESULTS ---"
+                                    cat reports/frontend-report.xml || true
+                                """
                             }
                         }
                     }
