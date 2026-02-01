@@ -26,12 +26,17 @@ class ConnectionManager:
         # 2. Get clients on the 'global' list view
         global_clients = self.active_connections.get("global", [])
         
-        # Combine unique connections
-        all_targets = list(set(restaurant_clients + global_clients))
+        # Combine unique connections using a set of IDs if possible, 
+        # but since WebSockets aren't hashable in a way that represents identity well here, 
+        # we'll just iterate carefully.
+        targets = list(restaurant_clients)
+        for gc in global_clients:
+            if gc not in targets:
+                targets.append(gc)
         
-        if all_targets:
-            print(f"DEBUG: Broadcasting to {len(all_targets)} clients (Rest: {restaurant_id})")
-            for connection in all_targets:
+        if targets:
+            print(f"DEBUG: Broadcasting {message.get('type')} to {len(targets)} clients (Rest: {restaurant_id})")
+            for connection in targets:
                 try:
                     await connection.send_json(message)
                 except Exception as e:

@@ -68,6 +68,13 @@ async def create_restaurant(
     
     await db.restaurants.insert_one(rest_dict)
     rest_dict["id"] = rest_dict["_id"]
+
+    # Broadcast global update
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "CREATE"
+    })
+
     return rest_dict
 
 @router.delete("/{restaurant_id}")
@@ -79,6 +86,14 @@ async def delete_restaurant(
     result = await db.restaurants.delete_one({"_id": restaurant_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    # Broadcast global update
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "DELETE",
+        "restaurantId": restaurant_id
+    })
+
     return {"status": "success"}
 
 @router.post("/{restaurant_id}/menu", response_model=Restaurant)
@@ -217,6 +232,12 @@ async def add_ingredient(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     
+    # Broadcast the update
+    await manager.broadcast_to_restaurant(restaurant_id, {
+        "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
     return updated
@@ -239,6 +260,12 @@ async def update_ingredient_details(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant or Ingredient not found")
     
+    # Broadcast the update
+    await manager.broadcast_to_restaurant(restaurant_id, {
+        "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
     return updated
