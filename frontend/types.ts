@@ -54,7 +54,7 @@ export interface MenuItem {
 
 export interface Restaurant {
   id: string;
-  name: str;
+  name: string;
   description: string;
   cuisine: string;
   logo: string;
