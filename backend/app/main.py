@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.endpoints import restaurants, auth
+from app.api.v1.endpoints import restaurants, auth, ai
 from app.core.database import connect_to_mongo, close_mongo_connection
 from contextlib import asynccontextmanager
 from prometheus_fastapi_instrumentator import Instrumentator
@@ -89,6 +89,7 @@ async def health_check():
 # Include API Routers
 app.include_router(restaurants.router, prefix="/api/v1/restaurants", tags=["Restaurants"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
+app.include_router(ai.router, prefix="/api/v1/ai", tags=["AI"])
 
 # Serve Static Files (React Frontend)
 # Base directory is /code inside container
