@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect, status
 from typing import List
-from app.schemas.restaurant import Restaurant, Review, StatusUpdate, MenuItem
+from app.schemas.restaurant import Restaurant, Review, StatusUpdate, MenuItem, Ingredient, Hardware
 from app.schemas.user import User, UserRole
 from app.core.database import get_database
 from app.core.websocket import manager
