@@ -16,7 +16,7 @@ describe('AvailabilityBadge', () => {
 
   it('renders optional items if provided', () => {
     render(<AvailabilityBadge isAvailable={true} missingOptional={['Onions']} />);
-    expect(screen.getByText(/Prepared without:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ready without:/i)).toBeInTheDocument();
     expect(screen.getByText(/Onions/i)).toBeInTheDocument();
   });
 });

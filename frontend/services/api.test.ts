@@ -18,7 +18,7 @@ describe('RealBackend API Service', () => {
     const user = await api.login('test@test.com', 'password');
     
     expect(user).toEqual(mockUser);
-    expect(sessionStorage.getItem('menusync_session_v2')).toContain('test@test.com');
+    expect(sessionStorage.getItem('menusync_session_v4')).toContain('test@test.com');
   });
 
   it('throws error on failed request', async () => {

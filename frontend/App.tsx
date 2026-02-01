@@ -8,7 +8,7 @@ import ManagerPanel from './components/ManagerPanel';
 import MapView from './components/MapView';
 import LoginView from './components/LoginView';
 import ProfileView from './components/ProfileView';
-import AdminDashboard from './components/AdminDashboard';
+import AdminDashboard from './components/AdminDashboard.tsx';
 import { api } from './services/api';
 
 const ALL_TAGS = ['All', 'Kosher', 'Meat', 'Vegan', 'Healthy', 'Italian', 'American', 'Sushi', 'Japanese'];

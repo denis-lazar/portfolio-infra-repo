@@ -71,6 +71,18 @@ pipeline {
             }
         }
 
+        stage('Frontend Unit Tests') {
+            steps {
+                sh """
+                    mkdir -p reports
+                    cd frontend
+                    npm install
+                    npm test
+                    cp reports/frontend-report.xml ../reports/ || true
+                """
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 script {
