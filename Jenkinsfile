@@ -81,6 +81,9 @@ pipeline {
         }
 
         stage('Unit Tests') {
+            steps {
+                sh "mkdir -p reports"
+            }
             parallel {
                 stage('Backend Unit Tests') {
                     agent {
@@ -91,8 +94,7 @@ pipeline {
                     }
                     steps {
                         sh """
-                            mkdir -p reports
-                            PYTHONPATH=backend python -m pytest \
+                            PYTHONPATH=backend python -m pytest -v \
                             --junitxml=reports/unit-report.xml \
                             --cov=app \
                             --cov-report=xml:reports/coverage.xml \
@@ -109,13 +111,18 @@ pipeline {
                         }
                     }
                     steps {
-                        sh """
-                            mkdir -p reports
-                            cd frontend
-                            npm install
-                            npm test
-                            cp reports/frontend-report.xml ../reports/ || true
-                        """
+                        script {
+                            try {
+                                sh """
+                                    cd frontend
+                                    mkdir -p reports
+                                    npm install
+                                    npm test
+                                """
+                            } finally {
+                                sh "cp frontend/reports/frontend-report.xml reports/ || true"
+                            }
+                        }
                     }
                 }
             }

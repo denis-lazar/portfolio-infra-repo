@@ -8,7 +8,7 @@ import ManagerPanel from './components/ManagerPanel';
 import MapView from './components/MapView';
 import LoginView from './components/LoginView';
 import ProfileView from './components/ProfileView';
-import AdminDashboard from './components/AdminDashboard';
+import AdminManagement from './components/AdminManagement';
 import { api } from './services/api';
 
 const ALL_TAGS = ['All', 'Kosher', 'Meat', 'Vegan', 'Healthy', 'Italian', 'American', 'Sushi', 'Japanese'];
@@ -173,7 +173,7 @@ const App: React.FC = () => {
         ) : (
           <>
             {user.role === 'ADMIN' && view !== 'DETAIL' && view !== 'PROFILE' && view !== 'ADMIN_MANAGE' ? (
-              <AdminDashboard 
+              <AdminManagement 
                 restaurants={restaurants}
                 user={user}
                 onUpdateRestaurant={handleUpdateRestaurant}
