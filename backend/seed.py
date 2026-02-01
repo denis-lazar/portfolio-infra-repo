@@ -177,7 +177,16 @@ INITIAL_RESTAURANTS = [
 ]
 
 async def seed():
-    client = AsyncIOMotorClient("mongodb://admin:menusync_secure_pass@mongodb:27017/menusync?authSource=admin")
+    import os
+    user = os.getenv("MONGODB_USER", "admin")
+    password = os.getenv("MONGODB_PASSWORD", "menusync_secure_pass")
+    host = os.getenv("MONGODB_HOST", "menusync-app-mongodb.menusync-app.svc.cluster.local")
+    port = os.getenv("MONGODB_PORT", "27017")
+    db_name = os.getenv("MONGODB_DB", "menusync_db")
+    
+    uri = f"mongodb://{user}:{password}@{host}:{port}/{db_name}?authSource=admin"
+    print(f"Connecting to: mongodb://{user}:****@{host}:{port}/{db_name}?authSource=admin")
+    client = AsyncIOMotorClient(uri)
     db = client.get_database()
     await db.restaurants.delete_many({})
     for rest in INITIAL_RESTAURANTS:
