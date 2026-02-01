@@ -71,18 +71,6 @@ pipeline {
             }
         }
 
-        stage('Frontend Unit Tests') {
-            steps {
-                sh """
-                    mkdir -p reports
-                    cd frontend
-                    npm install
-                    npm test
-                    cp reports/frontend-report.xml ../reports/ || true
-                """
-            }
-        }
-
         stage('Docker Build') {
             steps {
                 script {
@@ -93,24 +81,43 @@ pipeline {
         }
 
         stage('Unit Tests') {
-            agent {
-                docker {
-                    image "${APP_IMAGE_NAME}:${APP_IMAGE_TAG}"
-                    reuseNode true
+            parallel {
+                stage('Backend Unit Tests') {
+                    agent {
+                        docker {
+                            image "${APP_IMAGE_NAME}:${APP_IMAGE_TAG}"
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh """
+                            mkdir -p reports
+                            PYTHONPATH=backend python -m pytest \
+                            --junitxml=reports/unit-report.xml \
+                            --cov=app \
+                            --cov-report=xml:reports/coverage.xml \
+                            --cov-report=html:reports/htmlcov \
+                            backend/app/tests_unit
+                        """
+                    }
                 }
-            }
-            steps {
-                // Workspace is mounted into the container automatically
-                sh """
-                    mkdir -p reports
-
-                    PYTHONPATH=backend python -m pytest \
-                    --junitxml=reports/unit-report.xml \
-                    --cov=app \
-                    --cov-report=xml:reports/coverage.xml \
-                    --cov-report=html:reports/htmlcov \
-                    backend/app/tests_unit
-                """
+                stage('Frontend Unit Tests') {
+                    agent {
+                        docker {
+                            image 'node:20-alpine'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh """
+                            mkdir -p reports
+                            cd frontend
+                            npm install
+                            npm test
+                            cp reports/frontend-report.xml ../reports/ || true
+                        """
+                    }
+                }
             }
         }
 
