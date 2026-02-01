@@ -99,6 +99,10 @@ if os.path.exists(static_path):
     if os.path.exists(os.path.join(static_path, "images")):
         app.mount("/images", StaticFiles(directory=os.path.join(static_path, "images")), name="images")
     
+    # Mount assets specifically to ensure they are served correctly
+    if os.path.exists(os.path.join(static_path, "assets")):
+        app.mount("/assets", StaticFiles(directory=os.path.join(static_path, "assets")), name="assets")
+    
     # Mount the rest of the React build
     app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
 
