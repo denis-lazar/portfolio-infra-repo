@@ -98,6 +98,12 @@ async def add_menu_item(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     
+    # Broadcast the update
+    await manager.broadcast_to_restaurant(restaurant_id, {
+        "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
     return updated
@@ -120,6 +126,12 @@ async def update_menu_item(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant or Menu Item not found")
     
+    # Broadcast the update
+    await manager.broadcast_to_restaurant(restaurant_id, {
+        "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
     return updated
@@ -141,6 +153,12 @@ async def delete_menu_item(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     
+    # Broadcast the update
+    await manager.broadcast_to_restaurant(restaurant_id, {
+        "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
     return updated
@@ -309,6 +327,12 @@ async def add_restaurant_review(
     # 2. Update restaurant stats
     await update_restaurant_stats(restaurant_id, db)
     
+    # Broadcast the update
+    await manager.broadcast_to_restaurant(restaurant_id, {
+        "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+    
     updated_restaurant = await db.restaurants.find_one({"_id": restaurant_id})
     updated_restaurant["id"] = str(updated_restaurant["_id"])
     return updated_restaurant
@@ -358,6 +382,12 @@ async def add_dish_review(
             {"_id": restaurant_id, "menu.id": dish_id},
             {"$set": {"menu.$.rating": round(new_avg, 1)}}
         )
+
+    # Broadcast the update
+    await manager.broadcast_to_restaurant(restaurant_id, {
+        "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
 
     final_updated = await db.restaurants.find_one({"_id": restaurant_id})
     final_updated["id"] = str(final_updated["_id"])
