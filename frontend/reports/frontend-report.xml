@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="11" failures="0" errors="0" time="0.17663281">
+    <testsuite name="components/AdminManagement.test.tsx" timestamp="2026-02-01T21:35:56.114Z" hostname="dencool-VivobookS16" tests="1" failures="0" errors="0" skipped="0" time="0.025117944">
+        <testcase classname="components/AdminManagement.test.tsx" name="AdminManagement &gt; renders correctly with restaurant list" time="0.023455795">
+            <system-err>
+An empty string (&quot;&quot;) was passed to the src attribute. This may cause the browser to download the whole page again over the network. To fix this, either do not render the element at all or pass null to src instead of an empty string.
+
+            </system-err>
+        </testcase>
+    </testsuite>
+    <testsuite name="components/AvailabilityBadge.test.tsx" timestamp="2026-02-01T21:35:56.114Z" hostname="dencool-VivobookS16" tests="3" failures="0" errors="0" skipped="0" time="0.020709624">
+        <testcase classname="components/AvailabilityBadge.test.tsx" name="AvailabilityBadge &gt; renders &quot;Available&quot; when isAvailable is true" time="0.015183238">
+        </testcase>
+        <testcase classname="components/AvailabilityBadge.test.tsx" name="AvailabilityBadge &gt; renders the reason when isAvailable is false" time="0.002776238">
+        </testcase>
+        <testcase classname="components/AvailabilityBadge.test.tsx" name="AvailabilityBadge &gt; renders optional items if provided" time="0.00198109">
+        </testcase>
+    </testsuite>
+    <testsuite name="components/LoginView.test.tsx" timestamp="2026-02-01T21:35:56.115Z" hostname="dencool-VivobookS16" tests="3" failures="0" errors="0" skipped="0" time="0.07013137">
+        <testcase classname="components/LoginView.test.tsx" name="LoginView &gt; does not show Account Type selection by default (login mode)" time="0.045195478">
+        </testcase>
+        <testcase classname="components/LoginView.test.tsx" name="LoginView &gt; shows Account Type selection when switching to Register mode" time="0.014229613">
+        </testcase>
+        <testcase classname="components/LoginView.test.tsx" name="LoginView &gt; hides Account Type selection when switching back to Login mode" time="0.009094374">
+        </testcase>
+    </testsuite>
+    <testsuite name="components/ManagerPanel.test.tsx" timestamp="2026-02-01T21:35:56.115Z" hostname="dencool-VivobookS16" tests="1" failures="0" errors="0" skipped="0" time="0.027205234">
+        <testcase classname="components/ManagerPanel.test.tsx" name="ManagerPanel &gt; renders correctly and allows tab switching" time="0.026446776">
+        </testcase>
+    </testsuite>
+    <testsuite name="components/MenuView.test.tsx" timestamp="2026-02-01T21:35:56.115Z" hostname="dencool-VivobookS16" tests="1" failures="0" errors="0" skipped="0" time="0.029292074">
+        <testcase classname="components/MenuView.test.tsx" name="MenuView &gt; filters items by category correctly" time="0.028563832">
+            <system-err>
+An empty string (&quot;&quot;) was passed to the src attribute. This may cause the browser to download the whole page again over the network. To fix this, either do not render the element at all or pass null to src instead of an empty string.
+An empty string (&quot;&quot;) was passed to the src attribute. This may cause the browser to download the whole page again over the network. To fix this, either do not render the element at all or pass null to src instead of an empty string.
+An empty string (&quot;&quot;) was passed to the src attribute. This may cause the browser to download the whole page again over the network. To fix this, either do not render the element at all or pass null to src instead of an empty string.
+
+            </system-err>
+        </testcase>
+    </testsuite>
+    <testsuite name="services/api.test.ts" timestamp="2026-02-01T21:35:56.115Z" hostname="dencool-VivobookS16" tests="2" failures="0" errors="0" skipped="0" time="0.004176564">
+        <testcase classname="services/api.test.ts" name="RealBackend API Service &gt; login stores user in sessionStorage on success" time="0.001843371">
+        </testcase>
+        <testcase classname="services/api.test.ts" name="RealBackend API Service &gt; throws error on failed request" time="0.000814844">
+        </testcase>
+    </testsuite>
+</testsuites>
