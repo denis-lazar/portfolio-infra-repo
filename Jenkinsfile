@@ -21,6 +21,7 @@ pipeline {
     stages {
         stage('Version Calculation') {
             steps {
+                script { env.FAILED_STAGE = "Version Calculation" }
                 sshagent([env.GIT_CREDS_ID]) {
                     script {
                         sh 'git fetch --tags'
@@ -33,7 +34,7 @@ pipeline {
                             latestEcrTag = sh(script: """
                                 aws ecr describe-images --repository-name $ECR_REPO --region $AWS_REGION \
                                 --query 'sort_by(imageDetails, &imagePushedAt)[-1].imageTags' \
-                                --output text | tr '\t' '\n' | grep -E '^[0-9]+\\.[0-9]+\\.[0-9]+\$' | sort -V | tail -n 1 || echo 1.0.0
+                                --output text | tr '\t' '\n' | grep -E '^[0-9]+\\.[0-9]+\\.[0-9]+$' | sort -V | tail -n 1 || echo 1.0.0
                             """, returnStdout: true).trim()
                         }
 
@@ -73,7 +74,8 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                script {
+                script { 
+                    env.FAILED_STAGE = "Docker Build"
                     // Use the native docker.build for better integration
                     docker.build("${APP_IMAGE_NAME}:${APP_IMAGE_TAG}", "--build-arg VERSION=${env.APP_IMAGE_TAG} --build-arg GIT_SHA=${env.GIT_SHA} .")
                 }
@@ -82,6 +84,7 @@ pipeline {
 
         stage('Setup Reports') {
             steps {
+                script { env.FAILED_STAGE = "Setup Reports" }
                 sh "mkdir -p reports"
             }
         }
@@ -96,7 +99,9 @@ pipeline {
                         }
                     }
                     steps {
+                        script { env.FAILED_STAGE = "Unit Tests (Backend)" }
                         sh """
+                            mkdir -p reports
                             PYTHONPATH=backend python -m pytest -v \
                             --junitxml=reports/unit-report.xml \
                             --cov=app \
@@ -117,7 +122,8 @@ pipeline {
                         }
                     }
                     steps {
-                        script {
+                        script { 
+                            env.FAILED_STAGE = "Unit Tests (Frontend)"
                             try {
                                 sh """
                                     cd frontend
@@ -140,6 +146,7 @@ pipeline {
 
         stage('Integration Tests') {
             steps {
+                script { env.FAILED_STAGE = "Integration Tests" }
                 withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]) {
                     script {
                         sh "mkdir -p reports"
@@ -173,7 +180,7 @@ pipeline {
             when { branch 'main' }
             steps {
                 script {
-
+                    env.FAILED_STAGE = "Push to ECR"
                     sh "docker tag ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} ${ECR_IMAGE}:${APP_IMAGE_TAG}"
 
                     docker.withRegistry("https://${env.ECR_REGISTRY}", "ecr:${env.AWS_REGION}:ecr-aws-creds") {  
@@ -189,6 +196,7 @@ pipeline {
             when { branch 'main' }
             steps { 
                 script {
+                    env.FAILED_STAGE = "ECR Scan"
                     docker.image('amazon/aws-cli').inside('--entrypoint=""') {
                         sh """
                             echo "1. Starting ECR vulnerability scan..."
@@ -231,6 +239,7 @@ pipeline {
         stage('Git Tag') {
             when { branch 'main' }
             steps {
+                script { env.FAILED_STAGE = "Git Tagging" }
                 sshagent([env.GIT_CREDS_ID]) {
                     sh """
                         git tag -f v${env.APP_IMAGE_TAG}
@@ -244,6 +253,7 @@ pipeline {
         stage('Gitops Update'){
             when{branch 'main'}
             steps{
+                script { env.FAILED_STAGE = "GitOps Update" }
                 sshagent([env.GIT_CREDS_ID]){
 
 
@@ -271,20 +281,36 @@ pipeline {
                     ])
                 } else {
                     echo "WARNING: No test reports found. Marking build as UNSTABLE."
-                    currentBuild.result = 'UNSTABLE'
+                    // Check if we are in calculation stage where tests aren't expected yet
+                    if (env.FAILED_STAGE != "Version Calculation" && env.FAILED_STAGE != "Docker Build") {
+                        currentBuild.result = 'UNSTABLE'
+                    }
                 }
             }
             // Cleanup local image to save disk space
             sh "docker image prune -f || true"
         }
         success { sendSlack('SUCCESS', '#1E90FF') }
-        unstable { sendSlack('WARNING: Check Tests', 'warning') }
-        failure { sendSlack('FAILURE', 'danger') }
+        unstable { sendSlack('WARNING', '#FF8C00') }
+        failure { sendSlack('FAILURE', '#FF0000') }
     }
 }
 
 def sendSlack(status, color) {
-    slackSend(color: color, message: "${status}: ${env.JOB_NAME} #${env.BUILD_NUMBER} | ${env.BUILD_URL}", channel: env.SLACK_CH)
+    def duration = currentBuild.durationString.replace(' and counting', '')
+    def emoji = status == 'SUCCESS' ? ':white_check_mark:' : (status == 'WARNING' ? ':warning:' : ':x:')
+    
+    def failedStageInfo = (status == 'FAILURE' || status == 'WARNING') ? "\n> *Failed at Stage:* ${env.FAILED_STAGE}" : ""
+    
+    def message = """
+${emoji} *${status}*: ${env.JOB_NAME} [build #${env.BUILD_NUMBER}]
+> *Version:* ${env.APP_IMAGE_TAG ?: 'N/A'}
+> *Commit:* ${env.GIT_SHA ?: 'N/A'}
+> *Duration:* ${duration}${failedStageInfo}
+> *Build URL:* ${env.BUILD_URL}
+".stripIndent()
+
+    slackSend(color: color, message: message, channel: env.SLACK_CH)
 }
 
 
@@ -303,7 +329,7 @@ def GitopsImageUpdate(){
            cd menusync-gitops-repo
            
            # 4. Search and replace version
-           sed -i 's/tag: .*/tag: "${env.APP_IMAGE_TAG}"/g' apps-config/menusync/values.yaml
+           sed -i 's/tag: .*/tag: "${env.APP_IMAGE_TAG}"'/g' apps-config/menusync/values.yaml
            
            # 5. Commit and Push
            git add apps-config/menusync/values.yaml

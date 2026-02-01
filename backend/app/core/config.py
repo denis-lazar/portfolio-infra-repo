@@ -11,10 +11,14 @@ class Settings(BaseSettings):
     MONGODB_PORT: str = "27017"
     MONGODB_DB: str = "menusync"
     MONGODB_AUTH_SOURCE: str = "admin"
+    MONGODB_REPLICA_SET_NAME: str = ""
     
     @property
     def MONGODB_URL(self) -> str:
-        return f"mongodb://{self.MONGODB_USER}:{self.MONGODB_PASSWORD}@{self.MONGODB_HOST}:{self.MONGODB_PORT}/{self.MONGODB_DB}?authSource={self.MONGODB_AUTH_SOURCE}"
+        url = f"mongodb://{self.MONGODB_USER}:{self.MONGODB_PASSWORD}@{self.MONGODB_HOST}:{self.MONGODB_PORT}/{self.MONGODB_DB}?authSource={self.MONGODB_AUTH_SOURCE}"
+        if self.MONGODB_REPLICA_SET_NAME:
+            url += f"&replicaSet={self.MONGODB_REPLICA_SET_NAME}"
+        return url
 
     SECRET_KEY: str = "YOUR_SUPER_SECRET_KEY"
     ALGORITHM: str = "HS256"

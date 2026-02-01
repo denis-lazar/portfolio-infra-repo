@@ -7,8 +7,6 @@ COPY frontend/package*.json ./
 RUN npm install
 COPY frontend/ ./
 
-RUN ls -la components/
-
 ARG VITE_CDN_URL=/
 ENV VITE_CDN_URL=$VITE_CDN_URL
 
