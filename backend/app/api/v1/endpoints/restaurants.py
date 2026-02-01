@@ -12,10 +12,10 @@ import uuid
 router = APIRouter()
 
 async def get_manager_user(current_user: User = Depends(get_current_user)):
-    if current_user.role != UserRole.MANAGER:
+    if current_user.role not in [UserRole.MANAGER, UserRole.ADMIN]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only managers can perform this action"
+            detail="Only managers or admins can perform this action"
         )
     return current_user
 
@@ -26,6 +26,13 @@ async def get_admin_user(current_user: User = Depends(get_current_user)):
             detail="Only admins can perform this action"
         )
     return current_user
+
+def check_restaurant_permission(user: User, restaurant_id: str):
+    if user.role == UserRole.ADMIN:
+        return True
+    if user.role == UserRole.MANAGER and user.restaurantId == restaurant_id:
+        return True
+    return False
 
 @router.websocket("/{restaurant_id}/ws")
 async def websocket_endpoint(websocket: WebSocket, restaurant_id: str):
@@ -63,16 +70,73 @@ async def create_restaurant(
     rest_dict["id"] = rest_dict["_id"]
     return rest_dict
 
+@router.delete("/{restaurant_id}")
+async def delete_restaurant(
+    restaurant_id: str,
+    current_user: User = Depends(get_admin_user)
+):
+    db = get_database()
+    result = await db.restaurants.delete_one({"_id": restaurant_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    return {"status": "success"}
+
 @router.post("/{restaurant_id}/menu", response_model=Restaurant)
 async def add_menu_item(
     restaurant_id: str, 
     item: MenuItem, 
-    current_user: User = Depends(get_admin_user)
+    current_user: User = Depends(get_manager_user)
 ):
+    if not check_restaurant_permission(current_user, restaurant_id):
+         raise HTTPException(status_code=403, detail="You do not have permission for this restaurant")
+
     db = get_database()
     result = await db.restaurants.update_one(
         {"_id": restaurant_id},
         {"$push": {"menu": item.model_dump()}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    
+    updated = await db.restaurants.find_one({"_id": restaurant_id})
+    updated["id"] = str(updated["_id"])
+    return updated
+
+@router.patch("/{restaurant_id}/menu/{item_id}", response_model=Restaurant)
+async def update_menu_item(
+    restaurant_id: str,
+    item_id: str,
+    item: MenuItem,
+    current_user: User = Depends(get_manager_user)
+):
+    if not check_restaurant_permission(current_user, restaurant_id):
+         raise HTTPException(status_code=403, detail="You do not have permission for this restaurant")
+
+    db = get_database()
+    result = await db.restaurants.update_one(
+        {"_id": restaurant_id, "menu.id": item_id},
+        {"$set": {"menu.$": item.model_dump()}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Restaurant or Menu Item not found")
+    
+    updated = await db.restaurants.find_one({"_id": restaurant_id})
+    updated["id"] = str(updated["_id"])
+    return updated
+
+@router.delete("/{restaurant_id}/menu/{item_id}", response_model=Restaurant)
+async def delete_menu_item(
+    restaurant_id: str,
+    item_id: str,
+    current_user: User = Depends(get_manager_user)
+):
+    if not check_restaurant_permission(current_user, restaurant_id):
+         raise HTTPException(status_code=403, detail="You do not have permission for this restaurant")
+
+    db = get_database()
+    result = await db.restaurants.update_one(
+        {"_id": restaurant_id},
+        {"$pull": {"menu": {"id": item_id}}}
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant not found")
@@ -89,25 +153,78 @@ async def update_ingredient(
     current_user: User = Depends(get_manager_user)
 ):
     # Verify manager belongs to this restaurant
-    if current_user.restaurantId != restaurant_id:
-         raise HTTPException(status_code=403, detail="You do not manage this restaurant")
+    if not check_restaurant_permission(current_user, restaurant_id):
+         raise HTTPException(status_code=403, detail="You do not have permission for this restaurant")
 
     db = get_database()
+    
+    update_data = {}
+    if update.inStock is not None:
+        update_data["ingredients.$.inStock"] = update.inStock
+    
+    if not update_data:
+        return {"status": "no update"}
+
     result = await db.restaurants.update_one(
         {"_id": restaurant_id, "ingredients.id": ingredient_id},
-        {"$set": {"ingredients.$.inStock": update.inStock}}
+        {"$set": update_data}
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant or Ingredient not found")
     
     # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "INGREDIENT_UPDATE",
-        "ingredientId": ingredient_id,
-        "inStock": update.inStock
-    })
+    if update.inStock is not None:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "INGREDIENT_UPDATE",
+            "ingredientId": ingredient_id,
+            "inStock": update.inStock
+        })
     
     return {"status": "success"}
+
+@router.post("/{restaurant_id}/ingredients", response_model=Restaurant)
+async def add_ingredient(
+    restaurant_id: str,
+    ingredient: Ingredient,
+    current_user: User = Depends(get_manager_user)
+):
+    if not check_restaurant_permission(current_user, restaurant_id):
+         raise HTTPException(status_code=403, detail="You do not have permission for this restaurant")
+
+    db = get_database()
+    result = await db.restaurants.update_one(
+        {"_id": restaurant_id},
+        {"$push": {"ingredients": ingredient.model_dump()}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    
+    updated = await db.restaurants.find_one({"_id": restaurant_id})
+    updated["id"] = str(updated["_id"])
+    return updated
+
+@router.patch("/{restaurant_id}/ingredients/{ingredient_id}/details", response_model=Restaurant)
+async def update_ingredient_details(
+    restaurant_id: str,
+    ingredient_id: str,
+    ingredient: Ingredient,
+    current_user: User = Depends(get_manager_user)
+):
+    if not check_restaurant_permission(current_user, restaurant_id):
+         raise HTTPException(status_code=403, detail="You do not have permission for this restaurant")
+
+    db = get_database()
+    result = await db.restaurants.update_one(
+        {"_id": restaurant_id, "ingredients.id": ingredient_id},
+        {"$set": {"ingredients.$": ingredient.model_dump()}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Restaurant or Ingredient not found")
+    
+    updated = await db.restaurants.find_one({"_id": restaurant_id})
+    updated["id"] = str(updated["_id"])
+    return updated
+
 
 @router.patch("/{restaurant_id}/hardware/{hardware_id}")
 async def update_hardware(
@@ -116,8 +233,8 @@ async def update_hardware(
     update: StatusUpdate,
     current_user: User = Depends(get_manager_user)
 ):
-    if current_user.restaurantId != restaurant_id:
-         raise HTTPException(status_code=403, detail="You do not manage this restaurant")
+    if not check_restaurant_permission(current_user, restaurant_id):
+         raise HTTPException(status_code=403, detail="You do not have permission for this restaurant")
 
     db = get_database()
     result = await db.restaurants.update_one(

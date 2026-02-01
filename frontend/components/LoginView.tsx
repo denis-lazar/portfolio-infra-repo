@@ -173,6 +173,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
             )}
           </div>
 
+          {isRegistering && (
             <div className="animate-fadeIn">
               <label className={labelClasses}>Account Type</label>
               <div className="relative flex p-1 bg-slate-100 rounded-2xl">
@@ -206,6 +207,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
                 </button>
               </div>
             </div>
+          )}
 
           <div className="pt-2">
             <button

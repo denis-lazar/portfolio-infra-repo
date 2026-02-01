@@ -8,6 +8,7 @@ import ManagerPanel from './components/ManagerPanel';
 import MapView from './components/MapView';
 import LoginView from './components/LoginView';
 import ProfileView from './components/ProfileView';
+import AdminDashboard from './components/AdminDashboard';
 import { api } from './services/api';
 
 const ALL_TAGS = ['All', 'Kosher', 'Meat', 'Vegan', 'Healthy', 'Italian', 'American', 'Sushi', 'Japanese'];
@@ -17,7 +18,7 @@ const App: React.FC = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
-  const [view, setView] = useState<'LIST' | 'MAP' | 'DETAIL' | 'PROFILE'>('LIST');
+  const [view, setView] = useState<'LIST' | 'MAP' | 'DETAIL' | 'PROFILE' | 'ADMIN_MANAGE'>('LIST');
   const [activeTag, setActiveTag] = useState<string>('All');
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
@@ -133,6 +134,21 @@ const App: React.FC = () => {
     setRestaurants(prev => prev.map(r => r.id === updated.id ? updated : r));
   };
 
+  const handleDeleteRestaurant = (id: string) => {
+    setRestaurants(prev => prev.filter(r => r.id !== id));
+    showNotification("Restaurant deleted successfully");
+  };
+
+  const handleAddRestaurant = (r: Restaurant) => {
+    setRestaurants(prev => [...prev, r]);
+    showNotification("New restaurant added!");
+  };
+
+  const handleAdminSelectManage = (id: string) => {
+    setSelectedRestaurantId(id);
+    setView('ADMIN_MANAGE');
+  };
+
   if (!user) {
     return <LoginView onLoginSuccess={handleLogin} />;
   }
@@ -156,7 +172,36 @@ const App: React.FC = () => {
           </div>
         ) : (
           <>
-            {user.role === 'MANAGER' ? (
+            {user.role === 'ADMIN' && view !== 'DETAIL' && view !== 'PROFILE' && view !== 'ADMIN_MANAGE' ? (
+              <AdminDashboard 
+                restaurants={restaurants}
+                user={user}
+                onUpdateRestaurant={handleUpdateRestaurant}
+                onDeleteRestaurant={handleDeleteRestaurant}
+                onSelectRestaurant={handleAdminSelectManage}
+                onAddRestaurant={handleAddRestaurant}
+              />
+            ) : user.role === 'ADMIN' && view === 'ADMIN_MANAGE' && selectedRestaurant ? (
+              <div className="space-y-8">
+                <button 
+                  onClick={() => setView('LIST')}
+                  className="flex items-center space-x-2 text-slate-400 hover:text-indigo-600 transition-all font-black text-[10px] uppercase tracking-[0.2em] group mb-4"
+                >
+                  <svg className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  <span>Back to Dashboard</span>
+                </button>
+                <ManagerPanel 
+                  restaurant={selectedRestaurant} 
+                  user={user}
+                  onUpdateIngredient={updateIngredient}
+                  onUpdateHardware={updateHardware}
+                  onUpdateRestaurant={handleUpdateRestaurant}
+                  onToggleFavorite={() => toggleFavorite(selectedRestaurant.id)}
+                />
+              </div>
+            ) : user.role === 'MANAGER' ? (
               <div className="space-y-8">
                 <div className="flex justify-between items-end animate-slideUp">
                   <div>

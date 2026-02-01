@@ -1,4 +1,4 @@
-import { Restaurant, User, UserRole, Review, Visit } from '../types';
+import { Restaurant, User, UserRole, Review, Visit, MenuItem } from '../types';
 
 const API_BASE_URL = '/api/v1';
 
@@ -180,6 +180,53 @@ class RealBackend {
     const final = { ...updated, access_token: current?.access_token };
     sessionStorage.setItem(this.AUTH_KEY, JSON.stringify(final));
     return final;
+  }
+
+  async createRestaurant(restaurant: Restaurant): Promise<Restaurant> {
+    return this.request<Restaurant>('/restaurants/', {
+      method: 'POST',
+      body: JSON.stringify(restaurant),
+    });
+  }
+
+  async deleteRestaurant(restaurantId: string): Promise<void> {
+    await this.request(`/restaurants/${restaurantId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async addMenuItem(restaurantId: string, item: MenuItem): Promise<Restaurant> {
+    return this.request<Restaurant>(`/restaurants/${restaurantId}/menu`, {
+      method: 'POST',
+      body: JSON.stringify(item),
+    });
+  }
+
+  async updateMenuItem(restaurantId: string, itemId: string, item: MenuItem): Promise<Restaurant> {
+    return this.request<Restaurant>(`/restaurants/${restaurantId}/menu/${itemId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(item),
+    });
+  }
+
+  async deleteMenuItem(restaurantId: string, itemId: string): Promise<Restaurant> {
+    return this.request<Restaurant>(`/restaurants/${restaurantId}/menu/${itemId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async addIngredient(restaurantId: string, ingredient: { id: string, name: string, inStock: boolean }): Promise<Restaurant> {
+    return this.request<Restaurant>(`/restaurants/${restaurantId}/ingredients`, {
+      method: 'POST',
+      body: JSON.stringify(ingredient),
+    });
+  }
+
+  async updateIngredientDetails(restaurantId: string, ingredientId: string, ingredient: { id: string, name: string, inStock: boolean }): Promise<Restaurant> {
+    return this.request<Restaurant>(`/restaurants/${restaurantId}/ingredients/${ingredientId}/details`, {
+      method: 'PATCH',
+      body: JSON.stringify(ingredient),
+    });
   }
 
   subscribeToRestaurant(restaurantId: string, onUpdate: (data: any) => void): () => void {
