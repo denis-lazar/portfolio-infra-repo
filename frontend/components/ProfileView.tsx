@@ -55,6 +55,39 @@ const ProfileView: React.FC<ProfileViewProps> = ({ user, restaurants, onSelectRe
               )}
             </div>
           </div>
+
+          <div>
+            <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center">
+              <svg className="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              My Visits
+            </h2>
+            <div className="space-y-4">
+              {user.visits && user.visits.length > 0 ? [...user.visits].reverse().map((v, idx) => (
+                <div 
+                  key={idx} 
+                  onClick={() => onSelectRestaurant(v.restaurantId)}
+                  className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 cursor-pointer hover:border-emerald-300 transition-all"
+                >
+                  <div>
+                    <p className="font-bold text-slate-800">{v.restaurantName}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase">
+                      {new Date(v.date).toLocaleDateString()} at {new Date(v.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                  <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+              )) : (
+                <p className="text-slate-400 italic text-sm">No check-ins yet.</p>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="mt-12 pt-12 border-t border-slate-100">
