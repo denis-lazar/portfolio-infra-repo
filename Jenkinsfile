@@ -151,7 +151,7 @@ pipeline {
 def getEcrTag() {
     def tag = "1.0.0"
     docker.image('amazon/aws-cli').inside('--entrypoint=""') {
-        tag = sh(script: "aws ecr describe-images --repository-name $ECR_REPO --region $AWS_REGION --query 'sort_by(imageDetails, &imagePushedAt)[-1].imageTags' --output text | tr '\t' '\n' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1 || echo 1.0.0", returnStdout: true).trim()
+        tag = sh(script: "aws ecr describe-images --repository-name $ECR_REPO --region $AWS_REGION --query 'sort_by(imageDetails, &imagePushedAt)[-1].imageTags' --output text | tr '\\t' '\\n' | grep -E '^[0-9]+\\.[0-9]+\\.[0-9]+\$' | sort -V | tail -n 1 || echo 1.0.0", returnStdout: true).trim()
     }
     return tag
 }
@@ -187,7 +187,7 @@ def GitopsImageUpdate() {
         rm -rf menusync-gitops-repo
         git clone git@gitlab.com:dencool/menusync-gitops-repo.git
         cd menusync-gitops-repo
-        sed -i 's/tag: .*/tag: "${env.APP_IMAGE_TAG}"'/g' apps-config/menusync/values.yaml
+        sed -i 's/tag: .*/tag: "${env.APP_IMAGE_TAG}"/g' apps-config/menusync/values.yaml
         git add .
         git commit -m "chore: version bump to ${env.APP_IMAGE_TAG}"
         git push origin main
