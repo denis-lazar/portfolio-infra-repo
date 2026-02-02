@@ -1,6 +1,7 @@
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 import sys
+import os
 
 # Logos
 LOGO_PIZZA = "/images/logo_pizza.png"
@@ -9,40 +10,6 @@ LOGO_SUSHI = "/images/logo_sushi.png"
 LOGO_HEALTHY = "/images/logo_healthy.png"
 LOGO_PASTA = "/images/logo_pasta.png"
 LOGO_THAI = "/images/logo_thai.png"
-
-# Meal PNGs
-MEAL_MARGHERITA = "/images/meal_margherita.png"
-MEAL_GARLIC_KNOTS = "/images/meal_garlic_knots.png"
-MEAL_HUMMUS = "/images/meal_hummus.png"
-MEAL_PAD_THAI = "/images/meal_pad_thai.png"
-MEAL_SALMON = "/images/meal_salmon.png"
-MEAL_TRUFFLE = "/images/meal_truffle.png"
-MEAL_VEGAN_GARDEN = "/images/meal_vegan_garden.png"
-
-# Static images
-IMG_PEPPERONI = "/images/pizza.jpg"
-IMG_MUSHROOM_PIZZA = "/images/pizza.jpg"
-IMG_CLASSIC_BURGER = "/images/burger.jpg"
-IMG_VEGAN_BURGER = "/images/burger.jpg"
-IMG_FRIES = "/images/burger.jpg"
-IMG_BACON_BURGER = "/images/burger.jpg"
-IMG_TUNA_SASHIMI = "/images/sushi.jpg"
-IMG_VEGAN_ROLL = "/images/sushi.jpg"
-IMG_EDAMAME = "/images/sushi.jpg"
-IMG_DRAGON_ROLL = "/images/sushi.jpg"
-IMG_POWER_BOWL = "/images/healthy.jpg"
-IMG_PROTEIN_PUNCH = "/images/healthy.jpg"
-IMG_AVOCADO_TOAST = "/images/healthy.jpg"
-IMG_LENTIL_SOUP = "/images/healthy.jpg"
-IMG_LASAGNA = "/images/pasta.jpg"
-IMG_PENNE = "/images/pasta.jpg"
-IMG_CARBONARA = "/images/pasta.jpg"
-IMG_FOCACCIA = "/images/pasta.jpg"
-IMG_TIRAMISU = "/images/pasta.jpg"
-IMG_GREEN_CURRY = "/images/thai.jpg"
-IMG_BASIL_STIR = "/images/thai.jpg"
-IMG_TOM_YUM = "/images/thai.jpg"
-IMG_THAI_COFFEE = "/images/thai.jpg"
 
 INITIAL_RESTAURANTS = [
     {
@@ -62,11 +29,11 @@ INITIAL_RESTAURANTS = [
         ],
         "hardware": [{"id": "hw-1", "name": "Wood Oven", "operational": True}],
         "menu": [
-            { "id": "m-1", "name": "Margherita", "description": "Classic tomatoes & basil.", "price": 14.99, "category": "Pizza", "image": "/images/margherita.jpg", "requiredIngredients": ["ing-1"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 5.0, "reviews": [{"id": "r1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "Authentic!", "date": "2026-01-20"}] },
-            { "id": "m-2", "name": "Vegan Garden", "description": "Vegan bliss.", "price": 16.99, "category": "Pizza", "image": "/images/vegan_garden.jpg", "requiredIngredients": ["ing-5"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.5, "reviews": [{"id": "r2", "userId": "u2", "userName": "Sarah", "rating": 4.5, "comment": "Love the cheese!", "date": "2026-01-21"}] },
-            { "id": "m-3", "name": "Garlic Knots", "description": "Buttery knots.", "price": 6.99, "category": "Sides", "image": "/images/garlic_knots.jpg", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": ["hw-1"], "rating": 4.0, "reviews": [{"id": "r3", "userId": "u3", "userName": "Joe", "rating": 4, "comment": "Great starter.", "date": "2026-01-22"}] },
+            { "id": "m-1", "name": "Margherita", "description": "Classic tomatoes & basil.", "price": 14.99, "category": "Pizza", "image": "/images/meal_margherita.png", "requiredIngredients": ["ing-1"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 5.0, "reviews": [{"id": "r1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "Authentic!", "date": "2026-01-20"}] },
+            { "id": "m-2", "name": "Vegan Garden", "description": "Vegan bliss.", "price": 16.99, "category": "Pizza", "image": "/images/meal_vegan_garden.png", "requiredIngredients": ["ing-5"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.5, "reviews": [{"id": "r2", "userId": "u2", "userName": "Sarah", "rating": 4.5, "comment": "Love the cheese!", "date": "2026-01-21"}] },
+            { "id": "m-3", "name": "Garlic Knots", "description": "Buttery knots.", "price": 6.99, "category": "Sides", "image": "/images/meal_garlic_knots.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": ["hw-1"], "rating": 4.0, "reviews": [{"id": "r3", "userId": "u3", "userName": "Joe", "rating": 4, "comment": "Great starter.", "date": "2026-01-22"}] },
             { "id": "m-4", "name": "Pepperoni", "description": "Spicy pepperoni.", "price": 17.99, "category": "Pizza", "image": "/images/pizza.jpg", "requiredIngredients": ["ing-1", "ing-4"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.8, "reviews": [{"id": "r4", "userId": "u4", "userName": "Anna", "rating": 4.8, "comment": "Crispy pepperoni!", "date": "2026-01-23"}] },
-            { "id": "m-5", "name": "Mushrooms", "description": "Earthy magic.", "price": 18.99, "category": "Pizza", "image": "/images/pizza.jpg", "requiredIngredients": ["ing-1", "ing-2"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.7, "reviews": [{"id": "r5", "userId": "u5", "userName": "Leo", "rating": 4.7, "comment": "Proper wild mushrooms.", "date": "2026-01-24"}] }
+            { "id": "m-5", "name": "Mushrooms", "description": "Earthy magic.", "price": 18.99, "category": "Pizza", "image": "/images/margherita.jpg", "requiredIngredients": ["ing-1", "ing-2"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.7, "reviews": [{"id": "r5", "userId": "u5", "userName": "Leo", "rating": 4.7, "comment": "Proper wild mushrooms.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "Best pizza!", "date": "2026-01-20"}]
     },
@@ -87,9 +54,9 @@ INITIAL_RESTAURANTS = [
         "hardware": [{"id": "hw-b1", "name": "Grill", "operational": True}],
         "menu": [
             { "id": "mb-1", "name": "Classic Wagyu", "description": "Juicy Wagyu.", "price": 18.99, "category": "Burger", "image": "/images/burger.jpg", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 4.9, "reviews": [{"id": "br1", "userId": "u1", "userName": "Marco", "rating": 4.9, "comment": "Melts in mouth.", "date": "2026-01-20"}] },
-            { "id": "mb-2", "name": "Truffle", "description": "Truffle luxury.", "price": 21.99, "category": "Burger", "image": "/images/truffle_burger.jpg", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 5.0, "reviews": [{"id": "br2", "userId": "u2", "userName": "Sarah", "rating": 5, "comment": "Exquisite!", "date": "2026-01-21"}] },
-            { "id": "mb-3", "name": "Vegan Power", "description": "Plant bliss.", "price": 16.99, "category": "Burger", "image": "/images/burger.jpg", "requiredIngredients": ["ing-b4"], "optionalIngredients": ["ing-b5"], "requiredHardware": ["hw-b1"], "rating": 4.6, "reviews": [{"id": "br3", "userId": "u3", "userName": "Joe", "rating": 4.6, "comment": "Best vegan burger.", "date": "2026-01-22"}] },
-            { "id": "mb-4", "name": "Sweet Potato", "description": "Crispy fries.", "price": 7.99, "category": "Sides", "image": "/images/burger.jpg", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.4, "reviews": [{"id": "br4", "userId": "u4", "userName": "Anna", "rating": 4.4, "comment": "Perfectly seasoned.", "date": "2026-01-23"}] },
+            { "id": "mb-2", "name": "Truffle", "description": "Truffle luxury.", "price": 21.99, "category": "Burger", "image": "/images/meal_truffle.png", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 5.0, "reviews": [{"id": "br2", "userId": "u2", "userName": "Sarah", "rating": 5, "comment": "Exquisite!", "date": "2026-01-21"}] },
+            { "id": "mb-3", "name": "Vegan Power", "description": "Plant bliss.", "price": 16.99, "category": "Burger", "image": "/images/truffle_burger.jpg", "requiredIngredients": ["ing-b4"], "optionalIngredients": ["ing-b5"], "requiredHardware": ["hw-b1"], "rating": 4.6, "reviews": [{"id": "br3", "userId": "u3", "userName": "Joe", "rating": 4.6, "comment": "Best vegan burger.", "date": "2026-01-22"}] },
+            { "id": "mb-4", "name": "Sweet Potato", "description": "Crispy fries.", "price": 7.99, "category": "Sides", "image": "/images/garlic_knots.jpg", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.4, "reviews": [{"id": "br4", "userId": "u4", "userName": "Anna", "rating": 4.4, "comment": "Perfectly seasoned.", "date": "2026-01-23"}] },
             { "id": "mb-5", "name": "Baconator", "description": "Double bacon.", "price": 19.99, "category": "Burger", "image": "/images/burger.jpg", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 4.7, "reviews": [{"id": "br5", "userId": "u5", "userName": "Leo", "rating": 4.7, "comment": "Meat lover dream.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv2", "userId": "u4", "userName": "Anna", "rating": 4.5, "comment": "Great burgers!", "date": "2026-01-23"}]
@@ -110,10 +77,10 @@ INITIAL_RESTAURANTS = [
         "hardware": [{"id": "hw-s1", "name": "Sushi Counter", "operational": True}],
         "menu": [
             { "id": "ms-1", "name": "Tuna Sashimi", "description": "Premium slices.", "price": 24.00, "category": "Sushi", "image": "/images/sushi.jpg", "requiredIngredients": ["ing-s1"], "optionalIngredients": [], "requiredHardware": ["hw-s1"], "rating": 5.0, "reviews": [{"id": "s1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "So fresh!", "date": "2026-01-20"}] },
-            { "id": "ms-2", "name": "Salmon Nigiri", "description": "Fresh salmon.", "price": 14.00, "category": "Sushi", "image": "/images/salmon_nigiri.jpg", "requiredIngredients": ["ing-s2"], "optionalIngredients": [], "requiredHardware": ["hw-s1"], "rating": 4.9, "reviews": [{"id": "s2", "userId": "u2", "userName": "Sarah", "rating": 4.9, "comment": "Perfect rice.", "date": "2026-01-21"}] },
-            { "id": "ms-3", "name": "Vegan Roll", "description": "Cucumber bliss.", "price": 12.00, "category": "Sushi", "image": "/images/sushi.jpg", "requiredIngredients": [], "optionalIngredients": ["ing-s3"], "requiredHardware": ["hw-s1"], "rating": 4.5, "reviews": [{"id": "s3", "userId": "u3", "userName": "Joe", "rating": 4.5, "comment": "Light and tasty.", "date": "2026-01-22"}] },
+            { "id": "ms-2", "name": "Salmon Nigiri", "description": "Fresh salmon.", "price": 14.00, "category": "Sushi", "image": "/images/meal_salmon.png", "requiredIngredients": ["ing-s2"], "optionalIngredients": [], "requiredHardware": ["hw-s1"], "rating": 4.9, "reviews": [{"id": "s2", "userId": "u2", "userName": "Sarah", "rating": 4.9, "comment": "Perfect rice.", "date": "2026-01-21"}] },
+            { "id": "ms-3", "name": "Vegan Roll", "description": "Cucumber bliss.", "price": 12.00, "category": "Sushi", "image": "/images/vegan_garden.jpg", "requiredIngredients": [], "optionalIngredients": ["ing-s3"], "requiredHardware": ["hw-s1"], "rating": 4.5, "reviews": [{"id": "s3", "userId": "u3", "userName": "Joe", "rating": 4.5, "comment": "Light and tasty.", "date": "2026-01-22"}] },
             { "id": "ms-4", "name": "Edamame", "description": "Sea salt soy.", "price": 6.00, "category": "Sides", "image": "/images/sushi.jpg", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.2, "reviews": [{"id": "s4", "userId": "u4", "userName": "Anna", "rating": 4.2, "comment": "Classic.", "date": "2026-01-23"}] },
-            { "id": "ms-5", "name": "Dragon Roll", "description": "Eel & avocado.", "price": 18.00, "category": "Sushi", "image": "/images/sushi.jpg", "requiredIngredients": ["ing-s1"], "optionalIngredients": ["ing-s3"], "requiredHardware": ["hw-s1"], "rating": 4.8, "reviews": [{"id": "s5", "userId": "u5", "userName": "Leo", "rating": 4.8, "comment": "Visual masterpiece.", "date": "2026-01-24"}] }
+            { "id": "ms-5", "name": "Dragon Roll", "description": "Eel & avocado.", "price": 18.00, "category": "Sushi", "image": "/images/salmon_nigiri.jpg", "requiredIngredients": ["ing-s1"], "optionalIngredients": ["ing-s3"], "requiredHardware": ["hw-s1"], "rating": 4.8, "reviews": [{"id": "s5", "userId": "u5", "userName": "Leo", "rating": 4.8, "comment": "Visual masterpiece.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv3", "userId": "u5", "userName": "Leo", "rating": 4.9, "comment": "Zen indeed.", "date": "2026-01-24"}]
     },
@@ -129,8 +96,8 @@ INITIAL_RESTAURANTS = [
         "hardware": [{"id": "hw-g1", "name": "Steam Oven", "operational": True}],
         "menu": [
             { "id": "mg-1", "name": "Power Bowl", "description": "Kale & Quinoa.", "price": 15.00, "category": "Bowls", "image": "/images/healthy.jpg", "requiredIngredients": ["ing-g3"], "optionalIngredients": ["ing-g1"], "requiredHardware": ["hw-g1"], "rating": 4.8, "reviews": [{"id": "g1", "userId": "u1", "userName": "Marco", "rating": 4.8, "comment": "Feel so healthy!", "date": "2026-01-20"}] },
-            { "id": "mg-2", "name": "Hummus Plate", "description": "House hummus.", "price": 8.00, "category": "Sides", "image": "/images/hummus.jpg", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.9, "reviews": [{"id": "g2", "userId": "u2", "userName": "Sarah", "rating": 4.9, "comment": "Creamy perfection.", "date": "2026-01-21"}] },
-            { "id": "mg-3", "name": "Protein Punch", "description": "Double chickpeas.", "price": 14.00, "category": "Bowls", "image": "/images/healthy.jpg", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.5, "reviews": [{"id": "g3", "userId": "u3", "userName": "Joe", "rating": 4.6, "comment": "Filling and clean.", "date": "2026-01-22"}] },
+            { "id": "mg-2", "name": "Hummus Plate", "description": "House hummus.", "price": 8.00, "category": "Sides", "image": "/images/meal_hummus.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.9, "reviews": [{"id": "g2", "userId": "u2", "userName": "Sarah", "rating": 4.9, "comment": "Creamy perfection.", "date": "2026-01-21"}] },
+            { "id": "mg-3", "name": "Protein Punch", "description": "Double chickpeas.", "price": 14.00, "category": "Bowls", "image": "/images/hummus.jpg", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.5, "reviews": [{"id": "g3", "userId": "u3", "userName": "Joe", "rating": 4.6, "comment": "Filling and clean.", "date": "2026-01-22"}] },
             { "id": "mg-4", "name": "Avocado Toast", "description": "Sourdough bliss.", "price": 11.00, "category": "Brunch", "image": "/images/healthy.jpg", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.7, "reviews": [{"id": "g4", "userId": "u4", "userName": "Anna", "rating": 4.7, "comment": "Insta-worthy.", "date": "2026-01-23"}] },
             { "id": "mg-5", "name": "Lentil Soup", "description": "Hearty stew.", "price": 9.00, "category": "Soups", "image": "/images/healthy.jpg", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": ["hw-g1"], "rating": 4.3, "reviews": [{"id": "g5", "userId": "u5", "userName": "Leo", "rating": 4.3, "comment": "Warm hug in a bowl.", "date": "2026-01-24"}] }
         ],
@@ -177,10 +144,9 @@ INITIAL_RESTAURANTS = [
 ]
 
 async def seed():
-    import os
     user = os.getenv("MONGODB_USER", "admin")
     password = os.getenv("MONGODB_PASSWORD", "menusync_secure_pass")
-    host = os.getenv("MONGODB_HOST", "menusync-app-mongodb.menusync-app.svc.cluster.local")
+    host = os.getenv("MONGODB_HOST", "menusync-app-mongodb-headless.menusync-app.svc.cluster.local")
     port = os.getenv("MONGODB_PORT", "27017")
     db_name = os.getenv("MONGODB_DB", "menusync_db")
     auth_source = os.getenv("MONGODB_AUTH_SOURCE", "admin")
@@ -193,7 +159,7 @@ async def seed():
     for rest in INITIAL_RESTAURANTS:
         rest["_id"] = rest["id"]
         await db.restaurants.insert_one(rest)
-    print("Seeded all 6 restaurants with Critical vs Non-Critical ingredient logic and unique reviews.")
+    print(f"Seeded all {len(INITIAL_RESTAURANTS)} restaurants with unique images and reviews.")
     client.close()
 
 if __name__ == "__main__":
