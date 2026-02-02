@@ -32,7 +32,8 @@ pipeline {
                         env.APP_IMAGE_TAG = calculateNextVersion(latestGitTag, latestEcrTag)
                         env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                         
-                        echo "Version: ${env.APP_IMAGE_TAG} | Commit: ${env.GIT_SHA}"
+                        echo "Version Comparison: git ${latestGitTag} | ecr ${latestEcrTag} | next version ${env.APP_IMAGE_TAG}"
+                        echo "Commit: ${env.GIT_SHA}"
                     }
                 }
             }
