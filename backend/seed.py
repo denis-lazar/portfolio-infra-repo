@@ -183,7 +183,7 @@ async def seed():
     host = os.getenv("MONGODB_HOST", "menusync-app-mongodb.menusync-app.svc.cluster.local")
     port = os.getenv("MONGODB_PORT", "27017")
     db_name = os.getenv("MONGODB_DB", "menusync_db")
-    auth_source = os.getenv("MONGODB_AUTH_SOURCE", "menusync_db")
+    auth_source = os.getenv("MONGODB_AUTH_SOURCE", "admin")
     
     uri = f"mongodb://{user}:{password}@{host}:{port}/{db_name}?authSource={auth_source}"
     print(f"Connecting to: mongodb://{user}:****@{host}:{port}/{db_name}?authSource={auth_source}")
