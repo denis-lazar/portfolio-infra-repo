@@ -47,7 +47,7 @@ async def websocket_endpoint(websocket: WebSocket, restaurant_id: str):
 @router.get("/", response_model=List[Restaurant])
 async def get_restaurants():
     db = get_database()
-    cursor = db.restaurants.find()
+    cursor = db.restaurants.find().sort("name", 1)
     restaurants = []
     async for document in cursor:
         document["id"] = str(document["_id"])
@@ -118,6 +118,16 @@ async def add_menu_item(
         "type": "RESTAURANT_UPDATE",
         "restaurantId": restaurant_id
     })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -146,6 +156,16 @@ async def update_menu_item(
         "type": "RESTAURANT_UPDATE",
         "restaurantId": restaurant_id
     })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -171,6 +191,16 @@ async def delete_menu_item(
     # Broadcast the update
     await manager.broadcast_to_restaurant(restaurant_id, {
         "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
         "restaurantId": restaurant_id
     })
 
@@ -210,6 +240,16 @@ async def update_ingredient(
         "type": "RESTAURANT_UPDATE",
         "restaurantId": restaurant_id
     })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
     
     return {"status": "success"}
 
@@ -233,6 +273,16 @@ async def add_ingredient(
     # Broadcast the update
     await manager.broadcast_to_restaurant(restaurant_id, {
         "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
         "restaurantId": restaurant_id
     })
 
@@ -263,6 +313,16 @@ async def update_ingredient_details(
         "type": "RESTAURANT_UPDATE",
         "restaurantId": restaurant_id
     })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -290,6 +350,11 @@ async def update_hardware(
     # Broadcast the update
     await manager.broadcast_to_restaurant(restaurant_id, {
         "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
         "restaurantId": restaurant_id
     })
 
@@ -356,6 +421,11 @@ async def add_restaurant_review(
         "type": "RESTAURANT_UPDATE",
         "restaurantId": restaurant_id
     })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
+        "restaurantId": restaurant_id
+    })
     
     updated_restaurant = await db.restaurants.find_one({"_id": restaurant_id})
     updated_restaurant["id"] = str(updated_restaurant["_id"])
@@ -410,6 +480,11 @@ async def add_dish_review(
     # Broadcast the update
     await manager.broadcast_to_restaurant(restaurant_id, {
         "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
+    await manager.broadcast_to_restaurant("global", {
+        "type": "GLOBAL_UPDATE",
+        "action": "UPDATE",
         "restaurantId": restaurant_id
     })
 

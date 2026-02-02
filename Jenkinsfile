@@ -19,7 +19,7 @@ pipeline {
     }
 
     stages {
-        stage('Initialize') {
+        stage('Version Calcutation') {
             steps {
                 script { env.FAILED_STAGE = "Initialize" }
                 sh "mkdir -p reports"
