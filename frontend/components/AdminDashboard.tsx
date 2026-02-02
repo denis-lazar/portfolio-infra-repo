@@ -112,7 +112,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="flex space-x-3">
               <button 
                 onClick={() => onSelectRestaurant(rest.id)}
-                className="flex-1 bg-purple-50 text-purple-600 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-100 transition-all"
+                className="flex-1 bg-indigo-50 text-indigo-600 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all"
               >
                 Manage Entity
               </button>
