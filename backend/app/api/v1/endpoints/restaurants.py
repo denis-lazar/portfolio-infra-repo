@@ -70,10 +70,13 @@ async def create_restaurant(
     rest_dict["id"] = rest_dict["_id"]
 
     # Broadcast global update
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "CREATE"
-    })
+    try:
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "CREATE"
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
 
     return rest_dict
 
@@ -88,11 +91,14 @@ async def delete_restaurant(
         raise HTTPException(status_code=404, detail="Restaurant not found")
 
     # Broadcast global update
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "DELETE",
-        "restaurantId": restaurant_id
-    })
+    try:
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "DELETE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
 
     return {"status": "success"}
 
@@ -113,16 +119,19 @@ async def add_menu_item(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     
-    # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
+    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    try:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "RESTAURANT_UPDATE",
+            "restaurantId": restaurant_id
+        })
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "UPDATE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -146,16 +155,19 @@ async def update_menu_item(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant or Menu Item not found")
     
-    # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
+    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    try:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "RESTAURANT_UPDATE",
+            "restaurantId": restaurant_id
+        })
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "UPDATE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -178,16 +190,19 @@ async def delete_menu_item(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     
-    # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
+    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    try:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "RESTAURANT_UPDATE",
+            "restaurantId": restaurant_id
+        })
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "UPDATE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -220,16 +235,19 @@ async def update_ingredient(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant or Ingredient not found")
     
-    # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
+    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    try:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "RESTAURANT_UPDATE",
+            "restaurantId": restaurant_id
+        })
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "UPDATE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
     
     return {"status": "success"}
 
@@ -250,16 +268,19 @@ async def add_ingredient(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     
-    # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
+    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    try:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "RESTAURANT_UPDATE",
+            "restaurantId": restaurant_id
+        })
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "UPDATE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -283,16 +304,19 @@ async def update_ingredient_details(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant or Ingredient not found")
     
-    # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
+    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    try:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "RESTAURANT_UPDATE",
+            "restaurantId": restaurant_id
+        })
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "UPDATE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -317,16 +341,19 @@ async def update_hardware(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant or Hardware not found")
 
-    # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
+    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    try:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "RESTAURANT_UPDATE",
+            "restaurantId": restaurant_id
+        })
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "UPDATE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
 
     return {"status": "success"}
 
@@ -386,16 +413,19 @@ async def add_restaurant_review(
     # 2. Update restaurant stats
     await update_restaurant_stats(restaurant_id, db)
     
-    # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
+    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    try:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "RESTAURANT_UPDATE",
+            "restaurantId": restaurant_id
+        })
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "UPDATE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
     
     updated_restaurant = await db.restaurants.find_one({"_id": restaurant_id})
     updated_restaurant["id"] = str(updated_restaurant["_id"])
@@ -447,16 +477,19 @@ async def add_dish_review(
             {"$set": {"menu.$.rating": round(new_avg, 1)}}
         )
 
-    # Broadcast the update
-    await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
+    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    try:
+        await manager.broadcast_to_restaurant(restaurant_id, {
+            "type": "RESTAURANT_UPDATE",
+            "restaurantId": restaurant_id
+        })
+        await manager.broadcast_to_restaurant("global", {
+            "type": "GLOBAL_UPDATE",
+            "action": "UPDATE",
+            "restaurantId": restaurant_id
+        })
+    except Exception as e:
+        print(f"Broadcast failed: {e}")
 
     final_updated = await db.restaurants.find_one({"_id": restaurant_id})
     final_updated["id"] = str(final_updated["_id"])
