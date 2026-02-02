@@ -52,24 +52,20 @@ pipeline {
                 stage('Backend') {
                     agent { docker { image "${APP_IMAGE_NAME}:${APP_IMAGE_TAG}"; reuseNode true } }
                     steps {
-                        script { env.FAILED_STAGE = "Backend Unit Tests" }
-                        sh """
-                            PYTHONPATH=backend python -m pytest -v -s -o junit_logging=all \
-                            --junitxml=reports/unit-report.xml \
-                            --cov=app --cov-report=xml:reports/coverage.xml \
-                            backend/app/tests_unit
-                        """
+                        script { 
+                            env.FAILED_STAGE = "Backend Unit Tests" 
+                            UnitBackend()
+                        }
                     }
                 }
                 stage('Frontend') {
                     agent { docker { image 'node:20-alpine'; reuseNode true } }
                     steps {
-                        script { env.FAILED_STAGE = "Frontend Unit Tests" }
-                        dir('frontend') {
-                            sh 'npm install'
-                            sh 'npm test -- --reporter=verbose'
+                        script { 
+                            env.FAILED_STAGE = "Frontend Unit Tests" 
+                            UnitFrontend()
+                            sh "cp frontend/reports/frontend-report.xml reports/ || true"
                         }
-                        sh "cp frontend/reports/frontend-report.xml reports/ || true"
                     }
                 }
             }
@@ -79,23 +75,16 @@ pipeline {
             steps {
                 script { env.FAILED_STAGE = "Integration Tests" }
                 withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]) {
-                    sh """
-                        export ENV_FILE=$SECRET_FILE
-                        docker compose --env-file $SECRET_FILE up -d
-                        docker compose --env-file $SECRET_FILE exec -T app python seed.py
-                        
-                        docker compose --env-file $SECRET_FILE --profile test run \
-                        --name integration-runner-${BUILD_ID} \
-                        -e PYTEST_ADDOPTS=\"-v -s -o junit_logging=all --junitxml=/reports/integration-report.xml\" \
-                        tester
-                    """
+                    IntegrationTests()
                 }
             }
-            post {
-                always {
-                    sh "docker cp integration-runner-${BUILD_ID}:/reports/integration-report.xml ./reports/ || true"
-                    sh "docker rm -f integration-runner-${BUILD_ID} || true"
-                    sh "docker compose down -v --remove-orphans || true"
+        }
+
+        stage('E2E tests') {
+            steps {
+                script { env.FAILED_STAGE = "E2E Tests" }
+                withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]) {
+                    e2eTests()
                 }
             }
         }
@@ -158,7 +147,11 @@ pipeline {
                     ])
                 }
             }
-            sh "docker image prune -f || true"
+            sh '''
+                docker compose down -v --remove-orphans || true
+                docker image prune -f || true
+            '''
+            cleanWs()
         }
         success { sendSlack('SUCCESS', '#1E90FF') }
         unstable { sendSlack('WARNING', '#FF8C00') }
@@ -167,6 +160,53 @@ pipeline {
 }
 
 /** HELPER FUNCTIONS **/
+
+
+def UnitFrontend(){
+    dir('frontend') {
+        sh 'npm install'
+        sh 'npm test -- --reporter=verbose'
+    }
+}
+
+
+
+def UnitBackend(){
+    sh """
+        PYTHONPATH=backend python -m pytest -v -s -o junit_logging=all \
+        --junitxml=reports/unit-report.xml \
+        --cov=app --cov-report=xml:reports/coverage.xml \
+        backend/app/tests_unit
+    """
+}
+
+
+
+def IntegrationTests(){
+    sh '''
+        export ENV_FILE="$SECRET_FILE"
+        docker compose up -d
+        docker compose exec -T app python seed.py
+        
+        docker compose --profile test run \
+        --name integration-runner-${BUILD_ID} \
+        -e PYTEST_ADDOPTS="-v -s -o junit_logging=all --junitxml=/reports/integration-report.xml" \
+        tester pytest --ignore=tests/test_e2e.py --ignore=tests/test_e2e_admin_manager_flow.py
+    '''
+}
+
+
+def e2eTests(){
+    sh '''
+        export ENV_FILE="$SECRET_FILE"
+        docker compose --profile test run \
+        --name e2e-runner-${BUILD_ID} \
+        -e PYTEST_ADDOPTS="-v -s -o junit_logging=all --junitxml=/reports/e2e-report.xml" \
+        tester pytest tests/test_e2e.py tests/test_e2e_admin_manager_flow.py
+    '''
+}
+
+
 
 def getEcrTag() {
     def tag = "1.0.0"
