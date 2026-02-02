@@ -38,7 +38,8 @@ async def test_get_restaurants_unit():
             "reviews": []
         }
     ]
-    mock_db.restaurants.find.return_value = mock_cursor
+    # Handle the chained .sort() call in the code
+    mock_db.restaurants.find.return_value.sort.return_value = mock_cursor
 
     with patch("app.api.v1.endpoints.restaurants.get_database", return_value=mock_db):
         transport = ASGITransport(app=app)
@@ -84,7 +85,8 @@ async def test_update_ingredient_unit():
                 )
                 assert response.status_code == 200
                 assert response.json() == {"status": "success"}
-                mock_broadcast.assert_called_once()
+                # Now we expect 2 calls: one for the restaurant channel, one for 'global'
+                assert mock_broadcast.call_count == 2
     finally:
         # Clear overrides so they don't leak into other tests
         app.dependency_overrides = {}

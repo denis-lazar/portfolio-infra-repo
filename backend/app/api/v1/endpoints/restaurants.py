@@ -123,11 +123,6 @@ async def add_menu_item(
         "action": "UPDATE",
         "restaurantId": restaurant_id
     })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -161,11 +156,6 @@ async def update_menu_item(
         "action": "UPDATE",
         "restaurantId": restaurant_id
     })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
 
     updated = await db.restaurants.find_one({"_id": restaurant_id})
     updated["id"] = str(updated["_id"])
@@ -191,11 +181,6 @@ async def delete_menu_item(
     # Broadcast the update
     await manager.broadcast_to_restaurant(restaurant_id, {
         "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
         "restaurantId": restaurant_id
     })
     await manager.broadcast_to_restaurant("global", {
@@ -245,11 +230,6 @@ async def update_ingredient(
         "action": "UPDATE",
         "restaurantId": restaurant_id
     })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
-        "restaurantId": restaurant_id
-    })
     
     return {"status": "success"}
 
@@ -273,11 +253,6 @@ async def add_ingredient(
     # Broadcast the update
     await manager.broadcast_to_restaurant(restaurant_id, {
         "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
         "restaurantId": restaurant_id
     })
     await manager.broadcast_to_restaurant("global", {
@@ -311,11 +286,6 @@ async def update_ingredient_details(
     # Broadcast the update
     await manager.broadcast_to_restaurant(restaurant_id, {
         "type": "RESTAURANT_UPDATE",
-        "restaurantId": restaurant_id
-    })
-    await manager.broadcast_to_restaurant("global", {
-        "type": "GLOBAL_UPDATE",
-        "action": "UPDATE",
         "restaurantId": restaurant_id
     })
     await manager.broadcast_to_restaurant("global", {
