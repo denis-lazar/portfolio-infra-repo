@@ -37,6 +37,18 @@ logger = structlog.get_logger()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_to_mongo()
+    # Automatic Seeding Logic
+    db = get_database()
+    count = await db.restaurants.count_documents({})
+    if count == 0:
+        logger.info("database_empty", msg="Seeding initial data...")
+        from seed import INITIAL_RESTAURANTS
+        for rest in INITIAL_RESTAURANTS:
+            rest["_id"] = rest["id"]
+            await db.restaurants.insert_one(rest)
+        logger.info("database_seeded", count=len(INITIAL_RESTAURANTS))
+    else:
+        logger.info("database_ready", count=count)
     yield
     await close_mongo_connection()
 
