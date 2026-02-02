@@ -75,7 +75,7 @@ pipeline {
             }
         }
 
-        stage('Integration') {
+        stage('Integration tests') {
             steps {
                 script { env.FAILED_STAGE = "Integration Tests" }
                 withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]) {
@@ -100,23 +100,43 @@ pipeline {
             }
         }
 
-        stage('Release & Deploy') {
+        stage('Publish to ecr') {
             when { branch 'main' }
             steps {
-                script { env.FAILED_STAGE = "Release & Deploy" }
-                sh "docker tag ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} ${ECR_IMAGE}:${APP_IMAGE_TAG}"
+                script { env.FAILED_STAGE = "Release & Deploy" 
 
-                docker.withRegistry("https://${env.ECR_REGISTRY}", "ecr:${env.AWS_REGION}:ecr-aws-creds") {  
-                    script {
-                        def img = docker.image("${ECR_IMAGE}:${APP_IMAGE_TAG}")
-                        img.push()
-                        img.push("sha-${env.GIT_SHA}")
+                    sh "docker tag ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} ${ECR_IMAGE}:${APP_IMAGE_TAG}"
+
+                    docker.withRegistry("https://${env.ECR_REGISTRY}", "ecr:${env.AWS_REGION}:ecr-aws-creds") {  
+                        script {
+                            def img = docker.image("${ECR_IMAGE}:${APP_IMAGE_TAG}")
+                            img.push()
+                            img.push("sha-${env.GIT_SHA}")
+                        }
                     }
                 }
-                
-                sshagent([env.GIT_CREDS_ID]) {
-                    sh "git tag -f v${env.APP_IMAGE_TAG} && git push origin v${env.APP_IMAGE_TAG} --force"
-                    GitopsImageUpdate()
+            }
+        }
+
+        stage('Git Tag'){
+            steps{
+                script{
+                        env.FAILED_STAGE = "Git Tag"
+                        sshagent([env.GIT_CREDS_ID]) {
+                            sh "git tag -f v${env.APP_IMAGE_TAG} && git push origin v${env.APP_IMAGE_TAG} --force"
+                        }
+                }
+            }
+            
+        }
+
+        stage('Gitops update'){
+            steps{
+                script{
+                    env.FAILED_STAGE = "Gitops update"
+                    sshagent([env.GIT_CREDS_ID]) {
+                        GitopsImageUpdate()
+                    }
                 }
             }
         }
@@ -187,7 +207,7 @@ def GitopsImageUpdate() {
         rm -rf menusync-gitops-repo
         git clone git@gitlab.com:dencool/menusync-gitops-repo.git
         cd menusync-gitops-repo
-        sed -i 's/tag: .*/tag: "${env.APP_IMAGE_TAG}"/g' apps-config/menusync/values.yaml
+        sed -i '/deployment:/,/tag:/ s/tag: .*/tag: "${env.APP_IMAGE_TAG}"/' apps-config/menusync/values.yaml
         git add .
         git commit -m "chore: version bump to ${env.APP_IMAGE_TAG}"
         git push origin main
