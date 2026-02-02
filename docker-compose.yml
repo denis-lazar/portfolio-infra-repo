@@ -4,7 +4,9 @@ services:
     restart: always 
     env_file:
       - ${ENV_FILE:-.env}
-
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       - static_files:/code/static 
     networks:
@@ -13,6 +15,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+      redis:
+        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
       interval: 10s
@@ -50,6 +54,12 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - backend
 
   tester:
     build: 

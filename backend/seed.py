@@ -98,7 +98,7 @@ INITIAL_RESTAURANTS = [
             { "id": "mg-1", "name": "Power Bowl", "description": "Kale & Quinoa.", "price": 15.00, "category": "Bowls", "image": "/images/healthy.jpg", "requiredIngredients": ["ing-g3"], "optionalIngredients": ["ing-g1"], "requiredHardware": ["hw-g1"], "rating": 4.8, "reviews": [{"id": "g1", "userId": "u1", "userName": "Marco", "rating": 4.8, "comment": "Feel so healthy!", "date": "2026-01-20"}] },
             { "id": "mg-2", "name": "Hummus Plate", "description": "House hummus.", "price": 8.00, "category": "Sides", "image": "/images/meal_hummus.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.9, "reviews": [{"id": "g2", "userId": "u2", "userName": "Sarah", "rating": 4.9, "comment": "Creamy perfection.", "date": "2026-01-21"}] },
             { "id": "mg-3", "name": "Protein Punch", "description": "Double chickpeas.", "price": 14.00, "category": "Bowls", "image": "/images/hummus.jpg", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.5, "reviews": [{"id": "g3", "userId": "u3", "userName": "Joe", "rating": 4.6, "comment": "Filling and clean.", "date": "2026-01-22"}] },
-            { "id": "mg-4", "name": "Avocado Toast", "description": "Sourdough bliss.", "price": 11.00, "category": "Brunch", "image": "/images/vegan_garden.jpg", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.7, "reviews": [{"id": "g4", "userId": "u4", "userName": "Anna", "rating": 4.7, "comment": "Insta-worthy.", "date": "2026-01-23"}] },
+            { "id": "mg-4", "name": "Avocado Toast", "description": "Sourdough bliss.", "price": 11.00, "category": "Brunch", "image": "/images/healthy.jpg", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.7, "reviews": [{"id": "g4", "userId": "u4", "userName": "Anna", "rating": 4.7, "comment": "Insta-worthy.", "date": "2026-01-23"}] },
             { "id": "mg-5", "name": "Lentil Soup", "description": "Hearty stew.", "price": 9.00, "category": "Soups", "image": "/images/margherita.jpg", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": ["hw-g1"], "rating": 4.3, "reviews": [{"id": "g5", "userId": "u5", "userName": "Leo", "rating": 4.3, "comment": "Warm hug in a bowl.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv4", "userId": "u6", "userName": "Grace", "rating": 4.7, "comment": "Finally, real vegan food.", "date": "2026-01-24"}]
@@ -144,6 +144,7 @@ INITIAL_RESTAURANTS = [
 ]
 
 async def seed():
+    import os
     user = os.getenv("MONGODB_USER", "admin")
     password = os.getenv("MONGODB_PASSWORD", "menusync_secure_pass")
     host = os.getenv("MONGODB_HOST", "menusync-app-mongodb-headless.menusync-app.svc.cluster.local")
