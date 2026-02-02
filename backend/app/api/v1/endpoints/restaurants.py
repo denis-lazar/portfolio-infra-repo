@@ -206,12 +206,10 @@ async def update_ingredient(
         raise HTTPException(status_code=404, detail="Restaurant or Ingredient not found")
     
     # Broadcast the update
-    if update.inStock is not None:
-        await manager.broadcast_to_restaurant(restaurant_id, {
-            "type": "INGREDIENT_UPDATE",
-            "ingredientId": ingredient_id,
-            "inStock": update.inStock
-        })
+    await manager.broadcast_to_restaurant(restaurant_id, {
+        "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
+    })
     
     return {"status": "success"}
 
@@ -291,9 +289,8 @@ async def update_hardware(
 
     # Broadcast the update
     await manager.broadcast_to_restaurant(restaurant_id, {
-        "type": "HARDWARE_UPDATE",
-        "hardwareId": hardware_id,
-        "operational": update.operational
+        "type": "RESTAURANT_UPDATE",
+        "restaurantId": restaurant_id
     })
 
     return {"status": "success"}

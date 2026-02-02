@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.endpoints import restaurants, auth, ai
-from app.core.database import connect_to_mongo, close_mongo_connection
+from app.core.database import connect_to_mongo, close_mongo_connection, get_database
 from contextlib import asynccontextmanager
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_client import Gauge
@@ -38,17 +38,21 @@ logger = structlog.get_logger()
 async def lifespan(app: FastAPI):
     await connect_to_mongo()
     # Automatic Seeding Logic
+    # We must ensure connection is fully established
     db = get_database()
-    count = await db.restaurants.count_documents({})
-    if count == 0:
-        logger.info("database_empty", msg="Seeding initial data...")
-        from seed import INITIAL_RESTAURANTS
-        for rest in INITIAL_RESTAURANTS:
-            rest["_id"] = rest["id"]
-            await db.restaurants.insert_one(rest)
-        logger.info("database_seeded", count=len(INITIAL_RESTAURANTS))
-    else:
-        logger.info("database_ready", count=count)
+    try:
+        count = await db.restaurants.count_documents({})
+        if count == 0:
+            logger.info("database_empty", msg="Seeding initial data...")
+            from seed import INITIAL_RESTAURANTS
+            for rest in INITIAL_RESTAURANTS:
+                rest["_id"] = rest["id"]
+                await db.restaurants.insert_one(rest)
+            logger.info("database_seeded", count=len(INITIAL_RESTAURANTS))
+        else:
+            logger.info("database_ready", count=count)
+    except Exception as e:
+        logger.error("seeding_failed", error=str(e))
     yield
     await close_mongo_connection()
 
