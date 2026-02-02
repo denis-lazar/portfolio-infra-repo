@@ -144,19 +144,19 @@ const ManagerPanel: React.FC<ManagerPanelProps> = ({
       <div className="flex bg-white p-1.5 rounded-3xl shadow-sm border border-slate-200 w-fit">
         <button 
           onClick={() => setActiveTab('CONTROLS')}
-          className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all duration-300 ${activeTab === 'CONTROLS' ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-500 hover:text-slate-800'}`}
+          className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all duration-300 ${activeTab === 'CONTROLS' ? 'bg-purple-600 text-white shadow-xl' : 'text-slate-500 hover:text-slate-800'}`}
         >
           Availability Controls
         </button>
         <button 
           onClick={() => setActiveTab('MENU')}
-          className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all duration-300 ${activeTab === 'MENU' ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-500 hover:text-slate-800'}`}
+          className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all duration-300 ${activeTab === 'MENU' ? 'bg-purple-600 text-white shadow-xl' : 'text-slate-500 hover:text-slate-800'}`}
         >
           Menu Management
         </button>
         <button 
           onClick={() => setActiveTab('PREVIEW')}
-          className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all duration-300 ${activeTab === 'PREVIEW' ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-500 hover:text-slate-800'}`}
+          className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all duration-300 ${activeTab === 'PREVIEW' ? 'bg-purple-600 text-white shadow-xl' : 'text-slate-500 hover:text-slate-800'}`}
         >
           Customer Preview
         </button>
@@ -164,11 +164,11 @@ const ManagerPanel: React.FC<ManagerPanelProps> = ({
 
       {activeTab === 'CONTROLS' ? (
         <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden animate-fadeIn">
-          <div className="bg-indigo-600 p-8 text-white flex justify-between items-center relative overflow-hidden">
+          <div className="bg-purple-600 p-8 text-white flex justify-between items-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
             <div className="relative z-10">
               <h2 className="text-3xl font-black mb-1 tracking-tight">{restaurant.name} Dashboard</h2>
-              <p className="text-indigo-100 text-sm font-medium">Real-time status management for {restaurant.address}</p>
+              <p className="text-purple-100 text-sm font-medium">Real-time status management for {restaurant.address}</p>
             </div>
             <div className="relative z-10 bg-white/10 backdrop-blur-md rounded-2xl px-6 py-3 flex items-center space-x-3 border border-white/20">
               <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.5)]"></div>
@@ -217,7 +217,7 @@ const ManagerPanel: React.FC<ManagerPanelProps> = ({
                           e.stopPropagation();
                           onUpdateIngredient(restaurant.id, ing.id, !ing.inStock);
                         }}
-                        className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-500 focus:outline-none shadow-inner ${ing.inStock ? 'bg-indigo-600' : 'bg-slate-300'}`}
+                        className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-500 focus:outline-none shadow-inner ${ing.inStock ? 'bg-purple-600' : 'bg-slate-300'}`}
                       >
                         <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-all duration-500 shadow-md ${ing.inStock ? 'translate-x-6' : 'translate-x-1'}`} />
                       </button>
@@ -283,7 +283,7 @@ const ManagerPanel: React.FC<ManagerPanelProps> = ({
             </div>
           </div>
           <div className="bg-slate-50 px-10 py-6 border-t border-slate-100 flex items-center justify-center space-x-3 text-slate-400 italic">
-            <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <p className="text-xs font-medium uppercase tracking-widest">Updates are pushed via MongoDB Change Streams simulator</p>
@@ -293,24 +293,24 @@ const ManagerPanel: React.FC<ManagerPanelProps> = ({
         <div className="space-y-8 animate-fadeIn">
           {/* Meals Section */}
           <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
-            <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-indigo-50/50">
+            <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-purple-50/50">
               <div>
                 <h3 className="text-xl font-bold text-slate-800">Menu Items</h3>
                 <p className="text-xs text-slate-400 font-medium">Add or edit your restaurant's offerings</p>
               </div>
               <button 
                 onClick={() => setIsAddingMeal(true)}
-                className="bg-indigo-600 text-white px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
+                className="bg-purple-600 text-white px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
               >
                 Add New Meal
               </button>
             </div>
             <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {restaurant.menu.map(item => (
-                <div key={item.id} className="group bg-slate-50 p-6 rounded-3xl border border-slate-100 hover:border-indigo-600 transition-all flex flex-col">
+                <div key={item.id} className="group bg-slate-50 p-6 rounded-3xl border border-slate-100 hover:border-purple-600 transition-all flex flex-col">
                   <div className="flex justify-between items-start mb-4">
                     <h4 className="font-bold text-slate-800">{item.name}</h4>
-                    <span className="text-indigo-600 font-black">${item.price}</span>
+                    <span className="text-purple-600 font-black">${item.price}</span>
                   </div>
                   <p className="text-xs text-slate-500 mb-4 line-clamp-2 flex-1">{item.description}</p>
                   <div className="flex space-x-2">
@@ -352,7 +352,7 @@ const ManagerPanel: React.FC<ManagerPanelProps> = ({
                   <span className="font-bold text-sm text-slate-700">{ing.name}</span>
                   <button 
                     onClick={() => setIsEditingIngredient(ing)}
-                    className="opacity-0 group-hover:opacity-100 text-indigo-600 transition-opacity"
+                    className="opacity-0 group-hover:opacity-100 text-purple-600 transition-opacity"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -367,7 +367,7 @@ const ManagerPanel: React.FC<ManagerPanelProps> = ({
           {(isEditingMeal || isAddingMeal) && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fadeIn">
               <div className="bg-white w-full max-w-2xl rounded-[3.5rem] shadow-2xl overflow-hidden animate-pop flex flex-col max-h-[90vh]">
-                <div className="bg-indigo-600 p-8 text-white flex justify-between items-center">
+                <div className="bg-purple-600 p-8 text-white flex justify-between items-center">
                   <h3 className="text-2xl font-black">{isEditingMeal ? 'Edit Meal' : 'Add New Meal'}</h3>
                   <button onClick={() => { setIsEditingMeal(null); setIsAddingMeal(false); }}>
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -377,38 +377,38 @@ const ManagerPanel: React.FC<ManagerPanelProps> = ({
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 ml-1">Meal Name</label>
-                      <input name="name" defaultValue={isEditingMeal?.name} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-indigo-600" />
+                      <input name="name" defaultValue={isEditingMeal?.name} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-purple-600" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 ml-1">Price ($)</label>
-                      <input name="price" type="number" step="0.01" defaultValue={isEditingMeal?.price} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-indigo-600" />
+                      <input name="price" type="number" step="0.01" defaultValue={isEditingMeal?.price} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-purple-600" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 ml-1">Description</label>
-                    <textarea name="description" defaultValue={isEditingMeal?.description} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-indigo-600" />
+                    <textarea name="description" defaultValue={isEditingMeal?.description} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-purple-600" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 ml-1">Category</label>
-                      <input name="category" defaultValue={isEditingMeal?.category} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-indigo-600" />
+                      <input name="category" defaultValue={isEditingMeal?.category} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-purple-600" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 ml-1">Image URL</label>
-                      <input name="image" defaultValue={isEditingMeal?.image} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-indigo-600" />
+                      <input name="image" defaultValue={isEditingMeal?.image} required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-purple-600" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 ml-1">Required Ingredients (comma separated names)</label>
-                    <input name="requiredIngredients" defaultValue={isEditingMeal?.requiredIngredients.map(id => restaurant.ingredients.find(i => i.id === id)?.name || id).join(', ')} placeholder="Cheese, Dough, Tomato" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-indigo-600" />
+                    <input name="requiredIngredients" defaultValue={isEditingMeal?.requiredIngredients.map(id => restaurant.ingredients.find(i => i.id === id)?.name || id).join(', ')} placeholder="Cheese, Dough, Tomato" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-purple-600" />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 ml-1">Optional Ingredients (comma separated names)</label>
-                    <input name="optionalIngredients" defaultValue={isEditingMeal?.optionalIngredients?.map(id => restaurant.ingredients.find(i => i.id === id)?.name || id).join(', ')} placeholder="Olives, Onions" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-indigo-600" />
+                    <input name="optionalIngredients" defaultValue={isEditingMeal?.optionalIngredients?.map(id => restaurant.ingredients.find(i => i.id === id)?.name || id).join(', ')} placeholder="Olives, Onions" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-purple-600" />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 ml-1">Required Hardware (comma separated names)</label>
-                    <input name="requiredHardware" defaultValue={isEditingMeal?.requiredHardware.map(id => restaurant.hardware.find(h => h.id === id)?.name || id).join(', ')} placeholder="Oven" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-indigo-600" />
+                    <input name="requiredHardware" defaultValue={isEditingMeal?.requiredHardware.map(id => restaurant.hardware.find(h => h.id === id)?.name || id).join(', ')} placeholder="Oven" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-purple-600" />
                   </div>
                   <button type="submit" className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all">
                     {isEditingMeal ? 'Save Changes' : 'Create Meal'}
@@ -443,8 +443,8 @@ const ManagerPanel: React.FC<ManagerPanelProps> = ({
         </div>
       ) : (
         <div className="space-y-6 animate-fadeIn">
-          <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-3xl flex items-center space-x-4 text-indigo-700 shadow-sm">
-            <div className="p-3 bg-indigo-600 rounded-2xl text-white">
+          <div className="bg-purple-50 border border-purple-100 p-6 rounded-3xl flex items-center space-x-4 text-purple-700 shadow-sm">
+            <div className="p-3 bg-purple-600 rounded-2xl text-white">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />

@@ -31,7 +31,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant, user, index
       style={{ animationDelay: `${(index || 0) * 100}ms` }}
     >
       {/* Decorative Background - Gradient Accent */}
-      <div className="absolute top-0 left-0 w-full h-44 bg-gradient-to-b from-indigo-50/50 to-white border-b border-slate-50 transition-all duration-700 group-hover:h-48"></div>
+      <div className="absolute top-0 left-0 w-full h-44 bg-gradient-to-b from-purple-50/50 to-white border-b border-slate-50 transition-all duration-700 group-hover:h-48"></div>
       
       {/* Massive Logo Container */}
       <div className="relative z-10 w-48 h-48 bg-white rounded-[3.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-slate-50 mb-10 group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-700 ease-out mt-2">
@@ -56,7 +56,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant, user, index
 
       <div className="relative z-10 w-full px-2">
         <div className="flex flex-col items-center mb-6">
-          <h3 className="text-3xl font-black text-slate-900 tracking-tighter leading-none mb-3 group-hover:text-indigo-600 transition-colors duration-300 uppercase">{restaurant.name}</h3>
+          <h3 className="text-3xl font-black text-slate-900 tracking-tighter leading-none mb-3 group-hover:text-purple-600 transition-colors duration-300 uppercase">{restaurant.name}</h3>
           <div className="flex items-center gap-3">
             <span className="px-4 py-1.5 bg-slate-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500">{restaurant.cuisine}</span>
             <div className="w-1 h-1 bg-slate-200 rounded-full"></div>

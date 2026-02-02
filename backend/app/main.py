@@ -11,6 +11,7 @@ from fastapi.responses import FileResponse
 import structlog
 import time
 import os
+import asyncio
 
 # Create the info metric for observability
 APP_INFO = Gauge(
@@ -36,23 +37,40 @@ logger = structlog.get_logger()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # --- Robust Automatic Seeding Logic ---
+    # After a 'terraform apply', MongoDB takes time to elect a Primary.
+    # We retry the connection and seeding for up to 5 minutes.
+    MAX_RETRIES = 30
+    RETRY_INTERVAL = 10 # seconds
+    
     await connect_to_mongo()
-    # Automatic Seeding Logic
-    # We must ensure connection is fully established
     db = get_database()
-    try:
-        count = await db.restaurants.count_documents({})
-        if count == 0:
-            logger.info("database_empty", msg="Seeding initial data...")
-            from seed import INITIAL_RESTAURANTS
-            for rest in INITIAL_RESTAURANTS:
-                rest["_id"] = rest["id"]
-                await db.restaurants.insert_one(rest)
-            logger.info("database_seeded", count=len(INITIAL_RESTAURANTS))
-        else:
-            logger.info("database_ready", count=count)
-    except Exception as e:
-        logger.error("seeding_failed", error=str(e))
+    
+    for attempt in range(MAX_RETRIES):
+        try:
+            # This ping checks if the connection is actually usable (and Primary is elected)
+            await db.command("ping")
+            
+            count = await db.restaurants.count_documents({})
+            if count == 0:
+                logger.info("database_empty", msg="Seeding initial data...", attempt=attempt+1)
+                from seed import INITIAL_RESTAURANTS
+                for rest in INITIAL_RESTAURANTS:
+                    rest["_id"] = rest["id"]
+                    await db.restaurants.insert_one(rest)
+                logger.info("database_seeded", count=len(INITIAL_RESTAURANTS))
+            else:
+                logger.info("database_ready", count=count)
+            
+            break # Success! Exit the retry loop
+            
+        except Exception as e:
+            if attempt < MAX_RETRIES - 1:
+                logger.warn("database_not_ready", error=str(e), next_retry_in=f"{RETRY_INTERVAL}s")
+                await asyncio.sleep(RETRY_INTERVAL)
+            else:
+                logger.error("seeding_failed_exhausted", error=str(e))
+    
     yield
     await close_mongo_connection()
 

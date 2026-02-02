@@ -55,14 +55,14 @@ const MapView: React.FC<MapViewProps> = ({ restaurants, onSelectRestaurant }) =>
                   <div>
                     <h3 className="font-black text-slate-900 text-lg leading-tight uppercase">{rest.name}</h3>
                     <div className="flex items-center space-x-1 mt-1">
-                      <span className="text-[9px] font-black bg-indigo-600 text-white px-2 py-0.5 rounded-md uppercase tracking-wider">{rest.cuisine}</span>
+                      <span className="text-[9px] font-black bg-purple-600 text-white px-2 py-0.5 rounded-md uppercase tracking-wider">{rest.cuisine}</span>
                       <span className="text-[9px] font-bold text-slate-400">• {rest.rating} ★</span>
                     </div>
                   </div>
                 </div>
                 <button
                   onClick={() => onSelectRestaurant(rest.id)}
-                  className="group relative w-full py-3 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest overflow-hidden transition-all hover:bg-indigo-600 active:scale-95"
+                  className="group relative w-full py-3 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest overflow-hidden transition-all hover:bg-purple-600 active:scale-95"
                 >
                   <span className="relative z-10">Enter Restaurant</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>

@@ -16,7 +16,7 @@ INITIAL_RESTAURANTS = [
         "id": "rest-1",
         "name": "The Pizza Forge",
         "cuisine": "Italian",
-        "logo": LOGO_PIZZA, "image": "/images/pizza.jpg",
+        "logo": LOGO_PIZZA, "image": "/images/margherita.png",
         "description": "Artisan wood-fired pizzas with a focus on seasonal toppings.",
         "address": "123 Oven Lane, Foodville", "lat": 40.7128, "lng": -74.0060,
         "rating": 4.9, "reviewCount": 2, "tags": ["Italian", "Vegan", "Meat"],
@@ -29,11 +29,11 @@ INITIAL_RESTAURANTS = [
         ],
         "hardware": [{"id": "hw-1", "name": "Wood Oven", "operational": True}],
         "menu": [
-            { "id": "m-1", "name": "Margherita", "description": "Classic tomatoes & basil.", "price": 14.99, "category": "Pizza", "image": "/images/meal_margherita.png", "requiredIngredients": ["ing-1"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 5.0, "reviews": [{"id": "r1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "Authentic!", "date": "2026-01-20"}] },
-            { "id": "m-2", "name": "Vegan Garden", "description": "Vegan bliss.", "price": 16.99, "category": "Pizza", "image": "/images/meal_vegan_garden.png", "requiredIngredients": ["ing-5"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.5, "reviews": [{"id": "r2", "userId": "u2", "userName": "Sarah", "rating": 4.5, "comment": "Love the cheese!", "date": "2026-01-21"}] },
-            { "id": "m-3", "name": "Garlic Knots", "description": "Buttery knots.", "price": 6.99, "category": "Sides", "image": "/images/meal_garlic_knots.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": ["hw-1"], "rating": 4.0, "reviews": [{"id": "r3", "userId": "u3", "userName": "Joe", "rating": 4, "comment": "Great starter.", "date": "2026-01-22"}] },
-            { "id": "m-4", "name": "Pepperoni", "description": "Spicy pepperoni.", "price": 17.99, "category": "Pizza", "image": "/images/meal_pepperoni.png", "requiredIngredients": ["ing-1", "ing-4"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.8, "reviews": [{"id": "r4", "userId": "u4", "userName": "Anna", "rating": 4.8, "comment": "Crispy pepperoni!", "date": "2026-01-23"}] },
-            { "id": "m-5", "name": "Mushrooms", "description": "Earthy magic.", "price": 18.99, "category": "Pizza", "image": "/images/meal_mushrooms.png", "requiredIngredients": ["ing-1", "ing-2"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.7, "reviews": [{"id": "r5", "userId": "u5", "userName": "Leo", "rating": 4.7, "comment": "Proper wild mushrooms.", "date": "2026-01-24"}] }
+            { "id": "m-1", "name": "Margherita", "description": "Classic tomatoes & basil.", "price": 14.99, "category": "Pizza", "image": "/images/margherita.png", "requiredIngredients": ["ing-1"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 5.0, "reviews": [{"id": "r1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "Authentic!", "date": "2026-01-20"}] },
+            { "id": "m-2", "name": "Vegan Garden", "description": "Vegan bliss.", "price": 16.99, "category": "Pizza", "image": "/images/vegan_garden.png", "requiredIngredients": ["ing-5"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.5, "reviews": [{"id": "r2", "userId": "u2", "userName": "Sarah", "rating": 4.5, "comment": "Love the cheese!", "date": "2026-01-21"}] },
+            { "id": "m-3", "name": "Garlic Knots", "description": "Buttery knots.", "price": 6.99, "category": "Sides", "image": "/images/garlic_knots.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": ["hw-1"], "rating": 4.0, "reviews": [{"id": "r3", "userId": "u3", "userName": "Joe", "rating": 4, "comment": "Great starter.", "date": "2026-01-22"}] },
+            { "id": "m-4", "name": "Pepperoni", "description": "Spicy pepperoni.", "price": 17.99, "category": "Pizza", "image": "/images/pepperoni.png", "requiredIngredients": ["ing-1", "ing-4"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.8, "reviews": [{"id": "r4", "userId": "u4", "userName": "Anna", "rating": 4.8, "comment": "Crispy pepperoni!", "date": "2026-01-23"}] },
+            { "id": "m-5", "name": "Mushrooms", "description": "Earthy magic.", "price": 18.99, "category": "Pizza", "image": "/images/pizza_with_mushrooms.png", "requiredIngredients": ["ing-1", "ing-2"], "optionalIngredients": ["ing-3"], "requiredHardware": ["hw-1"], "rating": 4.7, "reviews": [{"id": "r5", "userId": "u5", "userName": "Leo", "rating": 4.7, "comment": "Proper wild mushrooms.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "Best pizza!", "date": "2026-01-20"}]
     },
@@ -41,7 +41,7 @@ INITIAL_RESTAURANTS = [
         "id": "rest-2",
         "name": "Burger Haven",
         "cuisine": "American",
-        "logo": LOGO_BURGER, "image": "/images/burger.jpg",
+        "logo": LOGO_BURGER, "image": "/images/classic_wagyu.png",
         "description": "Gourmet burgers and handcrafted shakes.",
         "address": "456 Patty Place, Grill Town", "lat": 40.7300, "lng": -73.9950,
         "rating": 4.5, "reviewCount": 1, "tags": ["Meat", "American", "Fast Food"],
@@ -53,11 +53,11 @@ INITIAL_RESTAURANTS = [
         ],
         "hardware": [{"id": "hw-b1", "name": "Grill", "operational": True}],
         "menu": [
-            { "id": "mb-1", "name": "Classic Wagyu", "description": "Juicy Wagyu.", "price": 18.99, "category": "Burger", "image": "/images/meal_classic_wagyu.png", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 4.9, "reviews": [{"id": "br1", "userId": "u1", "userName": "Marco", "rating": 4.9, "comment": "Melts in mouth.", "date": "2026-01-20"}] },
-            { "id": "mb-2", "name": "Truffle", "description": "Truffle luxury.", "price": 21.99, "category": "Burger", "image": "/images/meal_truffle.png", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 5.0, "reviews": [{"id": "br2", "userId": "u2", "userName": "Sarah", "rating": 5, "comment": "Exquisite!", "date": "2026-01-21"}] },
-            { "id": "mb-3", "name": "Vegan Power", "description": "Plant bliss.", "price": 16.99, "category": "Burger", "image": "/images/meal_vegan_power.png", "requiredIngredients": ["ing-b4"], "optionalIngredients": ["ing-b5"], "requiredHardware": ["hw-b1"], "rating": 4.6, "reviews": [{"id": "br3", "userId": "u3", "userName": "Joe", "rating": 4.6, "comment": "Best vegan burger.", "date": "2026-01-22"}] },
-            { "id": "mb-4", "name": "Sweet Potato", "description": "Crispy fries.", "price": 7.99, "category": "Sides", "image": "/images/meal_sweet_potato.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.4, "reviews": [{"id": "br4", "userId": "u4", "userName": "Anna", "rating": 4.4, "comment": "Perfectly seasoned.", "date": "2026-01-23"}] },
-            { "id": "mb-5", "name": "Baconator", "description": "Double bacon.", "price": 19.99, "category": "Burger", "image": "/images/meal_baconator.png", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 4.7, "reviews": [{"id": "br5", "userId": "u5", "userName": "Leo", "rating": 4.7, "comment": "Meat lover dream.", "date": "2026-01-24"}] }
+            { "id": "mb-1", "name": "Classic Wagyu", "description": "Juicy Wagyu.", "price": 18.99, "category": "Burger", "image": "/images/classic_wagyu.png", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 4.9, "reviews": [{"id": "br1", "userId": "u1", "userName": "Marco", "rating": 4.9, "comment": "Melts in mouth.", "date": "2026-01-20"}] },
+            { "id": "mb-2", "name": "Truffle", "description": "Truffle luxury.", "price": 21.99, "category": "Burger", "image": "/images/truffle.png", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 5.0, "reviews": [{"id": "br2", "userId": "u2", "userName": "Sarah", "rating": 5, "comment": "Exquisite!", "date": "2026-01-21"}] },
+            { "id": "mb-3", "name": "Vegan Power", "description": "Plant bliss.", "price": 16.99, "category": "Burger", "image": "/images/vegan_power.png", "requiredIngredients": ["ing-b4"], "optionalIngredients": ["ing-b5"], "requiredHardware": ["hw-b1"], "rating": 4.6, "reviews": [{"id": "br3", "userId": "u3", "userName": "Joe", "rating": 4.6, "comment": "Best vegan burger.", "date": "2026-01-22"}] },
+            { "id": "mb-4", "name": "Sweet Potato", "description": "Crispy fries.", "price": 7.99, "category": "Sides", "image": "/images/sweet_potato.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.4, "reviews": [{"id": "br4", "userId": "u4", "userName": "Anna", "rating": 4.4, "comment": "Perfectly seasoned.", "date": "2026-01-23"}] },
+            { "id": "mb-5", "name": "Baconator", "description": "Double bacon.", "price": 19.99, "category": "Burger", "image": "/images/baconator.png", "requiredIngredients": ["ing-b1", "ing-b2"], "optionalIngredients": [], "requiredHardware": ["hw-b1"], "rating": 4.7, "reviews": [{"id": "br5", "userId": "u5", "userName": "Leo", "rating": 4.7, "comment": "Meat lover dream.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv2", "userId": "u4", "userName": "Anna", "rating": 4.5, "comment": "Great burgers!", "date": "2026-01-23"}]
     },
@@ -65,7 +65,7 @@ INITIAL_RESTAURANTS = [
         "id": "rest-3",
         "name": "Sushi Zen",
         "cuisine": "Japanese",
-        "logo": LOGO_SUSHI, "image": "/images/sushi.jpg",
+        "logo": LOGO_SUSHI, "image": "/images/tuna_sashimi.png",
         "description": "Traditional sushi and modern Japanese fusion.",
         "address": "789 Koi Street, Zen District", "lat": 40.7400, "lng": -73.9800,
         "rating": 4.9, "reviewCount": 1, "tags": ["Japanese", "Healthy", "Sushi", "Vegan", "Kosher"],
@@ -76,11 +76,11 @@ INITIAL_RESTAURANTS = [
         ],
         "hardware": [{"id": "hw-s1", "name": "Sushi Counter", "operational": True}],
         "menu": [
-            { "id": "ms-1", "name": "Tuna Sashimi", "description": "Premium slices.", "price": 24.00, "category": "Sushi", "image": "/images/meal_tuna_sashimi.png", "requiredIngredients": ["ing-s1"], "optionalIngredients": [], "requiredHardware": ["hw-s1"], "rating": 5.0, "reviews": [{"id": "s1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "So fresh!", "date": "2026-01-20"}] },
-            { "id": "ms-2", "name": "Salmon Nigiri", "description": "Fresh salmon.", "price": 14.00, "category": "Sushi", "image": "/images/meal_salmon_nigiri.png", "requiredIngredients": ["ing-s2"], "optionalIngredients": [], "requiredHardware": ["hw-s1"], "rating": 4.9, "reviews": [{"id": "s2", "userId": "u2", "userName": "Sarah", "rating": 4.9, "comment": "Perfect rice.", "date": "2026-01-21"}] },
-            { "id": "ms-3", "name": "Vegan Roll", "description": "Cucumber bliss.", "price": 12.00, "category": "Sushi", "image": "/images/meal_vegan_roll.png", "requiredIngredients": [], "optionalIngredients": ["ing-s3"], "requiredHardware": ["hw-s1"], "rating": 4.5, "reviews": [{"id": "s3", "userId": "u3", "userName": "Joe", "rating": 4.5, "comment": "Light and tasty.", "date": "2026-01-22"}] },
-            { "id": "ms-4", "name": "Edamame", "description": "Sea salt soy.", "price": 6.00, "category": "Sides", "image": "/images/meal_edamame.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.2, "reviews": [{"id": "s4", "userId": "u4", "userName": "Anna", "rating": 4.2, "comment": "Classic.", "date": "2026-01-23"}] },
-            { "id": "ms-5", "name": "Dragon Roll", "description": "Eel & avocado.", "price": 18.00, "category": "Sushi", "image": "/images/meal_dragon_roll.png", "requiredIngredients": ["ing-s1"], "optionalIngredients": ["ing-s3"], "requiredHardware": ["hw-s1"], "rating": 4.8, "reviews": [{"id": "s5", "userId": "u5", "userName": "Leo", "rating": 4.8, "comment": "Visual masterpiece.", "date": "2026-01-24"}] }
+            { "id": "ms-1", "name": "Tuna Sashimi", "description": "Premium slices.", "price": 24.00, "category": "Sushi", "image": "/images/tuna_sashimi.png", "requiredIngredients": ["ing-s1"], "optionalIngredients": [], "requiredHardware": ["hw-s1"], "rating": 5.0, "reviews": [{"id": "s1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "So fresh!", "date": "2026-01-20"}] },
+            { "id": "ms-2", "name": "Salmon Nigiri", "description": "Fresh salmon.", "price": 14.00, "category": "Sushi", "image": "/images/salmon_nigiri.png", "requiredIngredients": ["ing-s2"], "optionalIngredients": [], "requiredHardware": ["hw-s1"], "rating": 4.9, "reviews": [{"id": "s2", "userId": "u2", "userName": "Sarah", "rating": 4.9, "comment": "Perfect rice.", "date": "2026-01-21"}] },
+            { "id": "ms-3", "name": "Vegan Roll", "description": "Cucumber bliss.", "price": 12.00, "category": "Sushi", "image": "/images/vegan_roll.png", "requiredIngredients": [], "optionalIngredients": ["ing-s3"], "requiredHardware": ["hw-s1"], "rating": 4.5, "reviews": [{"id": "s3", "userId": "u3", "userName": "Joe", "rating": 4.5, "comment": "Light and tasty.", "date": "2026-01-22"}] },
+            { "id": "ms-4", "name": "Edamame", "description": "Sea salt soy.", "price": 6.00, "category": "Sides", "image": "/images/edamame.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.2, "reviews": [{"id": "s4", "userId": "u4", "userName": "Anna", "rating": 4.2, "comment": "Classic.", "date": "2026-01-23"}] },
+            { "id": "ms-5", "name": "Dragon Roll", "description": "Eel & avocado.", "price": 18.00, "category": "Sushi", "image": "/images/dragon_roll.png", "requiredIngredients": ["ing-s1"], "optionalIngredients": ["ing-s3"], "requiredHardware": ["hw-s1"], "rating": 4.8, "reviews": [{"id": "s5", "userId": "u5", "userName": "Leo", "rating": 4.8, "comment": "Visual masterpiece.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv3", "userId": "u5", "userName": "Leo", "rating": 4.9, "comment": "Zen indeed.", "date": "2026-01-24"}]
     },
@@ -88,18 +88,18 @@ INITIAL_RESTAURANTS = [
         "id": "rest-4",
         "name": "Green Garden",
         "cuisine": "Healthy",
-        "logo": LOGO_HEALTHY, "image": "/images/healthy.jpg",
+        "logo": LOGO_HEALTHY, "image": "/images/power_bowl.png",
         "description": "100% plant-based bowls and smoothies.",
         "address": "101 Leafy Road, Vitality", "lat": 40.7500, "lng": -73.9700,
         "rating": 4.7, "reviewCount": 1, "tags": ["Healthy", "Vegan", "Salads"],
         "ingredients": [{"id": "ing-g1", "name": "Kale", "inStock": True}, {"id": "ing-g3", "name": "Chickpeas", "inStock": True}],
         "hardware": [{"id": "hw-g1", "name": "Steam Oven", "operational": True}],
         "menu": [
-            { "id": "mg-1", "name": "Power Bowl", "description": "Kale & Quinoa.", "price": 15.00, "category": "Bowls", "image": "/images/meal_power_bowl.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": ["ing-g1"], "requiredHardware": ["hw-g1"], "rating": 4.8, "reviews": [{"id": "g1", "userId": "u1", "userName": "Marco", "rating": 4.8, "comment": "Feel so healthy!", "date": "2026-01-20"}] },
-            { "id": "mg-2", "name": "Hummus Plate", "description": "House hummus.", "price": 8.00, "category": "Sides", "image": "/images/meal_hummus_plate.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.9, "reviews": [{"id": "g2", "userId": "u2", "userName": "Sarah", "rating": 4.9, "comment": "Creamy perfection.", "date": "2026-01-21"}] },
-            { "id": "mg-3", "name": "Protein Punch", "description": "Double chickpeas.", "price": 14.00, "category": "Bowls", "image": "/images/meal_protein_punch.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.5, "reviews": [{"id": "g3", "userId": "u3", "userName": "Joe", "rating": 4.6, "comment": "Filling and clean.", "date": "2026-01-22"}] },
-            { "id": "mg-4", "name": "Avocado Toast", "description": "Sourdough bliss.", "price": 11.00, "category": "Brunch", "image": "/images/meal_avocado_toast.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.7, "reviews": [{"id": "g4", "userId": "u4", "userName": "Anna", "rating": 4.7, "comment": "Insta-worthy.", "date": "2026-01-23"}] },
-            { "id": "mg-5", "name": "Lentil Soup", "description": "Hearty stew.", "price": 9.00, "category": "Soups", "image": "/images/meal_lentil_soup.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": ["hw-g1"], "rating": 4.3, "reviews": [{"id": "g5", "userId": "u5", "userName": "Leo", "rating": 4.3, "comment": "Warm hug in a bowl.", "date": "2026-01-24"}] }
+            { "id": "mg-1", "name": "Power Bowl", "description": "Kale & Quinoa.", "price": 15.00, "category": "Bowls", "image": "/images/power_bowl.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": ["ing-g1"], "requiredHardware": ["hw-g1"], "rating": 4.8, "reviews": [{"id": "g1", "userId": "u1", "userName": "Marco", "rating": 4.8, "comment": "Feel so healthy!", "date": "2026-01-20"}] },
+            { "id": "mg-2", "name": "Hummus Plate", "description": "House hummus.", "price": 8.00, "category": "Sides", "image": "/images/hummus_plate.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.9, "reviews": [{"id": "g2", "userId": "u2", "userName": "Sarah", "rating": 4.9, "comment": "Creamy perfection.", "date": "2026-01-21"}] },
+            { "id": "mg-3", "name": "Protein Punch", "description": "Double chickpeas.", "price": 14.00, "category": "Bowls", "image": "/images/protein_punch.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": [], "rating": 4.5, "reviews": [{"id": "g3", "userId": "u3", "userName": "Joe", "rating": 4.6, "comment": "Filling and clean.", "date": "2026-01-22"}] },
+            { "id": "mg-4", "name": "Avocado Toast", "description": "Sourdough bliss.", "price": 11.00, "category": "Brunch", "image": "/images/avocado_toast.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.7, "reviews": [{"id": "g4", "userId": "u4", "userName": "Anna", "rating": 4.7, "comment": "Insta-worthy.", "date": "2026-01-23"}] },
+            { "id": "mg-5", "name": "Lentil Soup", "description": "Hearty stew.", "price": 9.00, "category": "Soups", "image": "/images/lentil_soup.png", "requiredIngredients": ["ing-g3"], "optionalIngredients": [], "requiredHardware": ["hw-g1"], "rating": 4.3, "reviews": [{"id": "g5", "userId": "u5", "userName": "Leo", "rating": 4.3, "comment": "Warm hug in a bowl.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv4", "userId": "u6", "userName": "Grace", "rating": 4.7, "comment": "Finally, real vegan food.", "date": "2026-01-24"}]
     },
@@ -107,18 +107,18 @@ INITIAL_RESTAURANTS = [
         "id": "rest-5",
         "name": "Pasta Passion",
         "cuisine": "Italian",
-        "logo": LOGO_PASTA, "image": "/images/pasta.jpg",
+        "logo": LOGO_PASTA, "image": "/images/classic_lasagna.png",
         "description": "Authentic Italian pasta made fresh.",
         "address": "202 Noodle St, Italian Quarter", "lat": 40.7100, "lng": -74.0150,
         "rating": 4.8, "reviewCount": 1, "tags": ["Italian", "Meat", "Pasta"],
         "ingredients": [{"id": "ing-p1", "name": "Semolina", "inStock": True}, {"id": "ing-p5", "name": "Parmesan", "inStock": True}],
         "hardware": [{"id": "hw-p2", "name": "Boiling Station", "operational": True}],
         "menu": [
-            { "id": "mp-1", "name": "Classic Lasagna", "description": "Layered perfection.", "price": 22.00, "category": "Pasta", "image": "/images/meal_lasagna.png", "requiredIngredients": ["ing-p1"], "optionalIngredients": ["ing-p5"], "requiredHardware": ["hw-p2"], "rating": 5.0, "reviews": [{"id": "p1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "Like my mom's!", "date": "2026-01-20"}] },
-            { "id": "mp-2", "name": "Pesto Penne", "description": "Basil delight.", "price": 18.00, "category": "Pasta", "image": "/images/meal_pesto_penne.png", "requiredIngredients": ["ing-p1"], "optionalIngredients": ["ing-p5"], "requiredHardware": ["hw-p2"], "rating": 4.6, "reviews": [{"id": "p2", "userId": "u2", "userName": "Sarah", "rating": 4.6, "comment": "Vibrant pesto.", "date": "2026-01-21"}] },
-            { "id": "mp-3", "name": "Carbonara", "description": "Guanciale perfection.", "price": 19.00, "category": "Pasta", "image": "/images/meal_carbonara.png", "requiredIngredients": ["ing-p1"], "optionalIngredients": ["ing-p5"], "requiredHardware": ["hw-p2"], "rating": 4.9, "reviews": [{"id": "p3", "userId": "u3", "userName": "Joe", "rating": 4.9, "comment": "Creamy without cream.", "date": "2026-01-22"}] },
-            { "id": "mp-4", "name": "Focaccia", "description": "Sea salt & rosemary.", "price": 7.00, "category": "Sides", "image": "/images/meal_focaccia.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.5, "reviews": [{"id": "p4", "userId": "u4", "userName": "Anna", "rating": 4.5, "comment": "Soft and airy.", "date": "2026-01-23"}] },
-            { "id": "mp-5", "name": "Tiramisu", "description": "Espresso dessert.", "price": 10.00, "category": "Dessert", "image": "/images/meal_tiramisu.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 5.0, "reviews": [{"id": "p5", "userId": "u5", "userName": "Leo", "rating": 5, "comment": "Best tiramisu in town.", "date": "2026-01-24"}] }
+            { "id": "mp-1", "name": "Classic Lasagna", "description": "Layered perfection.", "price": 22.00, "category": "Pasta", "image": "/images/classic_lasagna.png", "requiredIngredients": ["ing-p1"], "optionalIngredients": ["ing-p5"], "requiredHardware": ["hw-p2"], "rating": 5.0, "reviews": [{"id": "p1", "userId": "u1", "userName": "Marco", "rating": 5, "comment": "Like my mom's!", "date": "2026-01-20"}] },
+            { "id": "mp-2", "name": "Pesto Penne", "description": "Basil delight.", "price": 18.00, "category": "Pasta", "image": "/images/pesto_penne.png", "requiredIngredients": ["ing-p1"], "optionalIngredients": ["ing-p5"], "requiredHardware": ["hw-p2"], "rating": 4.6, "reviews": [{"id": "p2", "userId": "u2", "userName": "Sarah", "rating": 4.6, "comment": "Vibrant pesto.", "date": "2026-01-21"}] },
+            { "id": "mp-3", "name": "Carbonara", "description": "Guanciale perfection.", "price": 19.00, "category": "Pasta", "image": "/images/carbonara.png", "requiredIngredients": ["ing-p1"], "optionalIngredients": ["ing-p5"], "requiredHardware": ["hw-p2"], "rating": 4.9, "reviews": [{"id": "p3", "userId": "u3", "userName": "Joe", "rating": 4.9, "comment": "Creamy without cream.", "date": "2026-01-22"}] },
+            { "id": "mp-4", "name": "Focaccia", "description": "Sea salt & rosemary.", "price": 7.00, "category": "Sides", "image": "/images/focaccia.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.5, "reviews": [{"id": "p4", "userId": "u4", "userName": "Anna", "rating": 4.5, "comment": "Soft and airy.", "date": "2026-01-23"}] },
+            { "id": "mp-5", "name": "Tiramisu", "description": "Espresso dessert.", "price": 10.00, "category": "Dessert", "image": "/images/tiramisu.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 5.0, "reviews": [{"id": "p5", "userId": "u5", "userName": "Leo", "rating": 5, "comment": "Best tiramisu in town.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv5", "userId": "u7", "userName": "Luigi", "rating": 4.8, "comment": "Bravo!", "date": "2026-01-25"}]
     },
@@ -126,18 +126,18 @@ INITIAL_RESTAURANTS = [
         "id": "rest-6",
         "name": "Spicy Thai",
         "cuisine": "Asian",
-        "logo": LOGO_THAI, "image": "/images/thai.jpg",
+        "logo": LOGO_THAI, "image": "/images/pad_thai.png",
         "description": "Vibrant and aromatic Thai dishes.",
         "address": "303 Basil Blvd, Spice City", "lat": 40.7200, "lng": -73.9600,
         "rating": 4.6, "reviewCount": 1, "tags": ["Asian", "Meat", "Vegan", "Healthy"],
         "ingredients": [{"id": "ing-t2", "name": "Thai Basil", "inStock": True}, {"id": "ing-t3", "name": "Coconut Milk", "inStock": True}],
         "hardware": [{"id": "hw-t1", "name": "High-Pressure Wok", "operational": True}],
         "menu": [
-            { "id": "mt-1", "name": "Pad Thai", "description": "Tamarind noodles.", "price": 17.00, "category": "Noodles", "image": "/images/meal_pad_thai.png", "requiredIngredients": ["ing-t3"], "optionalIngredients": [], "requiredHardware": ["hw-t1"], "rating": 4.7, "reviews": [{"id": "t1", "userId": "u1", "userName": "Marco", "rating": 4.7, "comment": "Perfect balance.", "date": "2026-01-20"}] },
-            { "id": "mt-2", "name": "Green Curry", "description": "Spicy coconut.", "price": 18.00, "category": "Curry", "image": "/images/meal_green_curry.png", "requiredIngredients": ["ing-t3"], "optionalIngredients": ["ing-t2"], "requiredHardware": ["hw-t1"], "rating": 4.8, "reviews": [{"id": "t2", "userId": "u2", "userName": "Sarah", "rating": 4.8, "comment": "Proper spice kick.", "date": "2026-01-21"}] },
-            { "id": "mt-3", "name": "Basil Stir Fry", "description": "Spicy basil.", "price": 19.00, "category": "Wok", "image": "/images/meal_basil_stir_fry.png", "requiredIngredients": ["ing-t3"], "optionalIngredients": ["ing-t2"], "requiredHardware": ["hw-t1"], "rating": 4.4, "reviews": [{"id": "t3", "userId": "u3", "userName": "Joe", "rating": 4.4, "comment": "So aromatic.", "date": "2026-01-22"}] },
-            { "id": "mt-4", "name": "Tom Yum", "description": "Sour & spicy.", "price": 15.00, "category": "Soups", "image": "/images/meal_tom_yum.png", "requiredIngredients": ["ing-t3"], "optionalIngredients": ["ing-t2"], "requiredHardware": [], "rating": 4.9, "reviews": [{"id": "t4", "userId": "u4", "userName": "Anna", "rating": 4.9, "comment": "Authentic galangal flavor.", "date": "2026-01-23"}] },
-            { "id": "mt-5", "name": "Thai Iced Coffee", "description": "Sweet milk coffee.", "price": 6.00, "category": "Coffee", "image": "/images/meal_thai_coffee.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.2, "reviews": [{"id": "t5", "userId": "u5", "userName": "Leo", "rating": 4.2, "comment": "Sweet and strong.", "date": "2026-01-24"}] }
+            { "id": "mt-1", "name": "Pad Thai", "description": "Tamarind noodles.", "price": 17.00, "category": "Noodles", "image": "/images/pad_thai.png", "requiredIngredients": ["ing-t3"], "optionalIngredients": [], "requiredHardware": ["hw-t1"], "rating": 4.7, "reviews": [{"id": "t1", "userId": "u1", "userName": "Marco", "rating": 4.7, "comment": "Perfect balance.", "date": "2026-01-20"}] },
+            { "id": "mt-2", "name": "Green Curry", "description": "Spicy coconut.", "price": 18.00, "category": "Curry", "image": "/images/green_curry.png", "requiredIngredients": ["ing-t3"], "optionalIngredients": ["ing-t2"], "requiredHardware": ["hw-t1"], "rating": 4.8, "reviews": [{"id": "t2", "userId": "u2", "userName": "Sarah", "rating": 4.8, "comment": "Proper spice kick.", "date": "2026-01-21"}] },
+            { "id": "mt-3", "name": "Basil Stir Fry", "description": "Spicy basil.", "price": 19.00, "category": "Wok", "image": "/images/basil_stir_fry.png", "requiredIngredients": ["ing-t3"], "optionalIngredients": ["ing-t2"], "requiredHardware": ["hw-t1"], "rating": 4.4, "reviews": [{"id": "t3", "userId": "u3", "userName": "Joe", "rating": 4.4, "comment": "So aromatic.", "date": "2026-01-22"}] },
+            { "id": "mt-4", "name": "Tom Yum", "description": "Sour & spicy.", "price": 15.00, "category": "Soups", "image": "/images/tom_yum.png", "requiredIngredients": ["ing-t3"], "optionalIngredients": ["ing-t2"], "requiredHardware": [], "rating": 4.9, "reviews": [{"id": "t4", "userId": "u4", "userName": "Anna", "rating": 4.9, "comment": "Authentic galangal flavor.", "date": "2026-01-23"}] },
+            { "id": "mt-5", "name": "Thai Iced Coffee", "description": "Sweet milk coffee.", "price": 6.00, "category": "Coffee", "image": "/images/thai_iced_coffee.png", "requiredIngredients": [], "optionalIngredients": [], "requiredHardware": [], "rating": 4.2, "reviews": [{"id": "t5", "userId": "u5", "userName": "Leo", "rating": 4.2, "comment": "Sweet and strong.", "date": "2026-01-24"}] }
         ],
         "reviews": [{"id": "rv6", "userId": "u8", "userName": "Anong", "rating": 4.6, "comment": "Like Bangkok streets.", "date": "2026-01-26"}]
     }
