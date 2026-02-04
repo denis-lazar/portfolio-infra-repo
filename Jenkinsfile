@@ -229,8 +229,11 @@ def getEcrTag() {
 
 def checkEcrScanFindings(tag) {
     docker.image('amazon/aws-cli').inside('--entrypoint=""') {
+        echo "Triggering ECR scan for version ${tag}..."
+        sh "aws ecr start-image-scan --repository-name $ECR_REPO --image-id imageTag=$tag --region $AWS_REGION || true"
+        
         echo "Waiting for ECR scan to complete..."
-        sh "sleep 5 && aws ecr wait image-scan-complete --repository-name $ECR_REPO --image-id imageTag=$tag --region $AWS_REGION"
+        sh "aws ecr wait image-scan-complete --repository-name $ECR_REPO --image-id imageTag=$tag --region $AWS_REGION"
         
         def criticals = sh(script: "aws ecr describe-image-scan-findings --repository-name $ECR_REPO --image-id imageTag=$tag --region $AWS_REGION --query 'imageScanFindings.findingSeverityCounts.CRITICAL' --output text", returnStdout: true).trim()
         
