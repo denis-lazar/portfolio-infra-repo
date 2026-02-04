@@ -19,26 +19,6 @@ pipeline {
     }
 
     stages {
-        stage('Version Calcutation') {
-            steps {
-                script { env.FAILED_STAGE = "Initialize" }
-                sh "mkdir -p reports"
-                sshagent([env.GIT_CREDS_ID]) {
-                    script {
-                        sh 'git fetch --tags'
-                        def latestGitTag = sh(script: 'git describe --tags --abbrev=0 2>/dev/null || echo v1.0.0', returnStdout: true).trim().replace('v', '')
-                        def latestEcrTag = getEcrTag()
-                        
-                        env.APP_IMAGE_TAG = calculateNextVersion(latestGitTag, latestEcrTag)
-                        env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-                        
-                        echo "Version Comparison: git ${latestGitTag} | ecr ${latestEcrTag} | next version ${env.APP_IMAGE_TAG}"
-                        echo "Commit: ${env.GIT_SHA}"
-                    }
-                }
-            }
-        }
-
         stage('Unit Tests') {
             parallel {
                 stage('Backend') {
@@ -70,6 +50,26 @@ pipeline {
                 }
             }
         }
+        stage('Version Calcutation') {
+            steps {
+                script { env.FAILED_STAGE = "Initialize" }
+                sh "mkdir -p reports"
+                sshagent([env.GIT_CREDS_ID]) {
+                    script {
+                        sh 'git fetch --tags'
+                        def latestGitTag = sh(script: 'git describe --tags --abbrev=0 2>/dev/null || echo v1.0.0', returnStdout: true).trim().replace('v', '')
+                        def latestEcrTag = getEcrTag()
+                        
+                        env.APP_IMAGE_TAG = calculateNextVersion(latestGitTag, latestEcrTag)
+                        env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                        
+                        echo "Version Comparison: git ${latestGitTag} | ecr ${latestEcrTag} | next version ${env.APP_IMAGE_TAG}"
+                        echo "Commit: ${env.GIT_SHA}"
+                    }
+                }
+            }
+        }
+
 
         stage('Docker Build') {
             steps {
