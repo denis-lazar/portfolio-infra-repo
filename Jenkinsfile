@@ -97,6 +97,18 @@ pipeline {
                 }
             }
         }
+        
+        stage('Git Tag'){
+            steps{
+                script{
+                        env.FAILED_STAGE = "Git Tag"
+                        sshagent([env.GIT_CREDS_ID]) {
+                            sh "git tag -f v${env.APP_IMAGE_TAG} && git push origin v${env.APP_IMAGE_TAG} --force"
+                        }
+                }
+            }
+            
+        }
 
         stage('Publish to ecr') {
             when { branch 'main' }
@@ -126,17 +138,6 @@ pipeline {
             }
         }
 
-        stage('Git Tag'){
-            steps{
-                script{
-                        env.FAILED_STAGE = "Git Tag"
-                        sshagent([env.GIT_CREDS_ID]) {
-                            sh "git tag -f v${env.APP_IMAGE_TAG} && git push origin v${env.APP_IMAGE_TAG} --force"
-                        }
-                }
-            }
-            
-        }
 
         stage('Gitops update'){
             steps{
