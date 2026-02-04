@@ -46,8 +46,15 @@ pipeline {
                     steps {
                         script { 
                             env.FAILED_STAGE = "Backend Unit Tests" 
-                            sh 'pip install --no-cache-dir -r backend/requirements.txt'
-                            UnitBackend()
+                            sh '''
+                                python -m venv venv
+                                . venv/bin/activate
+                                pip install --no-cache-dir -r backend/requirements.txt
+                                PYTHONPATH=backend ./venv/bin/python -m pytest -v -s -o junit_logging=all \
+                                --junitxml=reports/unit-report.xml \
+                                --cov=app --cov-report=xml:reports/coverage.xml \
+                                backend/app/tests_unit
+                            '''
                         }
                     }
                 }
