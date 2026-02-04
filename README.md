@@ -1,71 +1,88 @@
-# MenuSync
+# MenuSync Application
 
-**MenuSync** is a real-time restaurant menu availability platform. It empowers restaurant managers to instantly sync ingredient and hardware status with customers, providing transparent and reliable dining information. By bridging the gap between kitchen reality and customer expectations, MenuSync eliminates the frustration of ordering unavailable items.
+This directory contains the core source code for the MenuSync platform, including the frontend, backend, and reverse proxy configurations.
 
-## 🚀 Key Features
+![Application Screenshots](https://via.placeholder.com/800x300?text=MenuSync+App+Interface+Screenshots)
 
-- **Real-time Synchronization:** Menu updates propagate from manager to customer in 3-5 seconds using WebSockets.
-- **Smart Dependency Mapping:** Automatically marks dishes as "Unavailable" or "Warning" based on ingredient status (e.g., if "Basil" is out, "Margherita Pizza" shows a warning; if "Pizza Dough" is out, it's "Sold Out").
-- **Premium Map Discovery:** Interactive map using Leaflet.js and CartoDB Dark Matter tiles for finding nearby restaurants.
-- **Role-Based Access (RBAC):** Secure login for customers and restaurant managers via JWT.
-- **Observability:** Integrated Prometheus metrics and structured JSON logging.
-- **High Performance:** Nginx-backed static asset serving via shared Docker volumes.
+## 📦 Components
 
-## 📁 Project Structure
-
-```text
-.
-├── backend/                # FastAPI Monolith
-│   ├── app/                # Application logic (Models, Schemas, API, Core)
-│   ├── tests/              # Integration and E2E tests
-│   ├── seed.py             # Data seeding script for MongoDB
-│   ├── pytest.ini          # Pytest configuration
-│   ├── requirements.txt    # Python dependencies
-│   └── tests.Dockerfile    # Dockerfile for the integration testing container
-├── frontend/               # React + TypeScript + Vite
-│   ├── components/         # UI Components (Map, Login, Panels)
-│   ├── services/           # API and WebSocket services
-│   ├── public/             # Static assets (High-res images, logos)
-│   ├── App.tsx             # Main React Application component
-│   ├── index.tsx           # React entry point
-│   ├── nginx.conf          # Nginx production configuration
-│   ├── package.json        # Node.js dependencies and scripts
-│   ├── vite.config.ts      # Vite build configuration
-│   └── vitest.config.ts    # Vitest testing configuration
-├── docker-compose.yml      # Container orchestration
-├── Dockerfile              # Unified build file for the application
-└── .env                    # Environment variables (Internal use)
-```
-
-## 🛠️ Workflow
-
-1.  **Manager Update:** A restaurant manager toggles an ingredient status (e.g., "Out of Stock") in the Manager Panel.
-2.  **Backend Processing:** The FastAPI backend updates the database and calculates the impact on dependent menu items.
-3.  **Broadcast:** A WebSocket signal is broadcasted globally and to specific restaurant channels.
-4.  **Instant UI Refresh:** All connected customer apps receive the update and refresh the menu status/badges without a page reload.
-
-## 🏁 How to Run Locally
-
-### Prerequisites
-- Docker and Docker Compose installed.
-
-### Steps
-1.  **Clean Start:**
-    ```bash
-    docker compose down -v
-    ```
-2.  **Build & Start:**
-    ```bash
-    docker compose up --build -d
-    ```
-3.  **Seed Data:**
-    ```bash
-    docker compose exec app python seed.py
-    ```
-4.  **Access the App:**
-    - **Frontend:** [http://localhost](http://localhost)
-    - **API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs) (Direct) or [http://localhost/docs](http://localhost/docs) (via Nginx)
-    - **Metrics:** [http://localhost/metrics](http://localhost/metrics)
+- [**Frontend**](./frontend): A modern React single-page application built with TypeScript and Vite.
+- [**Backend**](./backend): A high-performance FastAPI service handling REST APIs and WebSocket connections.
+- [**NGINX**](./nginx): Custom Ingress and proxy configurations for local and production routing.
 
 ---
-*Created as part of a DevOps Portfolio project.*
+
+## 🛠️ Local Development
+
+The easiest way to run MenuSync locally is using Docker Compose. This starts the Frontend, Backend, MongoDB, and Redis in a single network.
+
+### Prerequisites
+- Docker
+- Docker Compose
+
+### Quick Start
+1. Navigate to this directory:
+   ```bash
+   cd Application
+   ```
+2. Build and start the containers:
+   ```bash
+   docker-compose up --build
+   ```
+3. Access the services:
+   - **Frontend:** `http://localhost:3000`
+   - **Backend API:** `http://localhost:8000`
+   - **API Docs (Swagger):** `http://localhost:8000/docs`
+
+---
+
+## 🐳 Dockerization
+
+The application is fully containerized for consistent deployment across environments.
+
+### Dockerfiles
+- `backend/Dockerfile`: Multi-stage build for the Python service.
+- `frontend/Dockerfile`: (Optional, often served via Nginx)
+- `nginx/Dockerfile`: Custom Nginx image for the Ingress controller.
+
+### Docker Compose Services
+- `db`: MongoDB 7.0 (Persistent data).
+- `redis`: Redis 7.4 (WebSocket Pub/Sub).
+- `backend`: FastAPI service (Port 8000).
+- `frontend`: React dev server (Port 3000).
+
+---
+
+## 🧪 Testing
+
+### Backend Tests
+```bash
+cd backend
+pip install -r requirements.txt
+pytest
+```
+
+### Frontend Tests
+```bash
+cd frontend
+npm install
+npm test
+```
+
+---
+
+## 📡 Real-Time Sync Logic
+
+1. **Manager Update:** A restaurant manager toggles an ingredient status in the React UI.
+2. **API Request:** The Frontend sends a `PUT` request to the FastAPI backend.
+3. **Database Update:** Backend updates the MongoDB document.
+4. **Redis Pub:** Backend publishes a message to a Redis channel.
+5. **WebSocket Push:** All connected clients (customers) receive the update instantly through an open WebSocket connection.
+
+---
+
+## 📂 Sub-Directories
+
+- [**frontend/**](./frontend): React + TypeScript + Vite.
+- [**backend/**](./backend): FastAPI + MongoDB + Redis.
+- [**nginx/**](./nginx): Nginx proxy configurations.

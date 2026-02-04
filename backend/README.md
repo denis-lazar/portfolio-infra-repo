@@ -1,52 +1,92 @@
 # MenuSync Backend
 
-The MenuSync Backend is a high-performance FastAPI application designed for real-time data synchronization and robust restaurant management logic.
+The MenuSync backend is a high-performance API service built with **FastAPI**. It handles complex business logic, real-time synchronization via WebSockets, and persistent data storage in MongoDB.
 
-## 🛠️ Technology Stack
+![Backend API](https://via.placeholder.com/800x200?text=MenuSync+FastAPI+Backend)
 
-- **Framework:** [FastAPI](https://fastapi.tiangolo.com/) - Modern, fast (high-performance) web framework for building APIs with Python 3.10+.
-- **Database:** [MongoDB](https://www.mongodb.com/) with [Motor](https://motor.readthedocs.io/) - Asynchronous Python driver for MongoDB.
-- **Real-time:** [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) - For instant bi-directional updates between the server and connected clients.
-- **Security:** [JWT (JSON Web Tokens)](https://jwt.io/) - Secure authentication and Role-Based Access Control (RBAC).
-- **Observability:** [Prometheus](https://prometheus.io/) & [Structlog](https://www.structlog.org/) - Metrics instrumentation and structured JSON logging for production monitoring.
-- **Testing:** [Pytest](https://docs.pytest.org/) - Comprehensive testing suite including unit and integration tests.
+## 🛠️ Tech Stack
 
-## 📁 Folder Structure
+- **Framework:** [FastAPI](https://fastapi.tiangolo.com/) (Python 3.12)
+- **Database:** [MongoDB](https://www.mongodb.com/) (Motor Async Driver)
+- **Messaging/Cache:** [Redis](https://redis.io/) (Pub/Sub for WebSockets)
+- **Testing:** [Pytest](https://docs.pytest.org/)
+- **Documentation:** Swagger UI (Auto-generated)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.12
+- MongoDB & Redis (or use Docker)
+
+### Installation
+```bash
+cd Application/backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Running Locally
+```bash
+# Ensure MongoDB and Redis are running
+uvicorn app.main:app --reload --port 8000
+```
+- **API Docs:** `http://localhost:8000/docs`
+- **Alternative Docs:** `http://localhost:8000/redoc`
+
+---
+
+## 🏗️ Project Structure
 
 ```text
 backend/
 ├── app/
-│   ├── api/            # API Route handlers (Auth, Restaurants)
-│   ├── core/           # Configuration, Security (JWT), and DB connection
-│   ├── models/         # MongoDB data models
-│   ├── schemas/        # Pydantic models for request/response validation
-│   ├── main.py         # Application entry point & WebSocket manager
-│   └── websocket.py    # Connection management and broadcasting logic
-├── tests/              # E2E and integration tests
-├── seed.py             # Script to populate MongoDB with initial data
-└── requirements.txt    # Python dependency list
+│   ├── api/v1/         # API endpoints (Auth, Restaurants, Menu)
+│   ├── core/           # Config, Database connection, Security
+│   ├── models/         # Pydantic models (Schemas)
+│   ├── main.py         # Application entry point
+│   └── websocket.py    # WebSocket connection manager
+├── tests/              # Integration and E2E tests
+├── seed.py             # Script to populate initial data
+└── requirements.txt    # Python dependencies
 ```
 
-## ⚙️ How It Works
+---
 
-### 1. Ingredient-to-Meal Mapping
-The core logic resides in the backend's ability to map ingredient availability to menu items. When an ingredient (e.g., "Pizza Dough") is toggled to "Out of Stock," the backend automatically identifies all dependent menu items and updates their status in the database.
+## 🔌 API Endpoints (Highlights)
 
-### 2. WebSocket Broadcasting
-The `ConnectionManager` handles active WebSocket connections. It supports:
-- **Global Broadcasts:** Updating all users when a restaurant's general status changes.
-- **Targeted Updates:** Sending specific data to users viewing a particular restaurant.
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| **POST** | `/api/v1/login` | Authenticate users and return JWT. |
+| **GET** | `/api/v1/restaurants` | List all available restaurants. |
+| **PUT** | `/api/v1/availability` | Update ingredient/item status (Manager only). |
+| **WS** | `/ws/{client_id}` | WebSocket connection for real-time updates. |
 
-### 3. Production Readiness
-- **Structured Logging:** All logs are outputted in JSON format for easy ingestion by ELK or Loki.
-- **Metrics:** A `/metrics` endpoint provides real-time data on HTTP request latency, database connection counts, and application health.
+---
 
 ## 🧪 Testing
-Run the backend tests using the following command:
+
+We use `pytest` with `httpx` for testing both REST endpoints and WebSocket behavior.
+
+### Run All Tests
 ```bash
-pytest backend/
+pytest
 ```
-Or via Docker:
-```bash
-docker compose run backend pytest
-```
+
+### Key Test Suites
+- `test_auth.py`: JWT authentication logic.
+- `test_restaurants.py`: CRUD operations for menu items.
+- `test_e2e.py`: Full flow from manager update to customer view.
+
+---
+
+## 📡 Real-Time Sync Logic
+
+The backend implements a **Pub/Sub pattern** using Redis:
+1. **API receives update** -> Writes to MongoDB.
+2. **Backend publishes** -> `redis.publish("availability_updates", data)`.
+3. **WebSocket Task** -> Listens to Redis and broadcasts to all connected WebSocket clients.
+
+This allows the backend to scale horizontally while maintaining consistent real-time state.

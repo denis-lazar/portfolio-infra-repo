@@ -1,48 +1,89 @@
 # MenuSync Frontend
 
-The MenuSync Frontend is a modern, responsive Progressive Web Application (PWA) built with React and TypeScript, optimized for speed and real-time user feedback.
+The MenuSync frontend is a responsive, real-time web application built with **React** and **TypeScript**. It serves two primary user journeys: the **Diner (Customer)** and the **Officiant (Manager)**.
 
-## 🛠️ Technology Stack
+![Frontend UI](https://via.placeholder.com/800x400?text=MenuSync+Frontend+UI+Dashboard)
 
-- **Framework:** [React 19](https://react.dev/) - Utilizing the latest features for component-based UI development.
-- **Build Tool:** [Vite](https://vitejs.dev/) - Next-generation frontend tooling for ultra-fast development.
-- **Language:** [TypeScript](https://www.typescriptlang.org/) - Ensuring type safety and maintainable code.
-- **Mapping:** [Leaflet.js](https://leafletjs.com/) & [React Leaflet](https://react-leaflet.js.org/) - Interactive maps with custom markers and dark-mode tiles.
-- **Styling:** CSS-in-JS and modern CSS principles for a premium, responsive UI.
-- **Testing:** [Vitest](https://vitest.dev/) & [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) - Fast, modern testing for UI components.
+## 🛠️ Tech Stack
 
-## 📁 Folder Structure
+- **Framework:** [React 18](https://reactjs.org/)
+- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** Tailwind CSS (via components)
+- **Real-time:** WebSockets
+- **State Management:** React Hooks & Context API
+- **Testing:** [Vitest](https://vitest.dev/) & React Testing Library
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v18+)
+- npm or yarn
+
+### Installation
+```bash
+cd Application/frontend
+npm install
+```
+
+### Running Locally
+```bash
+npm run dev
+```
+The app will be available at `http://localhost:3000`.
+
+---
+
+## 🏗️ Project Structure
 
 ```text
 frontend/
-├── components/         # Reusable UI components (MapView, MenuView, ManagerPanel)
-├── services/           # API clients and WebSocket listeners
-├── public/             # Static assets (high-resolution meal images)
-├── App.tsx             # Root component and navigation logic
-├── index.tsx           # Application entry point
-├── constants.ts        # Shared configuration and static data
-├── types.ts            # TypeScript interface definitions
+├── components/         # Reusable UI components (Dashboard, Map, Cards)
+├── services/           # API and WebSocket service logic
+├── public/             # Static assets (images, favicon)
+├── App.tsx             # Main application entry and routing
+├── index.tsx           # React DOM rendering
+├── types.ts            # Global TypeScript interfaces
 └── vite.config.ts      # Vite configuration
 ```
 
-## ⚙️ How It Works
+### Key Components
+- **`AdminDashboard.tsx`**: Management interface for toggling availability.
+- **`MapView.tsx`**: Discovery interface for customers to find restaurants.
+- **`MenuView.tsx`**: Real-time menu display with availability badges.
+- **`geminiService.ts`**: AI-assisted service integration (optional/future).
 
-### 1. Real-time UI Updates
-The application maintains a persistent WebSocket connection to the backend. When a "menu_update" or "availability_change" event is received, the frontend updates the local state immediately, causing components (like badges or buttons) to re-render without a full page refresh.
-
-### 2. Dual-View System
-- **Discovery View:** A map-centric interface for customers to find restaurants and see high-level availability (e.g., "5 dishes ready").
-- **Manager View:** A secure panel for restaurant staff to toggle ingredient and hardware statuses with a single tap.
-
-### 3. High Performance
-In production, the frontend is served by **Nginx**. Static assets are served directly from a shared volume, bypassing the application server for maximum speed and reduced latency.
+---
 
 ## 🧪 Testing
-Run the frontend test suite:
+
+We use **Vitest** for unit and component testing to ensure UI reliability.
+
+### Run Tests
 ```bash
 npm test
 ```
-Or to run tests with coverage:
+
+### Test Coverage
+We aim for high coverage on critical path components like availability toggles and real-time state updates.
+- `AdminDashboard.test.tsx`
+- `LoginView.test.tsx`
+- `MenuView.test.tsx`
+
+---
+
+## 📡 WebSocket Integration
+
+The frontend maintains a persistent WebSocket connection to the backend to receive live updates. When a manager makes a change, the UI updates automatically without a page refresh, ensuring customers always see the latest availability.
+
+---
+
+## 🌐 Deployment
+
+The frontend is built into static assets using:
 ```bash
-npx vitest run --coverage
+npm run build
 ```
+The resulting `dist/` folder is served by Nginx in the production cluster.
