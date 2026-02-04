@@ -141,18 +141,22 @@ if os.path.exists(static_path):
     @app.get("/{catchall:path}", include_in_schema=False)
     async def serve_react_app(request: Request, catchall: str):
         """Catch-all route to support React Router (SPA)"""
+        from fastapi import HTTPException
+        
         # 1. If it looks like an API call but reached here, it is a real 404
         if catchall.startswith("api/v1"):
-            from fastapi import HTTPException
             raise HTTPException(status_code=404, detail="API route not found")
             
-        # 2. If it is a request for a static file that does not exist
+        # 2. If it is a request for a file that does not exist
         if "." in catchall.split("/")[-1]:
-             from fastapi import HTTPException
              raise HTTPException(status_code=404, detail="File not found")
 
-        # 3. Otherwise, serve index.html for React Router to handle
-        return FileResponse(os.path.join(static_path, "index.html"))
+        # 3. Check if index.html actually exists before serving
+        index_path = os.path.join(static_path, "index.html")
+        if not os.path.exists(index_path):
+            raise HTTPException(status_code=404, detail="Application not built")
+
+        return FileResponse(index_path)
 
     # Mount the rest of the React build last
     app.mount("/", StaticFiles(directory=static_path, html=True), name="static")

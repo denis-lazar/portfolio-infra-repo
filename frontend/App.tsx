@@ -22,6 +22,8 @@ const App: React.FC = () => {
   const [activeTag, setActiveTag] = useState<string>('All');
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+  const isNotFound = window.location.pathname !== '/' && window.location.pathname !== '';
+
   const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 4000);
@@ -151,6 +153,27 @@ const App: React.FC = () => {
 
   if (!user) {
     return <LoginView onLoginSuccess={handleLogin} />;
+  }
+
+  if (isNotFound) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+        <div className="text-center space-y-6 max-w-md">
+          <div className="text-9xl font-black text-indigo-600/20">404</div>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Oops! Page not found.</h1>
+          <p className="text-slate-500 font-medium">
+            The path <span className="text-indigo-600 font-bold">"{window.location.pathname}"</span> doesn't exist in the MenuSync ecosystem.
+          </p>
+          <button 
+            onClick={() => window.location.href = '/'}
+            className="inline-flex items-center space-x-2 bg-indigo-600 text-white px-8 py-4 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <span>Back to Safety</span>
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
