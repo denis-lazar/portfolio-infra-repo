@@ -108,6 +108,16 @@ pipeline {
             }
         }
 
+        stage('Vulnerability Scan') {
+            when { branch 'main' }
+            steps {
+                script {
+                    env.FAILED_STAGE = "Vulnerability Scan"
+                    checkEcrScanFindings(env.APP_IMAGE_TAG)
+                }
+            }
+        }
+
         stage('Git Tag'){
             steps{
                 script{
@@ -215,6 +225,14 @@ def getEcrTag() {
         tag = sh(script: "aws ecr describe-images --repository-name $ECR_REPO --region $AWS_REGION --query 'sort_by(imageDetails, &imagePushedAt)[-1].imageTags' --output text | tr '\\t' '\\n' | grep -E '^[0-9]+\\.[0-9]+\\.[0-9]+\$' | sort -V | tail -n 1 || echo 1.0.0", returnStdout: true).trim()
     }
     return tag
+}
+
+def checkEcrScanFindings(tag) {
+    docker.image('amazon/aws-cli').inside('--entrypoint=""') {
+        def findings = sh(script: "aws ecr describe-image-scan-findings --repository-name $ECR_REPO --image-id imageTag=$tag --region $AWS_REGION --query 'imageScanFindings.findingSeverityCounts' --output json", returnStdout: true).trim()
+        if (findings.contains('CRITICAL')) error "CRITICAL vulnerabilities found in ECR image!"
+        echo "Scan Findings: ${findings}"
+    }
 }
 
 def calculateNextVersion(gitTag, ecrTag) {
