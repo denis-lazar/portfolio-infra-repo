@@ -229,9 +229,15 @@ def getEcrTag() {
 
 def checkEcrScanFindings(tag) {
     docker.image('amazon/aws-cli').inside('--entrypoint=""') {
-        def findings = sh(script: "aws ecr describe-image-scan-findings --repository-name $ECR_REPO --image-id imageTag=$tag --region $AWS_REGION --query 'imageScanFindings.findingSeverityCounts' --output json", returnStdout: true).trim()
-        if (findings.contains('CRITICAL')) error "CRITICAL vulnerabilities found in ECR image!"
-        echo "Scan Findings: ${findings}"
+        echo "Waiting for ECR scan to complete..."
+        sh "sleep 5 && aws ecr wait image-scan-complete --repository-name $ECR_REPO --image-id imageTag=$tag --region $AWS_REGION"
+        
+        def criticals = sh(script: "aws ecr describe-image-scan-findings --repository-name $ECR_REPO --image-id imageTag=$tag --region $AWS_REGION --query 'imageScanFindings.findingSeverityCounts.CRITICAL' --output text", returnStdout: true).trim()
+        
+        if (criticals != 'None' && criticals != '0') {
+            error "Security Stop: ${criticals} CRITICAL vulnerabilities found in ECR image!"
+        }
+        echo "ECR Scan passed: 0 CRITICAL vulnerabilities found."
     }
 }
 
