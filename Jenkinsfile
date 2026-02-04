@@ -39,22 +39,14 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
-            steps {
-                script { 
-                    env.FAILED_STAGE = "Docker Build"
-                    docker.build("${APP_IMAGE_NAME}:${APP_IMAGE_TAG}", "--build-arg VERSION=${env.APP_IMAGE_TAG} --build-arg GIT_SHA=${env.GIT_SHA} .")
-                }
-            }
-        }
-
         stage('Unit Tests') {
             parallel {
                 stage('Backend') {
-                    agent { docker { image "${APP_IMAGE_NAME}:${APP_IMAGE_TAG}"; reuseNode true } }
+                    agent { docker { image 'python:3.12-slim'; reuseNode true } }
                     steps {
                         script { 
                             env.FAILED_STAGE = "Backend Unit Tests" 
+                            sh 'pip install --no-cache-dir -r backend/requirements.txt'
                             UnitBackend()
                         }
                     }
@@ -68,6 +60,15 @@ pipeline {
                             sh "cp frontend/reports/frontend-report.xml reports/ || true"
                         }
                     }
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                script { 
+                    env.FAILED_STAGE = "Docker Build"
+                    docker.build("${APP_IMAGE_NAME}:${APP_IMAGE_TAG}", "--build-arg VERSION=${env.APP_IMAGE_TAG} --build-arg GIT_SHA=${env.GIT_SHA} .")
                 }
             }
         }
