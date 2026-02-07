@@ -1,11 +1,12 @@
 import pytest
+import pytest_asyncio
 import os
 from httpx import AsyncClient
 
 # Use the URL provided by the environment (default to localhost for local runs)
 BASE_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
-@pytest.fixture
+@pytest_asyncio.fixture(loop_scope="session")
 async def client():
     async with AsyncClient(base_url=BASE_URL) as ac:
         yield ac

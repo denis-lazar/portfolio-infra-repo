@@ -49,9 +49,11 @@ pipeline {
                             env.FAILED_STAGE = "Code Security Checks"
                             docker.image('python:3.12-slim').inside {
                                 sh """
-                                    pip install --no-cache-dir bandit pip-audit
+                                    export PYTHONUSERBASE=\$(pwd)/.local
+                                    export PATH=\$PYTHONUSERBASE/bin:\$PATH
+                                    pip install --user --no-cache-dir bandit pip-audit
                                     bandit -r backend -s B101 --exclude backend/app/tests_unit,backend/tests
-                                    pip-audit -r backend/requirements.txt
+                                    pip-audit --cache-dir .audit_cache -r backend/requirements.txt
                                 """
                             }
                         }
@@ -268,11 +270,27 @@ def IntegrationTests(){
     sh '''
         export ENV_FILE="$SECRET_FILE"
         docker compose up -d
+        
+        echo "Waiting for app to be ready..."
+        MAX_RETRIES=30
+        COUNT=0
+        until \$(curl --output /dev/null --silent --head --fail http://localhost:8000/api/v1/health); do
+            printf '.'
+            sleep 2
+            COUNT=\$((COUNT+1))
+            if [ \$COUNT -eq \$MAX_RETRIES ]; then
+                echo "App failed to start in time"
+                docker compose logs
+                exit 1
+            fi
+        done
+        echo "App is UP!"
+
         docker compose exec -T app python seed.py
         
-        docker compose --profile test run \
-        --name integration-runner-${BUILD_ID} \
-        -e PYTEST_ADDOPTS="-v -s -o junit_logging=all --junitxml=/reports/integration-report.xml" \
+        docker compose --profile test run \\
+        --name integration-runner-\${BUILD_ID} \\
+        -e PYTEST_ADDOPTS="-v -s -o junit_logging=all --junitxml=/reports/integration-report.xml" \\
         tester pytest --ignore=tests/test_e2e.py --ignore=tests/test_e2e_admin_manager_flow.py
     '''
 }

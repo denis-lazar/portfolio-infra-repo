@@ -1,11 +1,12 @@
 
 import pytest
+import pytest_asyncio
 import os
 from httpx import AsyncClient
 
 BASE_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
-@pytest.fixture
+@pytest_asyncio.fixture(loop_scope="session")
 async def admin_client():
     async with AsyncClient(base_url=BASE_URL) as client:
         # 1. Create an admin user
