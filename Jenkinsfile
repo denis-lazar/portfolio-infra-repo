@@ -290,6 +290,8 @@ def IntegrationTests(){
         
         docker compose --profile test run \\
         --name integration-runner-\${BUILD_ID} \\
+        -e BACKEND_URL=http://app:8000 \\
+        -e NGINX_URL=http://nginx:80 \\
         -e PYTEST_ADDOPTS="-v -s -o junit_logging=all --junitxml=/reports/integration-report.xml" \\
         tester pytest --ignore=tests/test_e2e.py --ignore=tests/test_e2e_admin_manager_flow.py
     '''
@@ -299,9 +301,11 @@ def IntegrationTests(){
 def e2eTests(){
     sh '''
         export ENV_FILE="$SECRET_FILE"
-        docker compose --profile test run \
-        --name e2e-runner-${BUILD_ID} \
-        -e PYTEST_ADDOPTS="-v -s -o junit_logging=all --junitxml=/reports/e2e-report.xml" \
+        docker compose --profile test run \\
+        --name e2e-runner-\${BUILD_ID} \\
+        -e BACKEND_URL=http://app:8000 \\
+        -e NGINX_URL=http://nginx:80 \\
+        -e PYTEST_ADDOPTS="-v -s -o junit_logging=all --junitxml=/reports/e2e-report.xml" \\
         tester pytest tests/test_e2e.py tests/test_e2e_admin_manager_flow.py
     '''
 }
