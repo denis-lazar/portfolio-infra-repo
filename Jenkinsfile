@@ -55,7 +55,8 @@ pipeline {
                                     mkdir -p .pip_cache
                                     pip install --user --no-cache-dir bandit pip-audit
                                     bandit -r backend -s B101 --exclude backend/app/tests_unit,backend/tests
-                                    pip-audit --cache-dir .pip_cache -r backend/requirements.txt
+                                    # Ignore CVE-2024-23342 (ecdsa) as no fix is available on PyPI yet
+                                    pip-audit --cache-dir .pip_cache --ignore-vuln CVE-2024-23342 -r backend/requirements.txt
                                 """
                             }
                         }
