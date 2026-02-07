@@ -19,9 +19,9 @@ pipeline {
     }
 
     stages {
-        stage('Unit Tests') {
+        stage('Initial Checks & Tests') {
             parallel {
-                stage('Backend') {
+                stage('Backend Unit') {
                     agent { docker { image 'python:3.12-slim'; reuseNode true } }
                     steps {
                         script { 
@@ -38,7 +38,8 @@ pipeline {
                         }
                     }
                 }
-                stage('Frontend') {
+
+                stage('Frontend Unit') {
                     agent { docker { image 'node:20-alpine'; reuseNode true } }
                     steps {
                         script { 
@@ -48,9 +49,20 @@ pipeline {
                         }
                     }
                 }
+
+                stage('Code Security') {
+                    agent { docker { image 'python:3.12-slim'; reuseNode true } }
+                    steps {
+                        script {
+                            env.FAILED_STAGE = "Code Security Checks"
+                            runCodeSecurityChecks()
+                        }
+                    }
+                }
             }
         }
-        stage('Version Calcutation') {
+
+        stage('Version Calculation') {
             steps {
                 script { env.FAILED_STAGE = "Initialize" }
                 sh "mkdir -p reports"
@@ -70,7 +82,6 @@ pipeline {
             }
         }
 
-
         stage('Docker Build') {
             steps {
                 script { 
@@ -79,16 +90,28 @@ pipeline {
                 }
             }
         }
-
-        stage('Integration tests') {
-            steps {
-                script { env.FAILED_STAGE = "Integration Tests" }
-                withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]) {
-                    IntegrationTests()
+        stage('Security scan & Integration tests') {
+            parallel {
+                stage('Image Security Scan') {
+                    steps {
+                        script {
+                            env.FAILED_STAGE = "Trivy Image Scan"
+                            docker.image('aquasec/trivy:latest').inside('--entrypoint="" -v /var/run/docker.sock:/var/run/docker.sock') {
+                                sh "trivy image --severity HIGH,CRITICAL --exit-code 1 ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}"
+                            }
+                        }
+                    }
+                }
+                stage('Integration tests') {
+                    steps {
+                        script { env.FAILED_STAGE = "Integration Tests" }
+                        withCredentials([file(credentialsId: 'env-creds-menusync', variable:'SECRET_FILE')]) {
+                            IntegrationTests()
+                        }
+                    }
                 }
             }
         }
-
         stage('E2E tests') {
             steps {
                 script { env.FAILED_STAGE = "E2E Tests" }
@@ -199,6 +222,21 @@ def UnitBackend(){
         backend/app/tests_unit
     """
 }
+
+
+    // Stage: Code security
+def runCodeSecurityChecks() {
+    sh '''#!/bin/bash
+        set -e
+        python3 -m venv venv-security
+        source venv-security/bin/activate
+        pip install bandit pip-audit
+        bandit -r backend --exclude backend/tests
+        pip-audit -r backend/requirements.txt
+    '''
+}
+
+
 
 
 
