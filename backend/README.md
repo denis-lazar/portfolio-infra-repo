@@ -43,14 +43,20 @@ uvicorn app.main:app --reload --port 8000
 ```text
 backend/
 ├── app/
-│   ├── api/v1/         # API endpoints (Auth, Restaurants, Menu)
+│   ├── api/            # API endpoints (Auth, Restaurants, Menu)
 │   ├── core/           # Config, Database connection, Security
 │   ├── models/         # Pydantic models (Schemas)
-│   ├── main.py         # Application entry point
-│   └── websocket.py    # WebSocket connection manager
+│   ├── schemas/        # Request/Response schemas
+│   ├── tests_unit/     # Unit tests for core logic
+│   └── main.py         # Application entry point
 ├── tests/              # Integration and E2E tests
+│   ├── test_auth.py
+│   ├── test_restaurants.py
+│   └── test_e2e.py
+├── pytest.ini
+├── requirements.txt    # Python dependencies
 ├── seed.py             # Script to populate initial data
-└── requirements.txt    # Python dependencies
+└── tests.Dockerfile
 ```
 
 ---

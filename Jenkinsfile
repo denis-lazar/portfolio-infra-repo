@@ -203,7 +203,7 @@ pipeline {
             }
             sh '''
                 docker compose down -v --remove-orphans || true
-                docker image prune -f || true
+                docker image prune -af || true
             '''
             cleanWs()
         }

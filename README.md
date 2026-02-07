@@ -2,7 +2,31 @@
 
 This directory contains the core source code for the MenuSync platform, including the frontend, backend, and reverse proxy configurations.
 
-![Application Screenshots](https://via.placeholder.com/800x300?text=MenuSync+App+Interface+Screenshots)
+## 📸 Screenshots
+
+### 🖥️ User Interface
+| Login / Register | Restaurants Discovery | Restaurant Menu |
+| :---: | :---: | :---: |
+| ![Auth Pages](https://via.placeholder.com/300x200?text=Login+and+Register) | ![Restaurants Page](https://via.placeholder.com/300x200?text=Restaurants+Page) | ![Menu View](https://via.placeholder.com/300x200?text=Restaurant+Menu) |
+
+### 📊 Observability (Monitoring & Logging)
+| Grafana Metrics | Kibana Logs |
+| :---: | :---: |
+| ![Grafana Dashboard](https://via.placeholder.com/450x250?text=Grafana+Monitoring) | ![Kibana Logs](https://via.placeholder.com/450x250?text=Kibana+Logging) |
+
+### 🚀 CI/CD Pipeline & GitOps
+| Jenkins Pipeline Flow | ArgoCD Application Tiles |
+| :---: | :---: |
+| ![Jenkins Pipeline](https://via.placeholder.com/450x250?text=Jenkins+Pipeline) | ![ArgoCD Apps](https://via.placeholder.com/450x250?text=ArgoCD+Applications) |
+
+| Pipeline Alerts (Success/Failure) | ArgoCD Sync Status |
+| :---: | :---: |
+| ![Jenkins Alerts](https://via.placeholder.com/450x250?text=Success+and+Failure+Alerts) | ![ArgoCD Sync](https://via.placeholder.com/450x250?text=ArgoCD+Sync+Status) |
+
+### 🔔 Notifications & Alerts
+| Telegram Notifications | Slack Notifications |
+| :---: | :---: |
+| ![Telegram Alerts](https://via.placeholder.com/450x250?text=Telegram+Alerts) | ![Slack Alerts](https://via.placeholder.com/450x250?text=Slack+Alerts) |
 
 ## 📦 Components
 
@@ -69,6 +93,11 @@ npm install
 npm test
 ```
 
+### 🛡️ Security Scanning
+We integrate security testing directly into our CI/CD workflow:
+- **Bandit:** Scans the Python backend for security misconfigurations and insecure code patterns.
+- **Trivy:** Scans container images and project dependencies for known vulnerabilities (CVEs).
+
 ---
 
 ## 📡 Real-Time Sync Logic
@@ -80,6 +109,46 @@ npm test
 5. **WebSocket Push:** All connected clients (customers) receive the update instantly through an open WebSocket connection.
 
 ---
+
+## 📂 Project Structure
+
+```text
+Application/
+├── backend
+│   ├── app
+│   ├── pytest.ini
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── seed.py
+│   ├── tests
+│   └── tests.Dockerfile
+├── docker-compose.yml
+├── Dockerfile
+├── frontend
+│   ├── App.tsx
+│   ├── components
+│   ├── constants.ts
+│   ├── index.html
+│   ├── index.tsx
+│   ├── menusync
+│   ├── metadata.json
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── public
+│   ├── README.md
+│   ├── reports
+│   ├── services
+│   ├── test-setup.ts
+│   ├── tsconfig.json
+│   ├── types.ts
+│   ├── vite.config.ts
+│   └── vitest.config.ts
+├── Jenkinsfile
+├── Jenkins-key-pair.pem
+└── nginx
+    ├── Dockerfile
+    └── nginx.conf
+```
 
 ## 📂 Sub-Directories
 

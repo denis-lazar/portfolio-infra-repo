@@ -2,7 +2,15 @@
 
 The MenuSync frontend is a responsive, real-time web application built with **React** and **TypeScript**. It serves two primary user journeys: the **Diner (Customer)** and the **Officiant (Manager)**.
 
-![Frontend UI](https://via.placeholder.com/800x400?text=MenuSync+Frontend+UI+Dashboard)
+## 📸 Screenshots
+
+| User Interface | Mobile View |
+| :---: | :---: |
+| ![Frontend UI](https://via.placeholder.com/400x250?text=Frontend+UI+Dashboard) | ![Mobile View](https://via.placeholder.com/400x250?text=Mobile+View) |
+
+| Availability Badges | Real-time Updates |
+| :---: | :---: |
+| ![Availability Badges](https://via.placeholder.com/400x250?text=Availability+Badges) | ![Real-time Updates](https://via.placeholder.com/400x250?text=Real-time+Updates) |
 
 ## 🛠️ Tech Stack
 
@@ -40,13 +48,31 @@ The app will be available at `http://localhost:3000`.
 
 ```text
 frontend/
-├── components/         # Reusable UI components (Dashboard, Map, Cards)
+├── App.tsx
+├── components/         # Reusable UI components
+│   ├── AdminDashboard.tsx
+│   ├── AvailabilityBadge.tsx
+│   ├── Header.tsx
+│   ├── LoginView.tsx
+│   ├── ManagerPanel.tsx
+│   ├── MapView.tsx
+│   ├── MenuView.tsx
+│   ├── ProfileView.tsx
+│   └── RestaurantCard.tsx
+├── constants.ts
+├── index.html
+├── index.tsx
+├── menusync/
+├── metadata.json
+├── package.json
+├── public/             # Static assets
+├── reports/
 ├── services/           # API and WebSocket service logic
-├── public/             # Static assets (images, favicon)
-├── App.tsx             # Main application entry and routing
-├── index.tsx           # React DOM rendering
-├── types.ts            # Global TypeScript interfaces
-└── vite.config.ts      # Vite configuration
+├── test-setup.ts
+├── tsconfig.json
+├── types.ts
+├── vite.config.ts
+└── vitest.config.ts
 ```
 
 ### Key Components
