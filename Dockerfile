@@ -23,8 +23,11 @@ ARG VERSION
 LABEL org.opencontainers.image.revision=$GIT_SHA
 LABEL org.opencontainers.image.version=$VERSION
 
-# FIX: Added 'apt-get upgrade -y' to patch OpenSSL and SQLite vulnerabilities
+# FIX: Added 'apt-get upgrade -y' to patch OS vulnerabilities
 RUN apt-get update && apt-get upgrade -y && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Patch Python build tools vulnerabilities
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

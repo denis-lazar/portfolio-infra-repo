@@ -103,7 +103,12 @@ pipeline {
                                 sh """
                                     export TRIVY_CACHE_DIR=\$(pwd)/.trivy_cache
                                     mkdir -p .trivy_cache
-                                    trivy image --cache-dir .trivy_cache --severity HIGH,CRITICAL --exit-code 1 ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
+                                    # Ignore unfixable vulnerabilities:
+                                    # CVE-2026-0861: glibc (No fix version available)
+                                    # CVE-2024-23342: ecdsa (No fix version available)
+                                    trivy image --cache-dir .trivy_cache --severity HIGH,CRITICAL --exit-code 1 \
+                                    --ignore-vuln CVE-2026-0861,CVE-2024-23342 \
+                                    ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
                                 """
                             }
                         }
