@@ -217,45 +217,15 @@ def UnitFrontend(){
 
 
 def UnitBackend(){
-
-
-
     sh """
-
-
-
         python -m venv venv
-
-
-
         . venv/bin/activate
-
-
-
         pip install --no-cache-dir -r backend/requirements.txt
-
-
-
         APP_VERSION=${env.APP_IMAGE_TAG} PYTHONPATH=backend ./venv/bin/python -m pytest -v -s -o junit_logging=all \
-
-
-
         --junitxml=reports/unit-report.xml \
-
-
-
         --cov=app --cov-report=xml:reports/coverage.xml \
-
-
-
         backend/app/tests_unit
-
-
-
     """
-
-
-
 }
 
 

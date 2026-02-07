@@ -6,7 +6,7 @@ from httpx import AsyncClient
 
 BASE_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
-@pytest_asyncio.fixture(loop_scope="session")
+@pytest_asyncio.fixture(loop_scope="function")
 async def customer_client():
     async with AsyncClient(base_url=BASE_URL) as client:
         email = f"cust_rbac_{os.urandom(2).hex()}@example.com"

@@ -6,7 +6,7 @@ from httpx import AsyncClient
 
 BASE_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
-@pytest_asyncio.fixture(loop_scope="session")
+@pytest_asyncio.fixture(loop_scope="function")
 async def manager_client():
     async with AsyncClient(base_url=BASE_URL) as client:
         # 1. Create a manager user
