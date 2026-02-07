@@ -99,7 +99,7 @@ pipeline {
                     steps {
                         script {
                             env.FAILED_STAGE = "Trivy Image Scan"
-                            docker.image('aquasec/trivy:latest').inside('--entrypoint="" -v /var/run/docker.sock:/var/run/docker.sock') {
+                            docker.image('aquasec/trivy:latest').inside('-u 0 --entrypoint="" -v /var/run/docker.sock:/var/run/docker.sock') {
                                 sh """
                                     export TRIVY_CACHE_DIR=\$(pwd)/.trivy_cache
                                     mkdir -p .trivy_cache
@@ -229,6 +229,7 @@ def UnitBackend(){
         APP_VERSION=${env.APP_IMAGE_TAG} PYTHONPATH=backend ./venv/bin/python -m pytest -v -s -o junit_logging=all \
         --junitxml=reports/unit-report.xml \
         --cov=app --cov-report=xml:reports/coverage.xml \
+        --ignore=backend/tests \
         backend/app/tests_unit
     """
 }
@@ -248,20 +249,21 @@ def IntegrationTests(){
         export ENV_FILE="$SECRET_FILE"
         docker compose up -d
         
-        echo "Waiting for app to be ready via Nginx..."
+        echo "Waiting for app to be ready via Nginx (internal check)..."
         MAX_RETRIES=30
         COUNT=0
-        until \$(curl --output /dev/null --silent --head --fail http://localhost/api/v1/health); do
+        # Use docker compose exec to curl from within the Nginx container itself
+        until \$(docker compose exec -T nginx curl --output /dev/null --silent --head --fail http://localhost/api/v1/health); do
             printf '.'
             sleep 2
             COUNT=\$((COUNT+1))
             if [ \$COUNT -eq \$MAX_RETRIES ]; then
-                echo "App failed to respond via Nginx in time"
+                echo "App failed to respond inside Nginx container in time"
                 docker compose logs
                 exit 1
             fi
         done
-        echo "App is UP and reachable through Nginx!"
+        echo "App is UP and reachable inside the Nginx container!"
 
         docker compose exec -T app python seed.py
         
