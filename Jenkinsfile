@@ -100,7 +100,11 @@ pipeline {
                         script {
                             env.FAILED_STAGE = "Trivy Image Scan"
                             docker.image('aquasec/trivy:latest').inside('--entrypoint="" -v /var/run/docker.sock:/var/run/docker.sock') {
-                                sh "trivy image --severity HIGH,CRITICAL --exit-code 1 ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}"
+                                sh """
+                                    export TRIVY_CACHE_DIR=\$(pwd)/.trivy_cache
+                                    mkdir -p .trivy_cache
+                                    trivy image --cache-dir .trivy_cache --severity HIGH,CRITICAL --exit-code 1 ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
+                                """
                             }
                         }
                     }
@@ -244,20 +248,20 @@ def IntegrationTests(){
         export ENV_FILE="$SECRET_FILE"
         docker compose up -d
         
-        echo "Waiting for app to be ready..."
+        echo "Waiting for app to be ready via Nginx..."
         MAX_RETRIES=30
         COUNT=0
-        until \$(curl --output /dev/null --silent --head --fail http://localhost:8000/api/v1/health); do
+        until \$(curl --output /dev/null --silent --head --fail http://localhost/api/v1/health); do
             printf '.'
             sleep 2
             COUNT=\$((COUNT+1))
             if [ \$COUNT -eq \$MAX_RETRIES ]; then
-                echo "App failed to start in time"
+                echo "App failed to respond via Nginx in time"
                 docker compose logs
                 exit 1
             fi
         done
-        echo "App is UP!"
+        echo "App is UP and reachable through Nginx!"
 
         docker compose exec -T app python seed.py
         
