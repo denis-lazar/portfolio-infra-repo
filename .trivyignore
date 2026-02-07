@@ -1,0 +1,8 @@
+# glibc: No fix available for Debian 13.3 yet
+CVE-2026-0861
+# ecdsa: No fix available on PyPI yet
+CVE-2024-23342
+# jaraco.context: Path traversal via malicious tar archives
+CVE-2026-23949
+# wheel: Privilege Escalation via malicious wheel file
+CVE-2026-24049

@@ -107,7 +107,6 @@ pipeline {
                                     # CVE-2026-0861: glibc (No fix version available)
                                     # CVE-2024-23342: ecdsa (No fix version available)
                                     trivy image --cache-dir .trivy_cache --severity HIGH,CRITICAL --exit-code 1 \
-                                    --ignore-vuln CVE-2026-0861,CVE-2024-23342 \
                                     ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
                                 """
                             }
@@ -258,7 +257,7 @@ def IntegrationTests(){
         MAX_RETRIES=30
         COUNT=0
         # Use docker compose exec to curl from within the Nginx container itself
-        until \$(docker compose exec -T nginx curl --output /dev/null --silent --head --fail http://localhost/api/v1/health); do
+        until \$(docker compose exec -T nginx curl --output /dev/null --silent --fail http://localhost/api/v1/health); do
             printf '.'
             sleep 2
             COUNT=\$((COUNT+1))
