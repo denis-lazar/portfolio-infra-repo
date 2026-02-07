@@ -51,9 +51,11 @@ pipeline {
                                 sh """
                                     export PYTHONUSERBASE=\$(pwd)/.local
                                     export PATH=\$PYTHONUSERBASE/bin:\$PATH
+                                    export PIP_CACHE_DIR=\$(pwd)/.pip_cache
+                                    mkdir -p .pip_cache
                                     pip install --user --no-cache-dir bandit pip-audit
                                     bandit -r backend -s B101 --exclude backend/app/tests_unit,backend/tests
-                                    pip-audit --cache-dir .audit_cache -r backend/requirements.txt
+                                    pip-audit --cache-dir .pip_cache -r backend/requirements.txt
                                 """
                             }
                         }
