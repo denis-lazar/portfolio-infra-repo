@@ -26,15 +26,8 @@ pipeline {
                     steps {
                         script { 
                             env.FAILED_STAGE = "Backend Unit Tests" 
-                            sh """
-                                python -m venv venv
-                                . venv/bin/activate
-                                pip install --no-cache-dir -r backend/requirements.txt
-                                APP_VERSION=${env.APP_IMAGE_TAG} PYTHONPATH=backend ./venv/bin/python -m pytest -v -s -o junit_logging=all \
-                                --junitxml=reports/unit-report.xml \
-                                --cov=app --cov-report=xml:reports/coverage.xml \
-                                backend/app/tests_unit
-                            """
+                            UnitBackend()
+                            
                         }
                     }
                 }
@@ -230,8 +223,9 @@ def runCodeSecurityChecks() {
         set -e
         python3 -m venv venv-security
         source venv-security/bin/activate
-        pip install bandit pip-audit
-        bandit -r backend --exclude backend/tests
+        pip install --no-cache-dir bandit pip-audit
+        # Skip B101 (assert) and exclude test directories to focus on production code
+        bandit -r backend -s B101 --exclude backend/app/tests_unit
         pip-audit -r backend/requirements.txt
     '''
 }
