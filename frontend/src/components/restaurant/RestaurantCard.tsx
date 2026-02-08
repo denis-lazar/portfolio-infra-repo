@@ -1,5 +1,5 @@
 import React from 'react';
-import { Restaurant, User } from '../types';
+import { Restaurant, User } from '../../types';
 
 interface RestaurantCardProps {
   restaurant: Restaurant;

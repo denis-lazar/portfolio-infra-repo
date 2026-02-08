@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { Restaurant, MenuItem, User, Review } from '../types';
-import { getUnavailableItemHelp } from '../services/geminiService';
+import { Restaurant, MenuItem, User, Review } from '../../types';
+import { getUnavailableItemHelp } from '../../services/geminiService';
 import AvailabilityBadge from './AvailabilityBadge';
-import { api } from '../services/api';
+import { api } from '../../services/api';
 
 interface MenuViewProps {
   restaurant: Restaurant;

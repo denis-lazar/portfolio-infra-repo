@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import AdminDashboard from './AdminDashboard';
 import React from 'react';
-import { Restaurant, User } from '../types';
+import { Restaurant, User } from '../../types';
 
 const mockRestaurants: Restaurant[] = [
   {

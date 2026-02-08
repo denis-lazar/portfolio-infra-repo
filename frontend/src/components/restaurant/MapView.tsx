@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Tooltip, ZoomControl } from 'react-leaflet';
 import L from 'leaflet';
-import { Restaurant } from '../types';
+import { Restaurant } from '../../types';
 import 'leaflet/dist/leaflet.css';
 
 // Custom Premium Marker Creator

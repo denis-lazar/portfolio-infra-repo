@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { User, Restaurant } from '../types';
+import { User, Restaurant } from '../../types';
 
 interface ProfileViewProps {
   user: User;

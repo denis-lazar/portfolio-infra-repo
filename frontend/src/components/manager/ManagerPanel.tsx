@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import { Restaurant, MenuItem, User, Ingredient } from '../types';
-import MenuView from './MenuView';
-import { api } from '../services/api';
+import { Restaurant, MenuItem, User, Ingredient } from '../../types';
+import MenuView from '../restaurant/MenuView';
+import { api } from '../../services/api';
 
 interface ManagerPanelProps {
   restaurant: Restaurant;

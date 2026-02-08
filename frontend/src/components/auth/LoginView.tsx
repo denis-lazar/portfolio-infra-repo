@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { UserRole, User } from '../types';
-import { api } from '../services/api';
+import { UserRole, User } from '../../types';
+import { api } from '../../services/api';
 
 interface LoginViewProps {
   onLoginSuccess: (user: User) => void;

@@ -127,10 +127,19 @@ Application/
 ├── docker-compose.yml  # Local dev orchestration
 ├── Dockerfile          # Multi-stage production build
 ├── frontend            # React frontend application
-│   ├── components      # Reusable UI elements
+│   ├── src             # All source code
+│   │   ├── components  # Feature-organized UI components
+│   │   │   ├── auth/           # Authentication components
+│   │   │   ├── restaurant/     # Restaurant & menu components
+│   │   │   ├── manager/        # Manager control panel
+│   │   │   ├── admin/          # Admin dashboard
+│   │   │   ├── profile/        # User profile components
+│   │   │   └── layout/         # Navigation & layout
+│   │   ├── services    # API/WebSocket logic
+│   │   ├── types.ts    # Global TypeScript types
+│   │   └── constants.ts # App configuration
 │   ├── public          # Static assets
 │   ├── README.md       # Frontend documentation
-│   ├── services        # API/WebSocket logic
 │   └── vite.config.ts  # Build tool configuration
 ├── Jenkinsfile         # CI/CD pipeline definition
 ├── Jenkins-key-pair.pem # Deployment SSH key

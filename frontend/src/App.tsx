@@ -1,14 +1,14 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { User, Restaurant } from './types';
-import Header from './components/Header';
-import RestaurantCard from './components/RestaurantCard';
-import MenuView from './components/MenuView';
-import ManagerPanel from './components/ManagerPanel';
-import MapView from './components/MapView';
-import LoginView from './components/LoginView';
-import ProfileView from './components/ProfileView';
-import AdminDashboard from './components/AdminDashboard';
+import Header from './components/layout/Header';
+import RestaurantCard from './components/restaurant/RestaurantCard';
+import MenuView from './components/restaurant/MenuView';
+import ManagerPanel from './components/manager/ManagerPanel';
+import MapView from './components/restaurant/MapView';
+import LoginView from './components/auth/LoginView';
+import ProfileView from './components/profile/ProfileView';
+import AdminDashboard from './components/admin/AdminDashboard';
 import { api } from './services/api';
 
 const ALL_TAGS = ['All', 'Kosher', 'Meat', 'Vegan', 'Healthy', 'Italian', 'American', 'Sushi', 'Japanese'];

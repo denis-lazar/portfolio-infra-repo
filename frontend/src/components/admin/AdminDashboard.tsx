@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { Restaurant, User } from '../types';
-import { api } from '../services/api';
+import { Restaurant, User } from '../../types';
+import { api } from '../../services/api';
 
 interface AdminDashboardProps {
   restaurants: Restaurant[];

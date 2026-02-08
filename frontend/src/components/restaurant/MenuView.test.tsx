@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import MenuView from './MenuView';
 import React from 'react';
-import { Restaurant, User } from '../types';
+import { Restaurant, User } from '../../types';
 
 const mockRestaurant: Restaurant = {
   id: 'r1',
