@@ -7,7 +7,7 @@ This directory contains the core source code for the MenuSync platform, includin
 ### 🖥️ User Interface
 |           Login / Register           |        Restaurants Discovery         |                                              Restaurant Menu                                               |
 | :----------------------------------: | :----------------------------------: | :--------------------------------------------------------------------------------------------------------: |
-| ![Login](docs/images/Pasted%20image%2020260208012825.png) | ![Search](docs/images/Pasted%20image%2020260208012909.png) | ![Menu](docs/images/Pasted%20image%2020260208012929.png) |
+| ![Login](docs/images/home-page.png) | ![Search](docs/images/Pasted%20image%2020260208012909.png) | ![Menu](docs/images/restaurant-menu.png) |
 | ![Register](docs/images/Pasted%20image%2020260208012839.png) |                                      |                                                                                                            |
 
 ### 📊 Observability (Monitoring & Logging)
