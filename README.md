@@ -11,26 +11,24 @@ This directory contains the core source code for the MenuSync platform, includin
 | ![Register](docs/images/Pasted%20image%2020260208012839.png) |                                      |                                                                                                            |
 
 ### 📊 Observability (Monitoring & Logging)
-|               Grafana Metrics                |             Kibana Logs              |
-| :------------------------------------------: | :----------------------------------: |
-| ![Grafana](docs/images/Screenshot%20from%202026-02-04%2004-59-47.png) | ![Kibana](docs/images/Pasted%20image%2020260208011908.png) |
-| ![Metrics](docs/images/Pasted%20image%2020260208012644.png) |                                      |
+| Grafana System Metrics | Kibana Log Analysis | Grafana Application Metrics |
+| :---: | :---: | :---: |
+| ![Grafana 1](docs/images/Screenshot%20from%202026-02-04%2004-59-47.png) | ![Kibana](docs/images/Pasted%20image%2020260208011908.png) | ![Grafana 2](docs/images/Pasted%20image%2020260208012644.png) |
 
 ### 🚀 CI/CD Pipeline & GitOps
-|        Jenkins Pipeline Flow         |       ArgoCD Application Tiles       |
-| :----------------------------------: | :----------------------------------: |
-| ![Jenkins](docs/images/Pasted%20image%2020260208010302.png) | ![ArgoCD](docs/images/Argocd%20Apps.png) |
+| Jenkins Pipeline Flow | ArgoCD Application Tiles |
+| :---: | :---: |
+| ![Jenkins Pipeline](docs/images/Pasted%20image%2020260208010302.png) | ![ArgoCD Apps](docs/images/Argocd%20Apps.png) |
 
-|      Pipeline Alerts (Success/Failure)       |          ArgoCD Sync Status          |
-| :------------------------------------------: | :----------------------------------: |
+| Pipeline Success/Failure Alerts | ArgoCD Sync Status |
+| :---: | :---: |
 | ![Success](docs/images/Screenshot%20from%202026-02-04%2021-53-10.png) | ![ArgoCD Sync](https://via.placeholder.com/450x250?text=ArgoCD+Sync+Status) |
-| ![Failure](docs/images/Screenshot%20from%202026-02-04%2021-53-21.png) |                                      |
 
 ### 🔔 Notifications & Alerts
-|            Telegram Notifications            |                                                Slack Notifications                                                 |
-| :------------------------------------------: | :----------------------------------------------------------------------------------------------------------------: |
-| ![Telegram](docs/images/Screenshot%20from%202026-02-08%2001-23-40.png) | ![Slack](docs/images/Screenshot%20from%202026-02-08%2001-23-28.png) |
-| ![Alerts](docs/images/Screenshot%20from%202026-02-08%2001-24-25.png) | ![Notifications](docs/images/Screenshot%20from%202026-02-08%2001-24-19.png) |
+| Telegram Pipeline Alerts | Slack Deployment Alerts |
+| :---: | :---: |
+| ![Telegram 1](docs/images/Screenshot%20from%202026-02-08%2001-23-40.png) | ![Slack 1](docs/images/Screenshot%20from%202026-02-08%2001-23-28.png) |
+| ![Telegram 2](docs/images/Screenshot%20from%202026-02-08%2001-24-25.png) | ![Slack 2](docs/images/Screenshot%20from%202026-02-08%2001-24-19.png) |
 
 ## 📦 Components
 
