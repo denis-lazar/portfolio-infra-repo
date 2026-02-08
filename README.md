@@ -20,9 +20,9 @@ This directory contains the core source code for the MenuSync platform, includin
 | :---: | :---: |
 | ![Jenkins Pipeline](docs/images/Pasted%20image%2020260208010302.png) | ![ArgoCD Apps](docs/images/Argocd%20Apps.png) |
 
-| Pipeline Success/Failure Alerts | ArgoCD Sync Status |
-| :---: | :---: |
-| ![Success](docs/images/Screenshot%20from%202026-02-04%2021-53-10.png) ![Failure](docs/images/Screenshot%20from%202026-02-04%2021-53-21.png) | ![ArgoCD Sync](https://via.placeholder.com/450x250?text=ArgoCD+Sync+Status) |
+| Pipeline Success/Failure Alerts |
+| :---: |
+| ![Success](docs/images/Screenshot%20from%202026-02-04%2021-53-10.png) ![Failure](docs/images/Screenshot%20from%202026-02-04%2021-53-21.png) |
 
 ### 🔔 Notifications & Alerts
 | Telegram Pipeline Alerts | Slack Deployment Alerts |
