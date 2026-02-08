@@ -2,7 +2,7 @@
 
 The MenuSync frontend is a responsive, real-time web application built with **React** and **TypeScript**. It serves two primary user journeys: the **Diner (Customer)** and the **Officiant (Manager)**.
 
-![Frontend UI](https://via.placeholder.com/800x400?text=MenuSync+Frontend+UI+Dashboard)
+![Frontend](docs/images/Pasted%20image%2020260208012909.png)
 
 ## 🛠️ Tech Stack
 

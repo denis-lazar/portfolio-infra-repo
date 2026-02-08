@@ -69,7 +69,7 @@ backend/
 | **PUT** | `/api/v1/availability` | Update ingredient/item status (Manager only). |
 | **WS** | `/ws/{client_id}` | WebSocket connection for real-time updates. |
 
-![[Pasted image 20260208000348.png]]
+![Backend](docs/images/Pasted%20image%2020260208000348.png)
 
 
 ---

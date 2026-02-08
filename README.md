@@ -7,30 +7,30 @@ This directory contains the core source code for the MenuSync platform, includin
 ### 🖥️ User Interface
 |           Login / Register           |        Restaurants Discovery         |                                              Restaurant Menu                                               |
 | :----------------------------------: | :----------------------------------: | :--------------------------------------------------------------------------------------------------------: |
-| ![[Pasted image 20260208012825.png]] | ![[Pasted image 20260208012909.png]] | ![Menu View](https://via.placeholder.com/300x200?text=Restaurant+Menu)![[Pasted image 20260208012929.png]] |
-| ![[Pasted image 20260208012839.png]] |                                      |                                                                                                            |
+| ![Login](docs/images/Pasted%20image%2020260208012825.png) | ![Search](docs/images/Pasted%20image%2020260208012909.png) | ![Menu](docs/images/Pasted%20image%2020260208012929.png) |
+| ![Register](docs/images/Pasted%20image%2020260208012839.png) |                                      |                                                                                                            |
 
 ### 📊 Observability (Monitoring & Logging)
 |               Grafana Metrics                |             Kibana Logs              |
 | :------------------------------------------: | :----------------------------------: |
-| ![[Screenshot from 2026-02-04 04-59-47.png]] | ![[Pasted image 20260208011908.png]] |
-|     ![[Pasted image 20260208012644.png]]     |                                      |
+| ![Grafana](docs/images/Screenshot%20from%202026-02-04%2004-59-47.png) | ![Kibana](docs/images/Pasted%20image%2020260208011908.png) |
+| ![Metrics](docs/images/Pasted%20image%2020260208012644.png) |                                      |
 
 ### 🚀 CI/CD Pipeline & GitOps
 |        Jenkins Pipeline Flow         |       ArgoCD Application Tiles       |
 | :----------------------------------: | :----------------------------------: |
-| ![[Pasted image 20260208010302.png]] | ![ArgoCD Apps](https://via.placeholder.com/450x250?text=ArgoCD+Applications) |
+| ![Jenkins](docs/images/Pasted%20image%2020260208010302.png) | ![ArgoCD](docs/images/Argocd%20Apps.png) |
 
 |      Pipeline Alerts (Success/Failure)       |          ArgoCD Sync Status          |
 | :------------------------------------------: | :----------------------------------: |
-| ![[Screenshot from 2026-02-04 21-53-10.png]] | ![ArgoCD Sync](https://via.placeholder.com/450x250?text=ArgoCD+Sync+Status) |
-| ![[Screenshot from 2026-02-04 21-53-21.png]] |                                      |
+| ![Success](docs/images/Screenshot%20from%202026-02-04%2021-53-10.png) | ![ArgoCD Sync](https://via.placeholder.com/450x250?text=ArgoCD+Sync+Status) |
+| ![Failure](docs/images/Screenshot%20from%202026-02-04%2021-53-21.png) |                                      |
 
 ### 🔔 Notifications & Alerts
 |            Telegram Notifications            |                                                Slack Notifications                                                 |
 | :------------------------------------------: | :----------------------------------------------------------------------------------------------------------------: |
-| ![[Screenshot from 2026-02-08 01-23-40.png]] | ![Slack Alerts](https://via.placeholder.com/450x250?text=Slack+Alerts)![[Screenshot from 2026-02-08 01-23-28.png]] |
-| ![[Screenshot from 2026-02-08 01-24-25.png]] |                                    ![[Screenshot from 2026-02-08 01-24-19.png]]                                    |
+| ![Telegram](docs/images/Screenshot%20from%202026-02-08%2001-23-40.png) | ![Slack](docs/images/Screenshot%20from%202026-02-08%2001-23-28.png) |
+| ![Alerts](docs/images/Screenshot%20from%202026-02-08%2001-24-25.png) | ![Notifications](docs/images/Screenshot%20from%202026-02-08%2001-24-19.png) |
 
 ## 📦 Components
 
