@@ -2,15 +2,7 @@
 
 The MenuSync frontend is a responsive, real-time web application built with **React** and **TypeScript**. It serves two primary user journeys: the **Diner (Customer)** and the **Officiant (Manager)**.
 
-## 📸 Screenshots
-
-| User Interface | Mobile View |
-| :---: | :---: |
-| ![Frontend UI](https://via.placeholder.com/400x250?text=Frontend+UI+Dashboard) | ![Mobile View](https://via.placeholder.com/400x250?text=Mobile+View) |
-
-| Availability Badges | Real-time Updates |
-| :---: | :---: |
-| ![Availability Badges](https://via.placeholder.com/400x250?text=Availability+Badges) | ![Real-time Updates](https://via.placeholder.com/400x250?text=Real-time+Updates) |
+![Frontend UI](https://via.placeholder.com/800x400?text=MenuSync+Frontend+UI+Dashboard)
 
 ## 🛠️ Tech Stack
 
@@ -48,31 +40,33 @@ The app will be available at `http://localhost:3000`.
 
 ```text
 frontend/
-├── App.tsx
+├── App.tsx             # Main routing and entry component
 ├── components/         # Reusable UI components
-│   ├── AdminDashboard.tsx
-│   ├── AvailabilityBadge.tsx
-│   ├── Header.tsx
-│   ├── LoginView.tsx
-│   ├── ManagerPanel.tsx
-│   ├── MapView.tsx
-│   ├── MenuView.tsx
-│   ├── ProfileView.tsx
-│   └── RestaurantCard.tsx
-├── constants.ts
-├── index.html
-├── index.tsx
-├── menusync/
-├── metadata.json
-├── package.json
-├── public/             # Static assets
-├── reports/
-├── services/           # API and WebSocket service logic
-├── test-setup.ts
-├── tsconfig.json
-├── types.ts
-├── vite.config.ts
-└── vitest.config.ts
+│   ├── AdminDashboard.tsx # Manager availability controls
+│   ├── AvailabilityBadge.tsx # Real-time status indicator
+│   ├── Header.tsx      # Navigation bar
+│   ├── LoginView.tsx   # Authentication UI
+│   ├── ManagerPanel.tsx # Admin utility panel
+│   ├── MapView.tsx      # Restaurant discovery map
+│   ├── MenuView.tsx     # Digital menu display
+│   ├── ProfileView.tsx  # User account details
+│   └── RestaurantCard.tsx # Summary card for search results
+├── constants.ts        # Global config & API URLs
+├── index.html          # HTML entry point
+├── index.tsx           # React DOM bootstrap
+├── menusync/           # Branding & legacy assets
+├── metadata.json       # App manifest data
+├── package.json        # Dependencies & scripts
+├── public/             # Static assets (favicons, icons)
+├── reports/            # Test & coverage reports
+├── services/           # Business logic & communication
+│   ├── api.ts          # REST client (Axios)
+│   └── geminiService.ts # AI assistant integration
+├── test-setup.ts       # Vitest configuration
+├── tsconfig.json       # TypeScript compiler settings
+├── types.ts            # Global TS interfaces/types
+├── vite.config.ts      # Build system config
+└── vitest.config.ts    # Unit test runner config
 ```
 
 ### Key Components
@@ -113,3 +107,5 @@ The frontend is built into static assets using:
 npm run build
 ```
 The resulting `dist/` folder is served by Nginx in the production cluster.
+
+

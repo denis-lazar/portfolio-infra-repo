@@ -2,7 +2,6 @@
 
 The MenuSync backend is a high-performance API service built with **FastAPI**. It handles complex business logic, real-time synchronization via WebSockets, and persistent data storage in MongoDB.
 
-![Backend API](https://via.placeholder.com/800x200?text=MenuSync+FastAPI+Backend)
 
 ## 🛠️ Tech Stack
 
@@ -43,20 +42,20 @@ uvicorn app.main:app --reload --port 8000
 ```text
 backend/
 ├── app/
-│   ├── api/            # API endpoints (Auth, Restaurants, Menu)
-│   ├── core/           # Config, Database connection, Security
-│   ├── models/         # Pydantic models (Schemas)
-│   ├── schemas/        # Request/Response schemas
-│   ├── tests_unit/     # Unit tests for core logic
-│   └── main.py         # Application entry point
-├── tests/              # Integration and E2E tests
-│   ├── test_auth.py
-│   ├── test_restaurants.py
-│   └── test_e2e.py
-├── pytest.ini
-├── requirements.txt    # Python dependencies
-├── seed.py             # Script to populate initial data
-└── tests.Dockerfile
+│   ├── api/            # REST API controllers & routes
+│   ├── core/           # Config, security (JWT), & DB sessions
+│   ├── models/         # Pydantic/Motor data models
+│   ├── schemas/        # Request/Response validation
+│   ├── tests_unit/     # Isolated logic tests
+│   └── main.py         # FastAPI application entry
+├── tests/              # System & Integration tests
+│   ├── test_auth.py    # Login & Role verification
+│   ├── test_restaurants.py # Menu CRUD operations
+│   └── test_e2e.py     # Full sync flow validation
+├── pytest.ini          # Test runner configuration
+├── requirements.txt    # Python package manifest
+├── seed.py             # Database initialization script
+└── tests.Dockerfile    # Test runner container
 ```
 
 ---
@@ -69,6 +68,9 @@ backend/
 | **GET** | `/api/v1/restaurants` | List all available restaurants. |
 | **PUT** | `/api/v1/availability` | Update ingredient/item status (Manager only). |
 | **WS** | `/ws/{client_id}` | WebSocket connection for real-time updates. |
+
+![[Pasted image 20260208000348.png]]
+
 
 ---
 

@@ -5,33 +5,37 @@ This directory contains the core source code for the MenuSync platform, includin
 ## 📸 Screenshots
 
 ### 🖥️ User Interface
-| Login / Register | Restaurants Discovery | Restaurant Menu |
-| :---: | :---: | :---: |
-| ![Auth Pages](https://via.placeholder.com/300x200?text=Login+and+Register) | ![Restaurants Page](https://via.placeholder.com/300x200?text=Restaurants+Page) | ![Menu View](https://via.placeholder.com/300x200?text=Restaurant+Menu) |
+|           Login / Register           |        Restaurants Discovery         |                                              Restaurant Menu                                               |
+| :----------------------------------: | :----------------------------------: | :--------------------------------------------------------------------------------------------------------: |
+| ![[Pasted image 20260208012825.png]] | ![[Pasted image 20260208012909.png]] | ![Menu View](https://via.placeholder.com/300x200?text=Restaurant+Menu)![[Pasted image 20260208012929.png]] |
+| ![[Pasted image 20260208012839.png]] |                                      |                                                                                                            |
 
 ### 📊 Observability (Monitoring & Logging)
-| Grafana Metrics | Kibana Logs |
-| :---: | :---: |
-| ![Grafana Dashboard](https://via.placeholder.com/450x250?text=Grafana+Monitoring) | ![Kibana Logs](https://via.placeholder.com/450x250?text=Kibana+Logging) |
+|               Grafana Metrics                |             Kibana Logs              |
+| :------------------------------------------: | :----------------------------------: |
+| ![[Screenshot from 2026-02-04 04-59-47.png]] | ![[Pasted image 20260208011908.png]] |
+|     ![[Pasted image 20260208012644.png]]     |                                      |
 
 ### 🚀 CI/CD Pipeline & GitOps
-| Jenkins Pipeline Flow | ArgoCD Application Tiles |
-| :---: | :---: |
-| ![Jenkins Pipeline](https://via.placeholder.com/450x250?text=Jenkins+Pipeline) | ![ArgoCD Apps](https://via.placeholder.com/450x250?text=ArgoCD+Applications) |
+|        Jenkins Pipeline Flow         |       ArgoCD Application Tiles       |
+| :----------------------------------: | :----------------------------------: |
+| ![[Pasted image 20260208010302.png]] | ![ArgoCD Apps](https://via.placeholder.com/450x250?text=ArgoCD+Applications) |
 
-| Pipeline Alerts (Success/Failure) | ArgoCD Sync Status |
-| :---: | :---: |
-| ![Jenkins Alerts](https://via.placeholder.com/450x250?text=Success+and+Failure+Alerts) | ![ArgoCD Sync](https://via.placeholder.com/450x250?text=ArgoCD+Sync+Status) |
+|      Pipeline Alerts (Success/Failure)       |          ArgoCD Sync Status          |
+| :------------------------------------------: | :----------------------------------: |
+| ![[Screenshot from 2026-02-04 21-53-10.png]] | ![ArgoCD Sync](https://via.placeholder.com/450x250?text=ArgoCD+Sync+Status) |
+| ![[Screenshot from 2026-02-04 21-53-21.png]] |                                      |
 
 ### 🔔 Notifications & Alerts
-| Telegram Notifications | Slack Notifications |
-| :---: | :---: |
-| ![Telegram Alerts](https://via.placeholder.com/450x250?text=Telegram+Alerts) | ![Slack Alerts](https://via.placeholder.com/450x250?text=Slack+Alerts) |
+|            Telegram Notifications            |                                                Slack Notifications                                                 |
+| :------------------------------------------: | :----------------------------------------------------------------------------------------------------------------: |
+| ![[Screenshot from 2026-02-08 01-23-40.png]] | ![Slack Alerts](https://via.placeholder.com/450x250?text=Slack+Alerts)![[Screenshot from 2026-02-08 01-23-28.png]] |
+| ![[Screenshot from 2026-02-08 01-24-25.png]] |                                    ![[Screenshot from 2026-02-08 01-24-19.png]]                                    |
 
 ## 📦 Components
 
-- [**Frontend**](./frontend): A modern React single-page application built with TypeScript and Vite.
-- [**Backend**](./backend): A high-performance FastAPI service handling REST APIs and WebSocket connections.
+- [**Frontend**](./Frontend): A modern React single-page application built with TypeScript and Vite.
+- [**Backend**](./Backend): A high-performance FastAPI service handling REST APIs and WebSocket connections.
 - [**NGINX**](./nginx): Custom Ingress and proxy configurations for local and production routing.
 
 ---
@@ -114,44 +118,31 @@ We integrate security testing directly into our CI/CD workflow:
 
 ```text
 Application/
-├── backend
-│   ├── app
-│   ├── pytest.ini
-│   ├── README.md
-│   ├── requirements.txt
-│   ├── seed.py
-│   ├── tests
-│   └── tests.Dockerfile
-├── docker-compose.yml
-├── Dockerfile
-├── frontend
-│   ├── App.tsx
-│   ├── components
-│   ├── constants.ts
-│   ├── index.html
-│   ├── index.tsx
-│   ├── menusync
-│   ├── metadata.json
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── public
-│   ├── README.md
-│   ├── reports
-│   ├── services
-│   ├── test-setup.ts
-│   ├── tsconfig.json
-│   ├── types.ts
-│   ├── vite.config.ts
-│   └── vitest.config.ts
-├── Jenkinsfile
-├── Jenkins-key-pair.pem
-└── nginx
-    ├── Dockerfile
-    └── nginx.conf
+├── backend             # FastAPI backend service
+│   ├── app             # Main application logic
+│   ├── pytest.ini      # Test configuration
+│   ├── README.md       # Backend documentation
+│   ├── requirements.txt # Python dependencies
+│   ├── seed.py         # DB seeding script
+│   ├── tests           # Integration tests
+│   └── tests.Dockerfile # Test environment container
+├── docker-compose.yml  # Local dev orchestration
+├── Dockerfile          # Multi-stage production build
+├── frontend            # React frontend application
+│   ├── components      # Reusable UI elements
+│   ├── public          # Static assets
+│   ├── README.md       # Frontend documentation
+│   ├── services        # API/WebSocket logic
+│   └── vite.config.ts  # Build tool configuration
+├── Jenkinsfile         # CI/CD pipeline definition
+├── Jenkins-key-pair.pem # Deployment SSH key
+└── nginx               # Reverse proxy config
+    ├── Dockerfile      # Nginx container
+    └── nginx.conf      # Routing & proxy rules
 ```
 
 ## 📂 Sub-Directories
 
-- [**frontend/**](./frontend): React + TypeScript + Vite.
-- [**backend/**](./backend): FastAPI + MongoDB + Redis.
+- [**frontend/**](./Frontend): React + TypeScript + Vite.
+- [**backend/**](./Backend): FastAPI + MongoDB + Redis.
 - [**nginx/**](./nginx): Nginx proxy configurations.
