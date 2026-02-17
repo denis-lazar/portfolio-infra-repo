@@ -1,14 +1,14 @@
 services:
   app:
-    image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
-    restart: always 
+    build: .
+    restart: always
     env_file:
       - ${ENV_FILE:-.env}
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     volumes:
-      - static_files:/code/static 
+      - static_files:/code/static
     networks:
       - frontend
       - backend
@@ -49,7 +49,11 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "mongosh --quiet --eval \"db.adminCommand('ping')\" || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          'mongosh --quiet --eval "db.adminCommand(''ping'')" || exit 1',
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -62,7 +66,7 @@ services:
       - backend
 
   tester:
-    build: 
+    build:
       context: ./backend
       dockerfile: tests.Dockerfile
     environment:
@@ -77,15 +81,11 @@ services:
       - test
 
 volumes:
-
   mongo_data:
 
   static_files:
 
-
-
 networks:
-
   frontend:
 
   backend:

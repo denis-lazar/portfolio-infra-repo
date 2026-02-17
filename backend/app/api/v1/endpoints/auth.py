@@ -109,21 +109,28 @@ async def login(user_in: UserLogin):
     return user
 
 @router.post("/users/{user_id}/claim", response_model=User)
-async def claim_restaurant(user_id: str, update_data: UserUpdate):
+async def claim_restaurant(
+    user_id: str,
+    update_data: UserUpdate,
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
     db = get_database()
-    
+
     # 1. Update the user's restaurantId
     result = await db.users.update_one(
         {"_id": user_id},
         {"$set": {"restaurantId": update_data.restaurantId}}
     )
-    
+
     if result.matched_count == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
+
     # 2. Get the updated user
     updated_user = await db.users.find_one({"_id": user_id})
     updated_user["id"] = updated_user["_id"]
@@ -159,28 +166,35 @@ async def log_visit(
     return updated_user
 
 @router.post("/users/{user_id}/favorites", response_model=User)
-async def toggle_favorite(user_id: str, update_data: UserUpdate):
+async def toggle_favorite(
+    user_id: str,
+    update_data: UserUpdate,
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
     db = get_database()
-    
+
     # 1. Get current user
     user = await db.users.find_one({"_id": user_id})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     favorites = user.get("favorites", [])
-    
+
     # 2. Add or Remove
     if update_data.restaurantId in favorites:
         favorites.remove(update_data.restaurantId)
     else:
         favorites.append(update_data.restaurantId)
-    
+
     # 3. Update DB
     await db.users.update_one(
         {"_id": user_id},
         {"$set": {"favorites": favorites}}
     )
-    
+
     # 4. Return updated user
     updated_user = await db.users.find_one({"_id": user_id})
     updated_user["id"] = updated_user["_id"]

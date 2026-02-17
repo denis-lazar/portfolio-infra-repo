@@ -231,7 +231,9 @@ class RealBackend {
 
   subscribeToRestaurant(restaurantId: string, onUpdate: (data: any) => void): () => void {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/api/v1/restaurants/${restaurantId}/ws`;
+    const user = this.getCurrentUser();
+    const token = user?.access_token || '';
+    const wsUrl = `${protocol}//${window.location.host}/api/v1/restaurants/${restaurantId}/ws?token=${encodeURIComponent(token)}`;
     
     let socket: WebSocket;
     let reconnectTimeout: any;

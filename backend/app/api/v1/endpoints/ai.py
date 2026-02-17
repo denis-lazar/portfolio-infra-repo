@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
+from app.schemas.user import User
+from app.api.v1.endpoints.auth import get_current_user
 import google.generativeai as genai
 import os
 import structlog
@@ -13,7 +15,7 @@ class ApologyRequest(BaseModel):
     reason: str
 
 @router.post("/apology")
-async def get_ai_apology(request: ApologyRequest):
+async def get_ai_apology(request: ApologyRequest, current_user: User = Depends(get_current_user)):
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         logger.warning("gemini_api_key_missing", message="GEMINI_API_KEY environment variable is not set")

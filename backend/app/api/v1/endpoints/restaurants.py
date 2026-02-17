@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect, status
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect, Query, status
 from typing import List
 from app.schemas.restaurant import Restaurant, Review, StatusUpdate, MenuItem, Ingredient, Hardware
 from app.schemas.user import User, UserRole
 from app.core.database import get_database
+from app.core.security import decode_access_token
 from app.core.websocket import manager
 from app.api.v1.endpoints.auth import get_current_user
 from bson import ObjectId
@@ -35,7 +36,16 @@ def check_restaurant_permission(user: User, restaurant_id: str):
     return False
 
 @router.websocket("/{restaurant_id}/ws")
-async def websocket_endpoint(websocket: WebSocket, restaurant_id: str):
+async def websocket_endpoint(websocket: WebSocket, restaurant_id: str, token: str = Query(default="")):
+    # Validate JWT token before accepting the connection
+    if not token:
+        await websocket.close(code=4001, reason="Missing authentication token")
+        return
+    payload = decode_access_token(token)
+    if payload is None:
+        await websocket.close(code=4001, reason="Invalid or expired token")
+        return
+
     await manager.connect(websocket, restaurant_id)
     try:
         while True:
