@@ -48,16 +48,7 @@ pipeline {
                         script {
                             env.FAILED_STAGE = "Code Security Checks"
                             docker.image('python:3.12-slim').inside {
-                                sh """
-                                    export PYTHONUSERBASE=\$(pwd)/.local
-                                    export PATH=\$PYTHONUSERBASE/bin:\$PATH
-                                    export PIP_CACHE_DIR=\$(pwd)/.pip_cache
-                                    mkdir -p .pip_cache
-                                    pip install --user --no-cache-dir bandit pip-audit
-                                    bandit -r backend -s B101 --exclude backend/app/tests_unit,backend/tests
-                                    # Ignore CVE-2024-23342 (ecdsa) as no fix is available on PyPI yet
-                                    pip-audit --cache-dir .pip_cache --ignore-vuln CVE-2024-23342 -r backend/requirements.txt
-                                """
+                                CodeSecurityTest()
                             }
                         }
                     }
@@ -100,15 +91,7 @@ pipeline {
                         script {
                             env.FAILED_STAGE = "Trivy Image Scan"
                             docker.image('aquasec/trivy:latest').inside('-u 0 --entrypoint="" -v /var/run/docker.sock:/var/run/docker.sock') {
-                                sh """
-                                    export TRIVY_CACHE_DIR=\$(pwd)/.trivy_cache
-                                    mkdir -p .trivy_cache
-                                    # Ignore unfixable vulnerabilities:
-                                    # CVE-2026-0861: glibc (No fix version available)
-                                    # CVE-2024-23342: ecdsa (No fix version available)
-                                    trivy image --cache-dir .trivy_cache --severity HIGH,CRITICAL --exit-code 1 \
-                                    ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
-                                """
+                                TruvyScan()
                             }
                         }
                     }
@@ -215,6 +198,34 @@ pipeline {
 
 /** HELPER FUNCTIONS **/
 
+def TruvyScan(){
+
+    sh """
+        export TRIVY_CACHE_DIR=\$(pwd)/.trivy_cache
+        mkdir -p .trivy_cache
+        # Ignore unfixable vulnerabilities:
+        # CVE-2026-0861: glibc (No fix version available)
+        # CVE-2024-23342: ecdsa (No fix version available)
+        trivy image --cache-dir .trivy_cache --severity HIGH,CRITICAL --exit-code 1 \
+        ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
+    """
+}
+
+
+
+def CodeSecurityTest(){
+    sh """
+        export PYTHONUSERBASE=\$(pwd)/.local
+        export PATH=\$PYTHONUSERBASE/bin:\$PATH
+        export PIP_CACHE_DIR=\$(pwd)/.pip_cache
+        mkdir -p .pip_cache
+        pip install --user --no-cache-dir bandit pip-audit
+        bandit -r backend -s B101 --exclude backend/app/tests_unit,backend/tests
+        # Ignore CVE-2024-23342 (ecdsa) as no fix is available on PyPI yet
+        pip-audit --cache-dir .pip_cache --ignore-vuln CVE-2024-23342 -r backend/requirements.txt
+    """
+}
+
 
 def UnitFrontend(){
     dir('frontend') {
@@ -222,8 +233,6 @@ def UnitFrontend(){
         sh 'npm test -- --reporter=verbose'
     }
 }
-
-
 
 def UnitBackend(){
     sh """
@@ -237,16 +246,6 @@ def UnitBackend(){
         backend/app/tests_unit
     """
 }
-
-
-
-
-
-
-
-
-
-
 
 def IntegrationTests(){
     sh '''
