@@ -58,8 +58,25 @@ const App: React.FC = () => {
     
     console.log(`Subscribing to real-time updates for channel: ${targetId}`);
     const unsubscribe = api.subscribeToRestaurant(targetId, (data) => {
-      console.log("Real-time update received:", data);
-      loadData(false); // Background refresh without spinner
+      if (data.type === 'INGREDIENT_UPDATE') {
+        setRestaurants(prev => prev.map(r =>
+          r.id === data.restaurantId
+            ? { ...r, ingredients: r.ingredients.map(ing =>
+                ing.id === data.ingredientId ? { ...ing, inStock: data.inStock } : ing
+              )}
+            : r
+        ));
+      } else if (data.type === 'HARDWARE_UPDATE') {
+        setRestaurants(prev => prev.map(r =>
+          r.id === data.restaurantId
+            ? { ...r, hardware: r.hardware.map(hw =>
+                hw.id === data.hardwareId ? { ...hw, operational: data.operational } : hw
+              )}
+            : r
+        ));
+      } else {
+        loadData(false);
+      }
     });
     return () => unsubscribe();
   }, [user, selectedRestaurantId, view, loadData]);
@@ -99,13 +116,49 @@ const App: React.FC = () => {
   }, [restaurants, user]);
 
   const updateIngredient = async (restaurantId: string, ingredientId: string, inStock: boolean) => {
-    await api.updateIngredient(restaurantId, ingredientId, inStock);
-    await loadData();
+    setRestaurants(prev => prev.map(r =>
+      r.id === restaurantId
+        ? { ...r, ingredients: r.ingredients.map(ing =>
+            ing.id === ingredientId ? { ...ing, inStock } : ing
+          )}
+        : r
+    ));
+
+    try {
+      await api.updateIngredient(restaurantId, ingredientId, inStock);
+    } catch {
+      setRestaurants(prev => prev.map(r =>
+        r.id === restaurantId
+          ? { ...r, ingredients: r.ingredients.map(ing =>
+              ing.id === ingredientId ? { ...ing, inStock: !inStock } : ing
+            )}
+          : r
+      ));
+      showNotification("Failed to update ingredient", "error");
+    }
   };
 
   const updateHardware = async (restaurantId: string, hardwareId: string, operational: boolean) => {
-    await api.updateHardware(restaurantId, hardwareId, operational);
-    await loadData();
+    setRestaurants(prev => prev.map(r =>
+      r.id === restaurantId
+        ? { ...r, hardware: r.hardware.map(hw =>
+            hw.id === hardwareId ? { ...hw, operational } : hw
+          )}
+        : r
+    ));
+
+    try {
+      await api.updateHardware(restaurantId, hardwareId, operational);
+    } catch {
+      setRestaurants(prev => prev.map(r =>
+        r.id === restaurantId
+          ? { ...r, hardware: r.hardware.map(hw =>
+              hw.id === hardwareId ? { ...hw, operational: !operational } : hw
+            )}
+          : r
+      ));
+      showNotification("Failed to update hardware", "error");
+    }
   };
 
   const handleRestaurantSelect = (id: string) => {

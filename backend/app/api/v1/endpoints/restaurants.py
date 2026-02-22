@@ -245,20 +245,19 @@ async def update_ingredient(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant or Ingredient not found")
     
-    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    # Broadcast the update with delta data (Soft-fail to avoid blocking the main request)
     try:
-        await manager.broadcast_to_restaurant(restaurant_id, {
-            "type": "RESTAURANT_UPDATE",
-            "restaurantId": restaurant_id
-        })
-        await manager.broadcast_to_restaurant("global", {
-            "type": "GLOBAL_UPDATE",
-            "action": "UPDATE",
-            "restaurantId": restaurant_id
-        })
+        delta = {
+            "type": "INGREDIENT_UPDATE",
+            "restaurantId": restaurant_id,
+            "ingredientId": ingredient_id,
+            "inStock": update.inStock
+        }
+        await manager.broadcast_to_restaurant(restaurant_id, delta)
+        await manager.broadcast_to_restaurant("global", delta)
     except Exception as e:
         print(f"Broadcast failed: {e}")
-    
+
     return {"status": "success"}
 
 @router.post("/{restaurant_id}/ingredients", response_model=Restaurant)
@@ -351,17 +350,16 @@ async def update_hardware(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Restaurant or Hardware not found")
 
-    # Broadcast the update (Soft-fail to avoid blocking the main request)
+    # Broadcast the update with delta data (Soft-fail to avoid blocking the main request)
     try:
-        await manager.broadcast_to_restaurant(restaurant_id, {
-            "type": "RESTAURANT_UPDATE",
-            "restaurantId": restaurant_id
-        })
-        await manager.broadcast_to_restaurant("global", {
-            "type": "GLOBAL_UPDATE",
-            "action": "UPDATE",
-            "restaurantId": restaurant_id
-        })
+        delta = {
+            "type": "HARDWARE_UPDATE",
+            "restaurantId": restaurant_id,
+            "hardwareId": hardware_id,
+            "operational": update.operational
+        }
+        await manager.broadcast_to_restaurant(restaurant_id, delta)
+        await manager.broadcast_to_restaurant("global", delta)
     except Exception as e:
         print(f"Broadcast failed: {e}")
 
