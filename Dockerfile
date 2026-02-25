@@ -13,7 +13,7 @@ ENV VITE_CDN_URL=$VITE_CDN_URL
 RUN npm run build
 
 
-# --- BACKEND STAGE (FIXED) ---
+# --- BACKEND STAGE ---
 FROM python:3.11-slim AS backend-runner
 WORKDIR /code
 
@@ -41,7 +41,11 @@ COPY --from=frontend-builder /app-frontend/dist ./static
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/code
 ENV APP_VERSION=$VERSION
-ENV GIT_SHA=$GIT_SHA        
+ENV GIT_SHA=$GIT_SHA
+
+RUN useradd -m -u 1001 -s /bin/bash appuser
+RUN chown -R appuser:appuser /code
+USER appuser
 
 EXPOSE 8000
 
