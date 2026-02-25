@@ -248,6 +248,7 @@ class RealBackend {
       socket.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
+          if (data.type === 'PING') return;
           console.log("WS Data Received:", data);
           onUpdate(data);
         } catch (e) {

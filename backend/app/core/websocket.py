@@ -59,36 +59,54 @@ class ConnectionManager:
 
     async def _redis_listener(self):
         """Background task to listen for Redis messages and broadcast to local clients."""
-        r = await self._get_redis()
-        pubsub = r.pubsub()
-        await pubsub.subscribe("menusync_updates")
-        
-        try:
-            async for message in pubsub.listen():
-                if message["type"] == "message":
-                    data = json.loads(message["data"])
-                    restaurant_id = data["restaurant_id"]
-                    actual_message = data["message"]
-                    
-                    # Send to local clients watching this restaurant
-                    local_clients = self.active_connections.get(restaurant_id, [])
-                    # Send to local clients watching global view
-                    global_clients = self.active_connections.get("global", []) if restaurant_id != "global" else []
-                    
-                    targets = list(local_clients)
-                    for gc in global_clients:
-                        if gc not in targets:
-                            targets.append(gc)
-                    
-                    if targets:
-                        logger.debug("local_broadcast", count=len(targets), type=actual_message.get("type"))
-                        for connection in targets:
-                            try:
-                                await connection.send_json(actual_message)
-                            except Exception as e:
-                                logger.error("websocket_send_error", error=str(e))
-        except Exception as e:
-            logger.error("redis_listener_error", error=str(e))
-            self.listener_task = None
+        while True:
+            try:
+                r = await self._get_redis()
+                pubsub = r.pubsub()
+                await pubsub.subscribe("menusync_updates")
+                logger.info("redis_pubsub_subscribed")
+
+                async for message in pubsub.listen():
+                    if message["type"] == "message":
+                        data = json.loads(message["data"])
+                        restaurant_id = data["restaurant_id"]
+                        actual_message = data["message"]
+
+                        # Send to local clients watching this restaurant
+                        local_clients = self.active_connections.get(restaurant_id, [])
+                        # Send to local clients watching global view
+                        global_clients = self.active_connections.get("global", []) if restaurant_id != "global" else []
+
+                        targets = list(local_clients)
+                        for gc in global_clients:
+                            if gc not in targets:
+                                targets.append(gc)
+
+                        if targets:
+                            logger.debug("local_broadcast", count=len(targets), type=actual_message.get("type"))
+                            dead_connections = []
+                            for connection in targets:
+                                try:
+                                    await connection.send_json(actual_message)
+                                except Exception as e:
+                                    logger.error("websocket_send_error", error=str(e))
+                                    dead_connections.append(connection)
+
+                            # Clean up dead connections
+                            for dead in dead_connections:
+                                for rid, conns in self.active_connections.items():
+                                    if dead in conns:
+                                        conns.remove(dead)
+                            self.active_connections = {
+                                rid: conns for rid, conns in self.active_connections.items() if conns
+                            }
+
+            except asyncio.CancelledError:
+                logger.info("redis_listener_cancelled")
+                break
+            except Exception as e:
+                logger.error("redis_listener_error", error=str(e))
+                self.redis_client = None
+                await asyncio.sleep(3)
 
 manager = ConnectionManager()

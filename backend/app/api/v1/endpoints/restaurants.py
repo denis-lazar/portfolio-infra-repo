@@ -7,6 +7,7 @@ from app.core.security import decode_access_token
 from app.core.websocket import manager
 from app.api.v1.endpoints.auth import get_current_user
 from bson import ObjectId
+import asyncio
 import datetime
 import uuid
 
@@ -49,9 +50,14 @@ async def websocket_endpoint(websocket: WebSocket, restaurant_id: str, token: st
     await manager.connect(websocket, restaurant_id)
     try:
         while True:
-            # Keep connection alive, we mostly push from server to client
-            await websocket.receive_text()
+            try:
+                await asyncio.wait_for(websocket.receive_text(), timeout=30)
+            except asyncio.TimeoutError:
+                # Send keepalive ping to prevent nginx proxy timeout
+                await websocket.send_json({"type": "PING"})
     except WebSocketDisconnect:
+        manager.disconnect(websocket, restaurant_id)
+    except Exception:
         manager.disconnect(websocket, restaurant_id)
 
 @router.get("/", response_model=List[Restaurant])
